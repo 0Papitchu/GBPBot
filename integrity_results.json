@@ -1,0 +1,119 @@
+{
+  "timestamp": 37935.421,
+  "overall_status": "error",
+  "components": {
+    "BlockchainClient": {
+      "name": "BlockchainClient",
+      "status": "warning",
+      "issues": [
+        "M\u00e9thodes manquantes: execute_swap, approve_token"
+      ],
+      "details": {
+        "module_import": "ok",
+        "class_exists": "ok",
+        "missing_methods": [
+          "execute_swap",
+          "approve_token"
+        ]
+      }
+    },
+    "PriceFeed": {
+      "name": "PriceFeed",
+      "status": "warning",
+      "issues": [
+        "M\u00e9thodes manquantes: get_dex_price, fetch_price"
+      ],
+      "details": {
+        "module_import": "ok",
+        "class_exists": "ok",
+        "missing_methods": [
+          "get_dex_price",
+          "fetch_price"
+        ]
+      }
+    },
+    "ArbitrageStrategy": {
+      "name": "ArbitrageStrategy",
+      "status": "ok",
+      "issues": [],
+      "details": {
+        "module_import": "ok",
+        "class_exists": "ok",
+        "methods_check": "ok"
+      }
+    },
+    "MEVStrategy": {
+      "name": "MEVStrategy",
+      "status": "warning",
+      "issues": [
+        "M\u00e9thodes manquantes: scan_mempool, analyze_transaction, execute_strategy"
+      ],
+      "details": {
+        "module_import": "ok",
+        "class_exists": "ok",
+        "missing_methods": [
+          "scan_mempool",
+          "analyze_transaction",
+          "execute_strategy"
+        ]
+      }
+    },
+    "SnipingStrategy": {
+      "name": "SnipingStrategy",
+      "status": "error",
+      "issues": [
+        "Impossible d'importer le module gbpbot.strategies.sniping: cannot import name 'FixtureFunction' from 'typing' (C:\\Users\\randr\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\typing.py)"
+      ],
+      "details": {
+        "module_import": "error"
+      }
+    },
+    "VersionManager": {
+      "name": "VersionManager",
+      "status": "ok",
+      "issues": [],
+      "details": {
+        "module_import": "ok",
+        "class_exists": "ok",
+        "methods_check": "ok"
+      }
+    }
+  },
+  "config_files": {
+    "status": "ok",
+    "missing_files": [],
+    "empty_files": [],
+    "details": {
+      ".env": "ok",
+      "config.py": "ok",
+      "requirements.txt": "ok"
+    }
+  },
+  "environment": {
+    "status": "ok",
+    "missing_vars": [],
+    "empty_vars": [],
+    "details": {
+      "PRIVATE_KEY": "ok",
+      "WALLET_ADDRESS": "ok",
+      "RPC_URL": "ok",
+      "CHAIN_ID": "ok",
+      "ARBITRAGE_THRESHOLD": "ok",
+      "SLEEP_TIME": "ok"
+    }
+  },
+  "dependencies": {
+    "status": "error",
+    "missing_deps": [
+      "python-dotenv"
+    ],
+    "details": {
+      "web3": "ok",
+      "ccxt": "ok",
+      "pandas": "ok",
+      "numpy": "ok",
+      "aiohttp": "ok",
+      "python-dotenv": "missing"
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "start_time": 1740946048.7975461,
+  "opportunities_detected": 1798,
+  "trades_executed": 0,
+  "total_profit": 0.0,
+  "performance_history": [
+    {
+      "timestamp": 1740946048.8515613,
+      "profit": 0.0,
+      "opportunities": 0,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740946349.1332533,
+      "profit": 0.0,
+      "opportunities": 78,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740946649.432533,
+      "profit": 0.0,
+      "opportunities": 163,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740946949.7566714,
+      "profit": 0.0,
+      "opportunities": 269,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740947250.5343335,
+      "profit": 0.0,
+      "opportunities": 340,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740947550.851704,
+      "profit": 0.0,
+      "opportunities": 441,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740947851.1878035,
+      "profit": 0.0,
+      "opportunities": 540,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740948151.5072663,
+      "profit": 0.0,
+      "opportunities": 626,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740948451.8729727,
+      "profit": 0.0,
+      "opportunities": 729,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740948752.0353694,
+      "profit": 0.0,
+      "opportunities": 803,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740949052.3578274,
+      "profit": 0.0,
+      "opportunities": 894,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740949352.6869943,
+      "profit": 0.0,
+      "opportunities": 979,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740949653.0287764,
+      "profit": 0.0,
+      "opportunities": 1072,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740949953.3950279,
+      "profit": 0.0,
+      "opportunities": 1151,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740950253.7605019,
+      "profit": 0.0,
+      "opportunities": 1234,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740950554.111248,
+      "profit": 0.0,
+      "opportunities": 1330,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740950854.465369,
+      "profit": 0.0,
+      "opportunities": 1415,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740951154.8401756,
+      "profit": 0.0,
+      "opportunities": 1506,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740951455.276695,
+      "profit": 0.0,
+      "opportunities": 1591,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740951755.9203894,
+      "profit": 0.0,
+      "opportunities": 1653,
+      "trades": 0
+    },
+    {
+      "timestamp": 1740952056.3285804,
+      "profit": 0.0,
+      "opportunities": 1739,
+      "trades": 0
+    }
+  ],
+  "trades_history": [],
+  "bot_status": "running",
+  "bot_mode": "SIMULATION",
+  "strategies": {
+    "sniping": false,
+    "arbitrage": false,
+    "mev": false
+  }
+}

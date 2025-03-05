@@ -1,0 +1,226 @@
+{
+    "general": {
+        "environment": "development",
+        "log_level": "INFO",
+        "log_file": "logs/gbpbot.log",
+        "log_format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "log_date_format": "%Y-%m-%d %H:%M:%S",
+        "log_rotation": "1 day",
+        "log_retention": "30 days",
+        "debug_mode": false,
+        "data_dir": "./data"
+    },
+    "rpc": {
+        "providers": {
+            "ethereum": {
+                "mainnet": [
+                    "https://eth-mainnet.g.alchemy.com/v2/your-api-key",
+                    "https://mainnet.infura.io/v3/your-api-key",
+                    "https://rpc.ankr.com/eth"
+                ],
+                "goerli": [
+                    "https://eth-goerli.g.alchemy.com/v2/your-api-key",
+                    "https://goerli.infura.io/v3/your-api-key"
+                ]
+            },
+            "arbitrum": {
+                "mainnet": [
+                    "https://arb-mainnet.g.alchemy.com/v2/your-api-key",
+                    "https://arbitrum-one.public.blastapi.io"
+                ],
+                "goerli": [
+                    "https://arb-goerli.g.alchemy.com/v2/your-api-key"
+                ]
+            },
+            "avalanche": {
+                "mainnet": [
+                    "https://api.avax.network/ext/bc/C/rpc",
+                    "https://avalanche-c-chain.publicnode.com",
+                    "https://rpc.ankr.com/avalanche",
+                    "https://avalanche.blockpi.network/v1/rpc/public",
+                    "https://avax.meowrpc.com"
+                ]
+            }
+        },
+        "timeout": 10,
+        "max_retries": 3,
+        "retry_delay": 1,
+        "max_retry_delay": 30,
+        "jitter": true,
+        "batch_size": 10,
+        "batch_interval": 0.5
+    },
+    "cache": {
+        "enabled": true,
+        "ttl": {
+            "default": 60,
+            "block": 12,
+            "transaction": 3600,
+            "code": 86400,
+            "balance": 30,
+            "nonce": 10,
+            "gas_price": 10,
+            "token_balance": 30,
+            "token_allowance": 30,
+            "token_metadata": 86400
+        },
+        "max_size": {
+            "memory": 1000,
+            "disk": 10000
+        },
+        "disk_cache": {
+            "enabled": true,
+            "path": "cache",
+            "max_size_mb": 100
+        },
+        "persistent": true,
+        "storage_path": "./data/cache"
+    },
+    "websocket": {
+        "heartbeat_interval": 30,
+        "reconnect_interval": 5,
+        "max_reconnect_attempts": 10,
+        "max_backoff": 60,
+        "ping_interval": 30,
+        "ping_timeout": 10,
+        "close_timeout": 5,
+        "reconnect_delay": 1,
+        "max_reconnect_delay": 60,
+        "jitter": true,
+        "max_message_size": 10485760
+    },
+    "anomaly_detector": {
+        "enabled": true,
+        "window_size": 20,
+        "z_score_threshold": 3.0,
+        "min_data_points": 10,
+        "max_price_change_percent": 20,
+        "check_interval": 1,
+        "alert_cooldown": 60
+    },
+    "transaction": {
+        "gas": {
+            "max_priority_fee": 3,
+            "max_fee_per_gas": 100,
+            "min_priority_fee": 1,
+            "priority_levels": {
+                "high": {
+                    "multiplier": 1.5,
+                    "max_priority_fee": 5
+                },
+                "normal": {
+                    "multiplier": 1.0,
+                    "max_priority_fee": 3
+                },
+                "low": {
+                    "multiplier": 0.8,
+                    "max_priority_fee": 2
+                }
+            }
+        },
+        "confirmation": {
+            "timeout": 300,
+            "blocks": 2,
+            "poll_interval": 5
+        },
+        "nonce": {
+            "auto_increment": true,
+            "cache_duration": 60
+        }
+    },
+    "exchanges": {
+        "dex": {
+            "traderjoe": {
+                "router_address": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+                "factory_address": "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10",
+                "fee": 0.003
+            },
+            "pangolin": {
+                "router_address": "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106",
+                "factory_address": "0xefa94DE7a4656D787667C749f7E1223D71E9FD88",
+                "fee": 0.003
+            }
+        },
+        "cex": {
+            "binance": {
+                "api_key": "",
+                "api_secret": "",
+                "testnet": false
+            },
+            "kucoin": {
+                "api_key": "",
+                "api_secret": "",
+                "passphrase": "",
+                "testnet": false
+            }
+        }
+    },
+    "tokens": {
+        "avalanche": {
+            "WAVAX": {
+                "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+                "decimals": 18,
+                "symbol": "WAVAX",
+                "name": "Wrapped AVAX"
+            },
+            "USDC": {
+                "address": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+                "decimals": 6,
+                "symbol": "USDC",
+                "name": "USD Coin"
+            },
+            "USDT": {
+                "address": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+                "decimals": 6,
+                "symbol": "USDT",
+                "name": "Tether USD"
+            }
+        }
+    },
+    "strategies": {
+        "arbitrage": {
+            "enabled": true,
+            "min_profit_usd": 5,
+            "min_profit_percent": 0.5,
+            "max_slippage": 1.0,
+            "gas_price_threshold": 50,
+            "max_concurrent_trades": 3,
+            "cooldown": 10,
+            "pairs": [
+                {
+                    "token0": "WAVAX",
+                    "token1": "USDC",
+                    "dex0": "traderjoe",
+                    "dex1": "pangolin"
+                },
+                {
+                    "token0": "WAVAX",
+                    "token1": "USDT",
+                    "dex0": "traderjoe",
+                    "dex1": "pangolin"
+                }
+            ]
+        },
+        "sniping": {
+            "enabled": false,
+            "min_liquidity_usd": 10000,
+            "max_buy_amount_usd": 100,
+            "min_tokens_percent": 0.1,
+            "max_slippage": 10,
+            "auto_sell": {
+                "enabled": true,
+                "profit_target": 100,
+                "stop_loss": 20,
+                "trailing_stop": 10,
+                "time_limit": 3600
+            },
+            "token_validation": {
+                "check_honeypot": true,
+                "check_contract": true,
+                "check_owner": true,
+                "check_lp_locked": true,
+                "min_lp_lock_time": 2592000
+            }
+        }
+    }
+} 

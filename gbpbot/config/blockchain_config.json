@@ -1,0 +1,74 @@
+{
+  "mainnet": {
+    "rpc_url": "https://api.avax.network/ext/bc/C/rpc",
+    "backup_rpc_urls": [
+      "https://avalanche-c-chain.publicnode.com",
+      "https://avax-mainnet.public.blastapi.io/ext/bc/C/rpc"
+    ],
+    "chain_id": 43114,
+    "explorer_url": "https://snowtrace.io",
+    "gas_price_multiplier": 1.1,
+    "max_gas_price": 50,
+    "gas_limit": 500000,
+    "tokens": {
+      "WAVAX": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      "USDT": "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+      "USDC": "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+      "WETH": "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"
+    },
+    "dexes": {
+      "trader_joe": {
+        "router": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+        "factory": "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10"
+      },
+      "pangolin": {
+        "router": "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106",
+        "factory": "0xefa94DE7a4656D787667C749f7E1223D71E9FD88"
+      }
+    }
+  },
+  "testnet": {
+    "rpc_url": "https://api.avax-test.network/ext/bc/C/rpc",
+    "backup_rpc_urls": [
+      "https://avalanche-fuji-c-chain.publicnode.com"
+    ],
+    "chain_id": 43113,
+    "explorer_url": "https://testnet.snowtrace.io",
+    "gas_price_multiplier": 1.1,
+    "max_gas_price": 50,
+    "gas_limit": 500000,
+    "tokens": {
+      "WAVAX": "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
+      "USDT": "0x7c2C195CD6D34B8F845992d380aADB2730bB9C6F",
+      "USDC": "0x5425890298aed601595a70AB815c96711a31Bc65",
+      "WETH": "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3"
+    },
+    "dexes": {
+      "trader_joe": {
+        "router": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+        "factory": "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10"
+      },
+      "pangolin": {
+        "router": "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106",
+        "factory": "0xefa94DE7a4656D787667C749f7E1223D71E9FD88"
+      }
+    }
+  },
+  "arbitrage": {
+    "min_profit_threshold": 0.5,
+    "max_slippage": 1.0,
+    "gas_price_limit": 50,
+    "pairs": [
+      {
+        "token_in": "WAVAX",
+        "token_out": "USDC",
+        "amount_in": "0.1"
+      },
+      {
+        "token_in": "WAVAX",
+        "token_out": "USDT",
+        "amount_in": "0.1"
+      }
+    ]
+  }
+} 

@@ -1,0 +1,12 @@
+2025-03-02 21:07:28.847 | INFO     | security_config:__init__:35 - Configuration de sécurité chargée
+2025-03-02 21:07:28.848 | INFO     | security_config:__init__:36 - Vérification d'IP: Activée
+2025-03-02 21:07:28.848 | INFO     | security_config:__init__:37 - HTTPS: Désactivé
+2025-03-02 21:07:28.848 | INFO     | security_config:__init__:38 - Journalisation des requêtes: Activée
+2025-03-02 21:07:28.849 | INFO     | __main__:simulation_thread:45 - Démarrage du thread de simulation...
+2025-03-02 21:07:28.851 | INFO     | __main__:<module>:229 - Démarrage du serveur API sur 127.0.0.1:5000
+2025-03-02 21:13:09.588 | WARNING  | __main__:check_auth:76 - Tentative d'accès avec une clé API invalide: None
+2025-03-02 21:13:09.589 | INFO     | __main__:log_request:84 - 127.0.0.1 - GET / - 401
+2025-03-02 21:13:10.883 | WARNING  | __main__:check_auth:76 - Tentative d'accès avec une clé API invalide: None
+2025-03-02 21:13:10.883 | INFO     | __main__:log_request:84 - 127.0.0.1 - GET /favicon.ico - 401
+2025-03-02 21:13:10.887 | WARNING  | __main__:check_auth:76 - Tentative d'accès avec une clé API invalide: None
+2025-03-02 21:13:10.887 | INFO     | __main__:log_request:84 - 127.0.0.1 - GET /favicon.ico - 401

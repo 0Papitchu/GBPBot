@@ -1,0 +1,24 @@
+2025-03-02 23:38:51,189 - INFO - Démarrage de la vérification d'intégrité du bot...
+2025-03-02 23:38:51,189 - INFO - Vérification des composants essentiels...
+2025-03-02 23:38:52,681 - INFO - Vérification des fichiers de configuration...
+2025-03-02 23:38:52,682 - INFO - Vérification des variables d'environnement...
+2025-03-02 23:38:52,682 - INFO - Vérification des dépendances Python...
+2025-03-02 23:38:52,682 - INFO - 
+===== RÉSULTATS DE LA VÉRIFICATION D'INTÉGRITÉ =====
+2025-03-02 23:38:52,682 - INFO - Statut global: ERROR
+2025-03-02 23:38:52,682 - INFO - 
+Composants:
+2025-03-02 23:38:52,736 - INFO -    - Méthodes manquantes: execute_swap, approve_token
+2025-03-02 23:38:52,737 - INFO -    - Méthodes manquantes: get_dex_price, fetch_price
+2025-03-02 23:38:52,738 - INFO -    - Méthodes manquantes: scan_mempool, analyze_transaction, execute_strategy
+2025-03-02 23:38:52,739 - INFO -    - Impossible d'importer le module gbpbot.strategies.sniping: cannot import name 'FixtureFunction' from 'typing' (C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\typing.py)
+2025-03-02 23:38:52,739 - INFO - 
+Fichiers de configuration:
+2025-03-02 23:38:52,740 - INFO - 
+Variables d'environnement:
+2025-03-02 23:38:52,740 - INFO - 
+Dépendances Python:
+2025-03-02 23:38:52,740 - INFO -    - Dépendances manquantes: python-dotenv
+2025-03-02 23:38:52,741 - INFO - 
+Résultats détaillés sauvegardés dans integrity_results.json
+2025-03-02 23:38:52,741 - ERROR - La vérification d'intégrité a échoué. Veuillez corriger les erreurs avant de continuer.

@@ -1,0 +1,5 @@
+2025-03-04 22:02:47.715 | INFO     | __main__:main:185 - Démarrage de la mise à jour des prix de simulation...
+2025-03-04 22:02:47.777 | INFO     | __main__:get_coingecko_prices:58 - Prix récupérés depuis CoinGecko: {'AVAX/USDT': 19.88, 'AVAX/USDC': 19.88, 'ETH/USDT': 2137.94, 'ETH/USDC': 2137.94, 'AVAX/ETH': 0.00929867068299391, 'USDT/USDC': 1.0}
+2025-03-04 22:02:48.257 | INFO     | __main__:get_binance_prices:94 - Prix récupérés depuis Binance: {'AVAX/USDT': 19.91, 'AVAX/USDC': 19.91, 'ETH/USDT': 2134.26, 'ETH/USDC': 2133.79, 'AVAX/ETH': 0.00934, 'USDT/USDC': 1.0}
+2025-03-04 22:02:48.259 | SUCCESS  | __main__:update_blockchain_py:176 - Mise à jour des prix dans C:\pythonProject1\gbpbot\core\blockchain.py réussie
+2025-03-04 22:02:48.260 | INFO     | __main__:main:208 - Mise à jour des prix terminée avec succès le 2025-03-04 à 22:02:48

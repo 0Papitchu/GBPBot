@@ -1,0 +1,5 @@
+2025-03-02 21:08:09.702 | INFO     | security_config:__init__:35 - Configuration de sécurité chargée
+2025-03-02 21:08:09.702 | INFO     | security_config:__init__:36 - Vérification d'IP: Activée
+2025-03-02 21:08:09.702 | INFO     | security_config:__init__:37 - HTTPS: Désactivé
+2025-03-02 21:08:09.702 | INFO     | security_config:__init__:38 - Journalisation des requêtes: Activée
+2025-03-02 21:08:09.706 | INFO     | __main__:<module>:256 - Démarrage du dashboard web sur 127.0.0.1:5001

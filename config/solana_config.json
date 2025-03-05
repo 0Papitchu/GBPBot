@@ -1,0 +1,217 @@
+{
+    "solana": {
+        "network": "mainnet-beta",
+        "commitment": "confirmed",
+        "rpc": {
+            "providers": [
+                {
+                    "name": "Jito Solana RPC",
+                    "url": "https://jito-mainnet-rpc.example.com",
+                    "weight": 3,
+                    "type": "premium"
+                },
+                {
+                    "name": "QuickNode Premium",
+                    "url": "https://solana-mainnet.quicknode.example.com",
+                    "weight": 2,
+                    "type": "premium"
+                },
+                {
+                    "name": "Helius",
+                    "url": "https://mainnet.helius-rpc.example.com",
+                    "weight": 2,
+                    "type": "premium"
+                },
+                {
+                    "name": "Public RPC Backup",
+                    "url": "https://api.mainnet-beta.solana.com",
+                    "weight": 1,
+                    "type": "public"
+                }
+            ],
+            "timeout": 15,
+            "retry_count": 3,
+            "retry_delay": 0.5
+        },
+        "wallet": {
+            "private_key": "YOUR_PRIVATE_KEY_HERE",
+            "use_burner_wallets": true,
+            "burner_wallet_count": 5,
+            "autorotate": true,
+            "rotation_frequency": 10
+        },
+        "tokens": {
+            "sol": "native",
+            "usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "usdt": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+            "bonk": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+            "jito": "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn",
+            "whitelist": [
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+                "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn"
+            ]
+        },
+        "dex": {
+            "raydium": {
+                "program_id": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+                "pool_program_id": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+                "concentration_program_id": "9rpQHSyFVM1dkkHFQ2TtTzPEYnXn7sHgBuGkJoQARUYk"
+            },
+            "jupiter": {
+                "api_url": "https://quote-api.jup.ag/v6",
+                "default_slippage": 0.5
+            },
+            "orca": {
+                "program_id": "7BoYVKDwzYQM9QLzY41HzW4i4BRpBXHkdYgbFdga7Dvk"
+            },
+            "preferred_order": ["jupiter", "raydium", "orca"]
+        },
+        "sniping": {
+            "gas_priority": {
+                "default": "high",
+                "priority_fee_multiplier": {
+                    "low": 1.0,
+                    "normal": 1.5,
+                    "high": 2.0,
+                    "urgent": 3.0
+                },
+                "max_priority_fee_lamports": 1000000
+            },
+            "trade_settings": {
+                "default_slippage": 0.5,
+                "emergency_slippage": 5.0,
+                "min_liquidity_usd": 50000,
+                "min_volume_usd": 100000,
+                "max_concentration_percent": 30,
+                "auto_approve": true
+            },
+            "execution": {
+                "use_bundled_transactions": true,
+                "use_priority_fees": true,
+                "retries_on_failure": 3,
+                "retry_delay_ms": 200,
+                "use_flashbots": false,
+                "use_jito_bundle": true,
+                "transaction_timeout_sec": 60
+            },
+            "profitability": {
+                "take_profit_levels": [
+                    {"multiplier": 2.0, "percentage": 25},
+                    {"multiplier": 5.0, "percentage": 50},
+                    {"multiplier": 10.0, "percentage": 100}
+                ],
+                "stop_loss": {
+                    "enabled": true,
+                    "percentage": 30,
+                    "time_based": {
+                        "enabled": true,
+                        "trigger_minutes": 5
+                    },
+                    "volume_based": {
+                        "enabled": true,
+                        "volume_decrease_percent": 50
+                    }
+                }
+            },
+            "detection": {
+                "scan_interval_ms": 500,
+                "sources": {
+                    "raydium": true,
+                    "orca": true,
+                    "dexscreener": true,
+                    "jupiter": true,
+                    "pump_fun": true
+                },
+                "lookback_blocks": 1000,
+                "minimum_token_age_sec": 0,
+                "maximum_token_age_sec": 3600
+            }
+        },
+        "analysis": {
+            "token_scoring": {
+                "min_score_to_buy": 60,
+                "factors": {
+                    "liquidity": 20,
+                    "holders_distribution": 25,
+                    "contract_analysis": 30,
+                    "market_sentiment": 15,
+                    "social_signals": 10
+                }
+            },
+            "honeypot_detection": {
+                "enabled": true,
+                "simulation_amount_usd": 10,
+                "max_buy_tax": 10,
+                "max_sell_tax": 10
+            },
+            "rug_indicators": {
+                "liquidity_lock_required": true,
+                "minimum_lock_days": 30,
+                "max_owner_percentage": 30,
+                "blacklisted_creators": []
+            },
+            "whale_tracking": {
+                "min_holdings_usd": 50000,
+                "min_transactions": 5,
+                "successful_exit_rate": 70
+            }
+        },
+        "priority_fee": {
+            "use_jito": true,
+            "use_helius": true,
+            "priority_fee_cache_ttl": 3,
+            "default_multiplier": 1.5,
+            "max_priority_fee": 1000000
+        },
+        "cache": {
+            "cache_size": 1000,
+            "cache_ttl": 60,
+            "price_cache_ttl": 30,
+            "token_metadata_ttl": 600
+        },
+        "security": {
+            "max_allocation_per_token_usd": 1000,
+            "suspicious_patterns": [
+                "rug",
+                "scam",
+                "honeypot",
+                "fake",
+                "test"
+            ],
+            "auto_blacklist": true,
+            "private_transactions": true
+        },
+        "notifications": {
+            "enabled": true,
+            "new_token_alert": true,
+            "buy_transaction_alert": true,
+            "sell_transaction_alert": true,
+            "rug_pull_alert": true,
+            "profit_target_alert": true,
+            "telegram": {
+                "enabled": false,
+                "bot_token": "",
+                "chat_id": ""
+            },
+            "discord": {
+                "enabled": false,
+                "webhook_url": ""
+            }
+        },
+        "logging": {
+            "level": "INFO",
+            "file_logging": true,
+            "file_path": "logs/solana_client.log",
+            "max_file_size_mb": 10,
+            "backup_count": 5,
+            "console_logging": true
+        },
+        "rate_limiting": {
+            "max_requests_per_second": 10,
+            "burst_limit": 20,
+            "retry_after_limit": true
+        }
+    }
+} 

@@ -1,0 +1,11 @@
+2025-03-02 23:39:05,545 - INFO - Démarrage de l'optimisation des paramètres...
+2025-03-02 23:39:05,545 - INFO - Analyse des conditions du marché...
+2025-03-02 23:39:05,545 - INFO - Conditions du marché détectées: {'volatility': 'medium', 'liquidity': 'medium', 'gas_price': 'medium'}
+2025-03-02 23:39:05,545 - INFO - 
+===== PARAMÈTRES RECOMMANDÉS =====
+2025-03-02 23:39:05,545 - INFO - ARBITRAGE_THRESHOLD: 1.5000 - Seuil de profit minimum pour exécuter un arbitrage (%)
+2025-03-02 23:39:05,546 - INFO - SLEEP_TIME: 1.0000 - Temps d'attente entre les analyses (secondes)
+2025-03-02 23:39:05,546 - INFO - GAS_ESTIMATION: 0.0015 - Estimation des frais de gas (ETH)
+2025-03-02 23:39:05,546 - INFO - DEX_FEE_ESTIMATION: 0.0030 - Estimation des frais DEX (%)
+2025-03-02 23:39:05,546 - INFO - TRANSACTION_VARIANCE: 0.1500 - Variance des montants de transaction pour éviter la détection (%)
+2025-03-02 23:39:05,546 - INFO - GAS_BOOST_MULTIPLIER: 1.3000 - Multiplicateur de boost de gas pour les transactions MEV

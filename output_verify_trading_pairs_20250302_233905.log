@@ -1,0 +1,2555 @@
+2025-03-02 23:38:59,320 - INFO - Démarrage de la vérification des paires de trading...
+2025-03-02 23:38:59,325 - INFO - Vérification des paires sur binance...
+2025-03-02 23:38:59,327 - INFO - Vérification des paires sur kucoin...
+2025-03-02 23:38:59,330 - INFO - Vérification des paires sur gate...
+2025-03-02 23:38:59,333 - INFO - Vérification des paires sur okx...
+2025-03-02 23:38:59,337 - INFO - Vérification des paires sur huobi...
+2025-03-02 23:38:59,340 - INFO - Vérification des paires sur bybit...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 bybit: AVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:00,318 - INFO - \u2705 bybit: AVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 bybit: AVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:00,321 - INFO - \u2705 bybit: AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c bybit: AVAX/USD'
+Arguments: ()
+2025-03-02 23:39:00,322 - INFO - \u274c bybit: AVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c bybit: WAVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:00,322 - INFO - \u274c bybit: WAVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c bybit: WAVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:00,323 - INFO - \u274c bybit: WAVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c bybit: WAVAX/USD'
+Arguments: ()
+2025-03-02 23:39:00,323 - INFO - \u274c bybit: WAVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c bybit: ETH/AVAX'
+Arguments: ()
+2025-03-02 23:39:00,324 - INFO - \u274c bybit: ETH/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c bybit: BTC/AVAX'
+Arguments: ()
+2025-03-02 23:39:00,325 - INFO - \u274c bybit: BTC/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 bybit: ETH/USDT'
+Arguments: ()
+2025-03-02 23:39:00,325 - INFO - \u2705 bybit: ETH/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 bybit: ETH/USDC'
+Arguments: ()
+2025-03-02 23:39:00,325 - INFO - \u2705 bybit: ETH/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 bybit: BTC/USDT'
+Arguments: ()
+2025-03-02 23:39:00,326 - INFO - \u2705 bybit: BTC/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 bybit: BTC/USDC'
+Arguments: ()
+2025-03-02 23:39:00,326 - INFO - \u2705 bybit: BTC/USDC
+2025-03-02 23:39:00,327 - INFO - Paires AVAX disponibles sur bybit: AVAX/USDT, AVAX/EUR, AVAX/USDT:USDT, AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: AVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:00,535 - INFO - \u2705 okx: AVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: AVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:00,535 - INFO - \u2705 okx: AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: AVAX/USD'
+Arguments: ()
+2025-03-02 23:39:00,536 - INFO - \u2705 okx: AVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c okx: WAVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:00,536 - INFO - \u274c okx: WAVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c okx: WAVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:00,537 - INFO - \u274c okx: WAVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c okx: WAVAX/USD'
+Arguments: ()
+2025-03-02 23:39:00,537 - INFO - \u274c okx: WAVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c okx: ETH/AVAX'
+Arguments: ()
+2025-03-02 23:39:00,538 - INFO - \u274c okx: ETH/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c okx: BTC/AVAX'
+Arguments: ()
+2025-03-02 23:39:00,538 - INFO - \u274c okx: BTC/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: ETH/USDT'
+Arguments: ()
+2025-03-02 23:39:00,539 - INFO - \u2705 okx: ETH/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: ETH/USDC'
+Arguments: ()
+2025-03-02 23:39:00,539 - INFO - \u2705 okx: ETH/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: BTC/USDT'
+Arguments: ()
+2025-03-02 23:39:00,540 - INFO - \u2705 okx: BTC/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 okx: BTC/USDC'
+Arguments: ()
+2025-03-02 23:39:00,540 - INFO - \u2705 okx: BTC/USDC
+2025-03-02 23:39:00,541 - INFO - Paires AVAX disponibles sur okx: AVAX/USD, AVAX/USD:AVAX, AVAX/USDT, AVAX/EUR, AVAX/USDT:USDT
+2025-03-02 23:39:00,542 - INFO - ... et 1 autres
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 binance: AVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:00,910 - INFO - \u2705 binance: AVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 binance: AVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:00,911 - INFO - \u2705 binance: AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c binance: AVAX/USD'
+Arguments: ()
+2025-03-02 23:39:00,912 - INFO - \u274c binance: AVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c binance: WAVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:00,912 - INFO - \u274c binance: WAVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c binance: WAVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:00,912 - INFO - \u274c binance: WAVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c binance: WAVAX/USD'
+Arguments: ()
+2025-03-02 23:39:00,913 - INFO - \u274c binance: WAVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c binance: ETH/AVAX'
+Arguments: ()
+2025-03-02 23:39:00,913 - INFO - \u274c binance: ETH/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c binance: BTC/AVAX'
+Arguments: ()
+2025-03-02 23:39:00,914 - INFO - \u274c binance: BTC/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 binance: ETH/USDT'
+Arguments: ()
+2025-03-02 23:39:00,914 - INFO - \u2705 binance: ETH/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 binance: ETH/USDC'
+Arguments: ()
+2025-03-02 23:39:00,915 - INFO - \u2705 binance: ETH/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 binance: BTC/USDT'
+Arguments: ()
+2025-03-02 23:39:00,915 - INFO - \u2705 binance: BTC/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 binance: BTC/USDC'
+Arguments: ()
+2025-03-02 23:39:00,916 - INFO - \u2705 binance: BTC/USDC
+2025-03-02 23:39:00,917 - INFO - Paires AVAX disponibles sur binance: AVAX/TRY, AVAX/BNB, AVAX/BRL, AVAX/USD:AVAX, AVAX/USDC:USDC
+2025-03-02 23:39:00,917 - INFO - ... et 12 autres
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 kucoin: AVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:01,060 - INFO - \u2705 kucoin: AVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 kucoin: AVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:01,061 - INFO - \u2705 kucoin: AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c kucoin: AVAX/USD'
+Arguments: ()
+2025-03-02 23:39:01,061 - INFO - \u274c kucoin: AVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c kucoin: WAVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:01,062 - INFO - \u274c kucoin: WAVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c kucoin: WAVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:01,062 - INFO - \u274c kucoin: WAVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c kucoin: WAVAX/USD'
+Arguments: ()
+2025-03-02 23:39:01,062 - INFO - \u274c kucoin: WAVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c kucoin: ETH/AVAX'
+Arguments: ()
+2025-03-02 23:39:01,063 - INFO - \u274c kucoin: ETH/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c kucoin: BTC/AVAX'
+Arguments: ()
+2025-03-02 23:39:01,063 - INFO - \u274c kucoin: BTC/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 kucoin: ETH/USDT'
+Arguments: ()
+2025-03-02 23:39:01,064 - INFO - \u2705 kucoin: ETH/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 kucoin: ETH/USDC'
+Arguments: ()
+2025-03-02 23:39:01,064 - INFO - \u2705 kucoin: ETH/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 kucoin: BTC/USDT'
+Arguments: ()
+2025-03-02 23:39:01,066 - INFO - \u2705 kucoin: BTC/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 kucoin: BTC/USDC'
+Arguments: ()
+2025-03-02 23:39:01,066 - INFO - \u2705 kucoin: BTC/USDC
+2025-03-02 23:39:01,067 - INFO - Paires AVAX disponibles sur kucoin: AVAX3L/USDT, AVAX/USDT, AVAX3S/USDT, AVAX/BTC, AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 huobi: AVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:01,606 - INFO - \u2705 huobi: AVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 huobi: AVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:01,607 - INFO - \u2705 huobi: AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c huobi: AVAX/USD'
+Arguments: ()
+2025-03-02 23:39:01,607 - INFO - \u274c huobi: AVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c huobi: WAVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:01,608 - INFO - \u274c huobi: WAVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c huobi: WAVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:01,608 - INFO - \u274c huobi: WAVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c huobi: WAVAX/USD'
+Arguments: ()
+2025-03-02 23:39:01,608 - INFO - \u274c huobi: WAVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c huobi: ETH/AVAX'
+Arguments: ()
+2025-03-02 23:39:01,609 - INFO - \u274c huobi: ETH/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c huobi: BTC/AVAX'
+Arguments: ()
+2025-03-02 23:39:01,609 - INFO - \u274c huobi: BTC/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 huobi: ETH/USDT'
+Arguments: ()
+2025-03-02 23:39:01,609 - INFO - \u2705 huobi: ETH/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 huobi: ETH/USDC'
+Arguments: ()
+2025-03-02 23:39:01,610 - INFO - \u2705 huobi: ETH/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 huobi: BTC/USDT'
+Arguments: ()
+2025-03-02 23:39:01,610 - INFO - \u2705 huobi: BTC/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 huobi: BTC/USDC'
+Arguments: ()
+2025-03-02 23:39:01,611 - INFO - \u2705 huobi: BTC/USDC
+2025-03-02 23:39:01,612 - INFO - Paires AVAX disponibles sur huobi: AVAX/USDD, AVAX/ETH, AVAX/USDT, AVAX/USDT:USDT, AVAX/BTC
+2025-03-02 23:39:01,612 - INFO - ... et 1 autres
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 gate: AVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:05,017 - INFO - \u2705 gate: AVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 gate: AVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:05,017 - INFO - \u2705 gate: AVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c gate: AVAX/USD'
+Arguments: ()
+2025-03-02 23:39:05,018 - INFO - \u274c gate: AVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c gate: WAVAX/USDT'
+Arguments: ()
+2025-03-02 23:39:05,018 - INFO - \u274c gate: WAVAX/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c gate: WAVAX/USDC'
+Arguments: ()
+2025-03-02 23:39:05,018 - INFO - \u274c gate: WAVAX/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c gate: WAVAX/USD'
+Arguments: ()
+2025-03-02 23:39:05,019 - INFO - \u274c gate: WAVAX/USD
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c gate: ETH/AVAX'
+Arguments: ()
+2025-03-02 23:39:05,020 - INFO - \u274c gate: ETH/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u274c gate: BTC/AVAX'
+Arguments: ()
+2025-03-02 23:39:05,020 - INFO - \u274c gate: BTC/AVAX
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 gate: ETH/USDT'
+Arguments: ()
+2025-03-02 23:39:05,021 - INFO - \u2705 gate: ETH/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 gate: ETH/USDC'
+Arguments: ()
+2025-03-02 23:39:05,021 - INFO - \u2705 gate: ETH/USDC
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 gate: BTC/USDT'
+Arguments: ()
+2025-03-02 23:39:05,021 - INFO - \u2705 gate: BTC/USDT
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 53, in check_exchange_pairs
+    logging.info(f"{status} {exchange_id}: {pair}")
+Message: '\u2705 gate: BTC/USDC'
+Arguments: ()
+2025-03-02 23:39:05,022 - INFO - \u2705 gate: BTC/USDC
+2025-03-02 23:39:05,023 - INFO - Paires AVAX disponibles sur gate: AVAX/USDT:USDT-250307, AVAX/USDT, AVAX/USDT:USDT-250314, AVAX/USDT:USDT, AVAX3S/USDT
+2025-03-02 23:39:05,023 - INFO - ... et 5 autres
+2025-03-02 23:39:05,039 - INFO - 
+===== RÉSULTATS DE LA VÉRIFICATION DES PAIRES =====
+2025-03-02 23:39:05,039 - INFO - 
+Tableau récapitulatif des paires:
+2025-03-02 23:39:05,039 - INFO - Paire        | binance | kucoin | gate | okx | huobi | bybit
+2025-03-02 23:39:05,039 - INFO - ------------|--------|-------|-----|----|------|-----
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'AVAX/USDT    | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705'
+Arguments: ()
+2025-03-02 23:39:05,039 - INFO - AVAX/USDT    | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'AVAX/USDC    | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705'
+Arguments: ()
+2025-03-02 23:39:05,039 - INFO - AVAX/USDC    | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'AVAX/USD     | \u274c | \u274c | \u274c | \u2705 | \u274c | \u274c'
+Arguments: ()
+2025-03-02 23:39:05,040 - INFO - AVAX/USD     | \u274c | \u274c | \u274c | \u2705 | \u274c | \u274c
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'WAVAX/USDT   | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c'
+Arguments: ()
+2025-03-02 23:39:05,040 - INFO - WAVAX/USDT   | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'WAVAX/USDC   | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c'
+Arguments: ()
+2025-03-02 23:39:05,041 - INFO - WAVAX/USDC   | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'WAVAX/USD    | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c'
+Arguments: ()
+2025-03-02 23:39:05,041 - INFO - WAVAX/USD    | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'ETH/AVAX     | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c'
+Arguments: ()
+2025-03-02 23:39:05,041 - INFO - ETH/AVAX     | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'BTC/AVAX     | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c'
+Arguments: ()
+2025-03-02 23:39:05,042 - INFO - BTC/AVAX     | \u274c | \u274c | \u274c | \u274c | \u274c | \u274c
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'ETH/USDT     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705'
+Arguments: ()
+2025-03-02 23:39:05,042 - INFO - ETH/USDT     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'ETH/USDC     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705'
+Arguments: ()
+2025-03-02 23:39:05,042 - INFO - ETH/USDC     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'BTC/USDT     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705'
+Arguments: ()
+2025-03-02 23:39:05,043 - INFO - BTC/USDT     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 48: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\verify_trading_pairs.py", line 137, in <module>
+    asyncio.run(check_all_exchanges())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\verify_trading_pairs.py", line 99, in check_all_exchanges
+    logging.info(row)
+Message: 'BTC/USDC     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705'
+Arguments: ()
+2025-03-02 23:39:05,043 - INFO - BTC/USDC     | \u2705 | \u2705 | \u2705 | \u2705 | \u2705 | \u2705
+2025-03-02 23:39:05,044 - INFO - 
+Recommandations pour les paires de trading:
+2025-03-02 23:39:05,044 - INFO - 
+Paires recommandées (par ordre de support):
+2025-03-02 23:39:05,044 - INFO - - AVAX/USDT: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - AVAX/USDC: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - ETH/USDT: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - ETH/USDC: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - BTC/USDT: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - BTC/USDC: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - AVAX/USD: Supporté par 1/6 exchanges (okx)
+2025-03-02 23:39:05,047 - INFO - Vérification terminée. Consultez trading_pairs_results.log pour les détails.

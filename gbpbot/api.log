@@ -1,0 +1,22 @@
+2025-03-02 20:48:22.895 | INFO     | __main__:<module>:192 - Starting API server on port 5000
+2025-03-02 20:58:08.881 | INFO     | __main__:<module>:192 - Starting API server on port 5000
+2025-03-02 20:58:09.287 | INFO     | __main__:<module>:192 - Starting API server on port 5000
+2025-03-02 20:58:34.063 | INFO     | __main__:<module>:192 - Starting API server on port 5000
+2025-03-02 21:00:41.674 | WARNING  | __main__:before_request_func:34 - Requête non autorisée depuis 127.0.0.1
+2025-03-02 21:00:41.675 | INFO     | __main__:after_request_func:40 - GET / - 401 - 127.0.0.1
+2025-03-02 21:00:41.892 | WARNING  | __main__:before_request_func:34 - Requête non autorisée depuis 127.0.0.1
+2025-03-02 21:00:41.893 | INFO     | __main__:after_request_func:40 - GET /favicon.ico - 401 - 127.0.0.1
+2025-03-02 21:00:41.900 | WARNING  | __main__:before_request_func:34 - Requête non autorisée depuis 127.0.0.1
+2025-03-02 21:00:41.900 | INFO     | __main__:after_request_func:40 - GET /favicon.ico - 401 - 127.0.0.1
+2025-03-02 21:02:06.098 | INFO     | __main__:<module>:192 - Starting API server on port 5000
+2025-03-02 21:02:35.849 | INFO     | __main__:<module>:192 - Starting API server on port 5000
+2025-03-02 21:03:31.962 | INFO     | __main__:<module>:222 - Starting API server on 127.0.0.1:5000
+2025-03-02 21:03:31.962 | INFO     | __main__:<module>:230 - HTTPS désactivé
+2025-03-02 21:04:12.839 | INFO     | __main__:<module>:222 - Starting API server on 127.0.0.1:5000
+2025-03-02 21:04:12.839 | INFO     | __main__:<module>:230 - HTTPS désactivé
+2025-03-02 21:05:54.335 | INFO     | __main__:<module>:222 - Starting API server on 127.0.0.1:5000
+2025-03-02 21:05:54.335 | INFO     | __main__:<module>:230 - HTTPS désactivé
+2025-03-02 21:06:49.465 | INFO     | __main__:<module>:222 - Starting API server on 127.0.0.1:5000
+2025-03-02 21:06:49.466 | INFO     | __main__:<module>:230 - HTTPS désactivé
+2025-03-02 21:06:50.900 | INFO     | __main__:<module>:222 - Starting API server on 127.0.0.1:5000
+2025-03-02 21:06:50.901 | INFO     | __main__:<module>:230 - HTTPS désactivé

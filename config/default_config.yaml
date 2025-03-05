@@ -1,0 +1,384 @@
+# Configuration par défaut pour GBPBot
+
+# Configuration RPC
+rpc:
+  providers:
+    avalanche:
+      mainnet:
+        - name: "Public RPC 1"
+          url: "https://api.avax.network/ext/bc/C/rpc"
+          weight: 1
+        - name: "Public RPC 2"
+          url: "https://rpc.ankr.com/avalanche"
+          weight: 1
+  timeout: 10
+  max_retries: 3
+  retry_delay: 1
+  max_retry_delay: 10
+  jitter: 0.1
+  batch_size: 100
+  batch_interval: 0.1
+  provider: "public"  # private, public, local
+  urls:
+    ethereum: "https://mainnet.infura.io/v3/YOUR_INFURA_KEY"
+    avalanche: "https://api.avax.network/ext/bc/C/rpc"
+    solana: "https://api.mainnet-beta.solana.com"
+    sonic: "https://mainnet.sonic.fantom.network/rpc"
+  local_url: "http://localhost:8545"  # If provider is local
+  chain_id: 43114  # 1 for Ethereum, 43114 for Avalanche
+  block_time: 2  # Average block time in seconds
+  confirmations: 1  # Number of confirmations to wait for
+
+# Configuration des DEX
+dex:
+  traderjoe:
+    router_address: "0x60aE616a2155Ee3d9A68541Ba4544862310933d4"
+    factory_address: "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10"
+    fee: 0.003
+  pangolin:
+    router_address: "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106"
+    factory_address: "0xefa94DE7a4656D787667C749f7E1223D71E9FD88"
+    fee: 0.003
+  router_addresses:
+    # Avalanche
+    pangolin: "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106"
+    traderjoe: "0x60aE616a2155Ee3d9A68541Ba4544862310933d4"
+    sushiswap: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
+    # Ethereum
+    uniswap: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+    # Solana
+    raydium: "solana:9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin"
+    # Sonic
+    sonic: "sonic:0xFca1B8B330A749C6792B8C1e3d1D3CDc2681d736"
+  
+  factory_addresses:
+    pangolin: "0xefa94DE7a4656D787667C749f7E1223D71E9FD88"
+    traderjoe: "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10"
+    uniswap: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+    
+  fee_percents:
+    pangolin: 0.3
+    traderjoe: 0.3
+    uniswap: 0.3
+    sushiswap: 0.3
+    raydium: 0.25
+    sonic: 0.3
+    
+  default: "traderjoe"  # Default DEX to use
+  max_slippage: 5.0  # Maximum slippage allowed in percentage
+  deadline_minutes: 20  # Transaction deadline in minutes
+  max_attempts: 3  # Maximum number of attempts for a transaction
+
+# Configuration des CEX
+cex:
+  binance:
+    websocket_url: "wss://stream.binance.com:9443/ws"
+    rest_url: "https://api.binance.com/api/v3"
+    api_key: ""  # À remplir
+    api_secret: ""  # À remplir
+    use_websocket: true
+    trading:
+      min_order_size: 0.001  # En BTC ou équivalent
+      max_order_size: 1.0    # En BTC ou équivalent
+      default_fee: 0.001     # 0.1%
+      market_order_slippage: 0.002  # 0.2%
+      order_timeout: 30      # Secondes
+      retry_attempts: 3
+      retry_delay: 1         # Secondes
+    rate_limits:
+      orders_per_second: 10
+      orders_per_minute: 1200
+      weight_per_minute: 1200
+  api_keys:
+    binance:
+      api_key: ""
+      api_secret: ""
+    ftx:
+      api_key: ""
+      api_secret: ""
+    coinbase:
+      api_key: ""
+      api_secret: ""
+      passphrase: ""
+  use_feeds: true  # Use CEX price feeds
+  update_interval: 10  # Update interval for price feeds in seconds
+  default_cex: "binance"  # Default CEX to use for price feeds
+
+# Configuration de l'arbitrage
+arbitrage:
+  min_profit_threshold: 0.5  # Pourcentage minimum de profit
+  max_price_impact: 1.0      # Impact prix maximum acceptable en pourcentage
+  min_liquidity: 1.0         # Liquidité minimum en ETH
+  max_trade_amount: 2.0      # Montant maximum par trade en ETH
+  estimated_gas_limit: 300000 # Limite de gas estimée
+  max_pending_txs: 5         # Nombre maximum de transactions en attente
+  max_price_volatility: 5.0  # Volatilité maximum acceptable en pourcentage
+  stop_loss: 1.0             # Pourcentage de perte maximum
+  take_profit: 0.5           # Pourcentage de profit minimum
+  min_profit_percent: 0.5  # Minimum profit percentage for arbitrage
+  max_gas_price: 50  # Maximum gas price in GWEI
+  max_investment: 0.1  # Maximum investment per trade in ETH/AVAX
+  monitored_pairs:
+    - token_a: "AVAX"
+      token_b: "USDC"
+      dexes: ["pangolin", "traderjoe"]
+    - token_a: "AVAX"
+      token_b: "WBTC.e"
+      dexes: ["pangolin", "traderjoe"]
+  monitoring_interval: 10  # Interval in seconds to check for arbitrage opportunities
+  gas_limit: 300000  # Gas limit for arbitrage transactions
+
+# Configuration du monitoring
+monitoring:
+  log_level: "INFO"
+  metrics_enabled: true
+  metrics_port: 9090
+  log_file: "logs/gbpbot.log"
+  max_log_size: "100MB"
+  max_log_files: 5
+  discord_webhook: ""  # À remplir
+  telegram_token: ""   # À remplir
+  telegram_chat_id: "" # À remplir
+  alert_threshold:
+    profit: 0.1              # Alerte si profit < 10%
+    gas: 100                 # Alerte si gas > 100 gwei
+    error_rate: 0.05         # Alerte si taux d'erreur > 5%
+    balance: 0.1             # Alerte si balance < 10% du capital initial
+    trade_delay: 300         # Alerte si pas de trade depuis 5 minutes
+  metrics:
+    trade_buckets: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]  # Buckets pour les histogrammes de trades
+    latency_buckets: [0.1, 0.5, 1.0, 2.0, 5.0]      # Buckets pour les histogrammes de latence
+  dashboard:
+    enabled: true
+    update_interval: 5        # Intervalle de mise à jour en secondes
+    max_points: 1000         # Nombre maximum de points dans les graphiques
+  notifications:
+    trade_summary: true      # Envoyer un résumé après chaque trade
+    daily_report: true       # Envoyer un rapport quotidien
+    error_notification: true  # Notifier en cas d'erreur
+    performance_alert: true   # Alerter sur les métriques de performance
+
+# Configuration de sécurité
+security:
+  max_slippage: 1.0          # Slippage maximum en pourcentage
+  min_block_confirmations: 1  # Nombre minimum de confirmations
+  max_gas_price: 100         # Prix maximum du gas en gwei
+  max_price_change: 0.01     # Changement de prix maximum acceptable (1%)
+  max_confirmation_attempts: 5  # Nombre maximum de tentatives de confirmation
+  emergency_shutdown:
+    max_consecutive_errors: 3 # Nombre maximum d'erreurs consécutives
+    max_loss_percentage: 2.0  # Perte maximum en pourcentage
+  max_investment_per_trade: 0.5  # Maximum investment per trade in ETH/AVAX
+  max_daily_investment: 2.0  # Maximum daily investment in ETH/AVAX
+  max_gas_price_gwei: 200  # Maximum gas price in GWEI
+  private_key_encrypted: true  # Whether private key is encrypted
+  private_key_file: "key.encrypted"  # File containing encrypted private key
+  honeypot_simulation: true  # Simulate sells to detect honeypots
+
+# Configuration des tokens
+tokens:
+  weth: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"
+  whitelist:
+    - "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"  # WETH.e
+    - "0x50b7545627a5162F82A992c33b87aDc75187B218"  # WBTC.e
+    - "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E"  # USDC
+  memecoin_addresses:
+    - "0x1234567890123456789012345678901234567890"  # Exemple de memecoin 1
+    - "0x2345678901234567890123456789012345678901"  # Exemple de memecoin 2
+  wavax: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"  # Avalanche WAVAX
+  wsol: "So11111111111111111111111111111111111111112"   # Solana Wrapped SOL
+  wftm: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83"   # Fantom Wrapped FTM
+  
+  # Base tokens à utiliser pour le sniping sur différentes chaînes
+  base_tokens:
+    ethereum: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"  # WETH
+    avalanche: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"  # WAVAX
+    solana: "So11111111111111111111111111111111111111112"   # Wrapped SOL
+    sonic: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83"     # Wrapped FTM
+
+# Configuration du mode test
+test_mode:
+  enabled: true
+  initial_balance: 1.0       # Balance initiale en ETH pour les tests
+  simulation:
+    enabled: true
+    price_variation: 0.1     # Variation de prix simulée
+    delay: 1.0              # Délai simulé en secondes
+
+# Configuration du wallet
+wallet:
+  private_key: ""  # À remplir avec la clé privée du wallet
+  min_balance: 0.1  # Balance minimum en ETH à maintenir
+  hot_wallet:
+    address: ""
+    encrypted_key_file: "wallet/hot_wallet.encrypted"
+  cold_wallet:
+    address: ""  # For withdrawals
+  auto_withdraw:
+    enabled: false
+    threshold: 5.0  # Auto withdraw if balance exceeds this amount in ETH/AVAX
+    keep_amount: 1.0  # Amount to keep in hot wallet after withdrawal
+  gas_management:
+    keep_gas_amount: 0.2  # Amount of native token to keep for gas (ETH/AVAX)
+    auto_refill: true  # Automatically sell tokens for gas if needed
+
+# Configuration des transactions
+transaction:
+  confirmation_timeout: 60  # Timeout en secondes pour la confirmation
+  max_pending_transactions: 3  # Nombre maximum de transactions en attente
+  gas_boost_factor: 1.2  # Facteur de boost pour le gas price en cas de congestion
+
+# Nouvelle section pour le sniping de tokens
+sniping:
+  enabled: true
+  detection:
+    min_liquidity: 5.0  # Liquidité minimale en AVAX
+    max_buy_tax: 10     # Taxe d'achat maximale en %
+    max_sell_tax: 10    # Taxe de vente maximale en %
+    min_locked_liquidity_percent: 80  # % minimum de liquidité bloquée
+    min_locked_time: 2592000  # 30 jours minimum de lock en secondes
+    blacklist_tokens:
+      - "0x0000000000000000000000000000000000000000"  # Exemple de token blacklisté
+    factory_addresses:
+      trader_joe: "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10"
+      pangolin: "0xefa94DE7a4656D787667C749f7E1223D71E9FD88"
+    polling_interval: 1  # Intervalle en secondes pour vérifier les nouveaux tokens
+    honeypot_checker_api: "https://api.honeypot.is/v2/IsHoneypot"
+    
+  execution:
+    initial_buy_amount: 0.1  # Montant initial en AVAX
+    max_buy_amount: 0.5      # Montant maximum en AVAX
+    
+  max_active_snipes: 5  # Nombre maximal de snipes actifs simultanément
+  investment_amount: 0.05  # Montant à investir par snipe en ETH/AVAX
+  gas_priority: "high"  # low, medium, high - priorité de gaz pour les transactions de snipe
+  
+  risk_management:
+    take_profit_percent: 30  # Pourcentage de profit pour prendre des bénéfices
+    stop_loss_percent: 15  # Pourcentage de perte pour couper la position
+    trailing_stop_enabled: true  # Activer le trailing stop
+    trailing_stop_percent: 10  # Pourcentage de trailing stop
+    emergency_exit_percent: 50  # Pourcentage de chute depuis le plus haut pour sortir en urgence
+
+  honeypot_check: true  # Activer la vérification des honeypots
+  mempool_monitoring: true  # Activer la surveillance du mempool pour les nouvelles paires
+  auto_approve: true  # Approuver automatiquement les tokens pour le trading
+
+# Token detection settings
+detection:
+  methods:
+    pancakeswap_new: true  # Détecter les nouveaux tokens sur PancakeSwap
+    factory_events: true  # Détecter les événements de création de paires
+    mempool: true  # Détecter les transactions dans le mempool
+    api_feeds: true  # Utiliser les flux API externes
+  filters:
+    min_liquidity: 5000  # Liquidité minimale en dollars
+    exclude_stablecoins: true  # Exclure les stablecoins
+    exclude_tokens:  # Liste d'adresses de tokens à exclure
+      - "0x0000000000000000000000000000000000000000"
+  external_apis:
+    pump_fun:
+      enabled: true
+      url: "https://api.pump.fun"
+      api_key: ""
+      update_interval: 30  # seconds
+    axiom_pro:
+      enabled: false
+      url: "https://api.axiom.pro"
+      api_key: ""
+      update_interval: 60  # seconds
+
+# Analysis settings
+analysis:
+  buy_threshold: 7.0  # Score minimum pour acheter un token (0-10)
+  
+  # Indicateurs d'analyse
+  liquidity:
+    enabled: true
+    weight: 2.0  # Poids de l'indicateur dans le score global
+    min_liquidity: 5000  # Liquidité minimale en dollars
+    target_liquidity: 20000  # Bonne liquidité en dollars
+    excellent_liquidity: 100000  # Excellente liquidité en dollars
+    
+  volume:
+    enabled: true
+    weight: 1.5
+    min_volume: 2000  # Volume minimum en dollars (24h)
+    target_volume: 10000  # Bon volume en dollars
+    excellent_volume: 100000  # Excellent volume en dollars
+    
+  price_action:
+    enabled: true
+    weight: 1.8
+    
+  social:
+    enabled: true
+    weight: 1.0
+    
+  name_quality:
+    enabled: true
+    weight: 0.5
+
+# Backtesting settings
+backtesting:
+  enabled: false
+  start_date: "2023-01-01"
+  end_date: "2023-12-31"
+  initial_balance: 10.0  # in ETH/AVAX
+  fee_percent: 0.3
+  data_source: "historical_data.csv"
+  strategies:
+    - name: "arbitrage"
+      enabled: true
+    - name: "sniping"
+      enabled: true
+      
+# UI settings
+ui:
+  terminal:
+    enabled: true
+    refresh_rate: 1  # seconds
+    show_charts: true
+    compact_mode: false
+    color_theme: "dark"  # dark, light
+  web_interface:
+    enabled: false
+    port: 8080
+    host: "localhost"  # or 0.0.0.0 for all interfaces
+    require_auth: true
+    username: "admin"
+    password_hash: ""  # Hashed password
+
+# Trading settings
+trading:
+  strategies:
+    - name: "arbitrage"
+      enabled: true
+      config:
+        min_profit_percent: 0.5
+        max_investment: 0.1
+    - name: "sniping"
+      enabled: true
+      config:
+        # Voir section sniping ci-dessous
+    - name: "token_detection"
+      enabled: true
+      config:
+        # Voir section détection ci-dessous
+
+# Trading settings
+trading:
+  strategies:
+    - name: "arbitrage"
+      enabled: true
+      config:
+        min_profit_percent: 0.5
+        max_investment: 0.1
+    - name: "sniping"
+      enabled: true
+      config:
+        # Voir section sniping ci-dessous
+    - name: "token_detection"
+      enabled: true
+      config:
+        # Voir section détection ci-dessous 

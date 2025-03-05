@@ -1,0 +1,88 @@
+{
+    "rpc": {
+        "providers": {
+            "sonic": {
+                "mainnet": [
+                    {"name": "Sonic RPC 1", "url": "https://mainnet.sonic.ooo/rpc", "weight": 2},
+                    {"name": "Sonic RPC 2", "url": "https://sonic-api.internetcomputer.org", "weight": 1}
+                ],
+                "testnet": [
+                    {"name": "Sonic Testnet", "url": "https://testnet.sonic.ooo/rpc", "weight": 1}
+                ]
+            }
+        },
+        "timeout": 30,
+        "retry_count": 3,
+        "retry_delay": 2
+    },
+    "tokens": {
+        "icp": "0x4943502D6C6567650000000000000000",
+        "wicp": "0x5749435000000000000000000000000000",
+        "usdc": "0x555344432D7461687372000000000000000000",
+        "xtc": "0x5854432D7461687372000000000000000000000000",
+        "whitelist": [
+            "0x4943502D6C6567650000000000000000",
+            "0x5749435000000000000000000000000000",
+            "0x555344432D7461687372000000000000000000",
+            "0x5854432D7461687372000000000000000000000000"
+        ]
+    },
+    "dex": {
+        "sonic": {
+            "router_address": "0x536F6E69635F526F75746572000000000000000000",
+            "factory_address": "0x536F6E69635F466163746F727900000000000000",
+            "fee_percent": 0.3
+        }
+    },
+    "wallet": {
+        "private_key": "YOUR_PRIVATE_KEY"
+    },
+    "trading": {
+        "default_slippage": 0.5,
+        "emergency_slippage": 3.0,
+        "gas_limit_multiplier": 1.2,
+        "min_liquidity": 1000,
+        "max_tokens_to_monitor": 50
+    },
+    "notifications": {
+        "enabled": true,
+        "telegram": {
+            "enabled": false,
+            "bot_token": "",
+            "chat_id": ""
+        },
+        "discord": {
+            "enabled": false,
+            "webhook_url": ""
+        },
+        "email": {
+            "enabled": false,
+            "smtp_server": "",
+            "smtp_port": 587,
+            "sender_email": "",
+            "receiver_email": "",
+            "password": ""
+        }
+    },
+    "logging": {
+        "level": "INFO",
+        "file_enabled": true,
+        "file_path": "logs/sonic_client.log",
+        "max_file_size": 10485760,
+        "backup_count": 5
+    },
+    "security": {
+        "suspicious_patterns": [
+            "scam",
+            "rug",
+            "honeypot",
+            "fake",
+            "phish"
+        ],
+        "blacklisted_addresses": []
+    },
+    "rate_limiting": {
+        "max_requests_per_second": 5,
+        "burst_limit": 10
+    }
+} 

@@ -1,0 +1,14 @@
+2025-03-02 19:20:06.277 | ERROR    | __main__:main:116 - Fatal error: No module named 'asyncpg'
+2025-03-02 19:27:59.831 | INFO     | memescan.storage.database:__init__:47 - Connected to PostgreSQL database
+2025-03-02 19:27:59.831 | INFO     | memescan.storage.database:init_db:61 - Initializing database...
+2025-03-02 19:28:03.937 | ERROR    | memescan.storage.database:init_db:310 - Error initializing database: [WinError 1225] Le système distant a refusé la connexion réseau
+2025-03-02 19:28:03.938 | ERROR    | __main__:main:116 - Fatal error: [WinError 1225] Le système distant a refusé la connexion réseau
+2025-03-02 19:28:03.939 | INFO     | __main__:main:122 - MemeScan stopped.
+2025-03-02 19:28:47.146 | INFO     | memescan.storage.database:__init__:47 - Connected to PostgreSQL database
+2025-03-02 19:28:47.146 | INFO     | memescan.storage.database:init_db:61 - Initializing database...
+2025-03-02 19:28:50.256 | INFO     | __main__:main:122 - MemeScan stopped.
+2025-03-02 19:29:07.772 | INFO     | memescan.storage.database:__init__:47 - Connected to PostgreSQL database
+2025-03-02 19:29:07.773 | INFO     | memescan.storage.database:init_db:61 - Initializing database...
+2025-03-02 19:29:11.865 | ERROR    | memescan.storage.database:init_db:310 - Error initializing database: [WinError 1225] Le système distant a refusé la connexion réseau
+2025-03-02 19:29:11.865 | ERROR    | __main__:main:116 - Fatal error: [WinError 1225] Le système distant a refusé la connexion réseau
+2025-03-02 19:29:11.866 | INFO     | __main__:main:122 - MemeScan stopped.

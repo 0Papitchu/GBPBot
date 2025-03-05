@@ -1,0 +1,212 @@
+/* Styles généraux */
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Cartes */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 15px 20px;
+}
+
+.card-header h5 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Boîtes de métriques */
+.metric-box {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.metric-box h6 {
+    color: #6c757d;
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.metric-box span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Graphiques */
+canvas {
+    margin-top: 20px;
+}
+
+/* Alertes */
+.alert-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.alert {
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+}
+
+/* Tableau des trades */
+.table {
+    font-size: 0.9rem;
+}
+
+.table th {
+    font-weight: 600;
+    color: #6c757d;
+    border-top: none;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Status de connexion */
+#connection-status {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+}
+
+/* Couleurs pour les profits/pertes */
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Animations */
+.alert {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .metric-box {
+        margin-bottom: 15px;
+    }
+    
+    .metric-box h6 {
+        font-size: 0.8rem;
+    }
+    
+    .metric-box span {
+        font-size: 1rem;
+    }
+    
+    .table {
+        font-size: 0.8rem;
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #f8f9fa;
+    }
+    
+    .card {
+        background-color: #2d2d2d;
+    }
+    
+    .card-header {
+        background-color: #2d2d2d;
+        border-bottom-color: #404040;
+    }
+    
+    .card-header h5 {
+        color: #f8f9fa;
+    }
+    
+    .metric-box {
+        background-color: #404040;
+    }
+    
+    .metric-box h6 {
+        color: #adb5bd;
+    }
+    
+    .metric-box span {
+        color: #f8f9fa;
+    }
+    
+    .table {
+        color: #f8f9fa;
+    }
+    
+    .table th {
+        color: #adb5bd;
+    }
+    
+    .table td {
+        border-color: #404040;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #2d2d2d;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #404040;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #505050;
+    }
+} 

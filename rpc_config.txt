@@ -1,0 +1,4 @@
+
+# Configuration RPC optimisée
+PRIMARY_RPC_URL=https://avalanche-c-chain.publicnode.com
+BACKUP_RPC_URLS=https://api.avax.network/ext/bc/C/rpc,https://avax.meowrpc.com,https://avalanche.drpc.org

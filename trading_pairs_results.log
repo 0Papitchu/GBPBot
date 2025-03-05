@@ -1,0 +1,35 @@
+2025-03-02 23:38:59,320 - INFO - Démarrage de la vérification des paires de trading...
+2025-03-02 23:38:59,325 - INFO - Vérification des paires sur binance...
+2025-03-02 23:38:59,327 - INFO - Vérification des paires sur kucoin...
+2025-03-02 23:38:59,330 - INFO - Vérification des paires sur gate...
+2025-03-02 23:38:59,333 - INFO - Vérification des paires sur okx...
+2025-03-02 23:38:59,337 - INFO - Vérification des paires sur huobi...
+2025-03-02 23:38:59,340 - INFO - Vérification des paires sur bybit...
+2025-03-02 23:39:00,327 - INFO - Paires AVAX disponibles sur bybit: AVAX/USDT, AVAX/EUR, AVAX/USDT:USDT, AVAX/USDC
+2025-03-02 23:39:00,541 - INFO - Paires AVAX disponibles sur okx: AVAX/USD, AVAX/USD:AVAX, AVAX/USDT, AVAX/EUR, AVAX/USDT:USDT
+2025-03-02 23:39:00,542 - INFO - ... et 1 autres
+2025-03-02 23:39:00,917 - INFO - Paires AVAX disponibles sur binance: AVAX/TRY, AVAX/BNB, AVAX/BRL, AVAX/USD:AVAX, AVAX/USDC:USDC
+2025-03-02 23:39:00,917 - INFO - ... et 12 autres
+2025-03-02 23:39:01,067 - INFO - Paires AVAX disponibles sur kucoin: AVAX3L/USDT, AVAX/USDT, AVAX3S/USDT, AVAX/BTC, AVAX/USDC
+2025-03-02 23:39:01,612 - INFO - Paires AVAX disponibles sur huobi: AVAX/USDD, AVAX/ETH, AVAX/USDT, AVAX/USDT:USDT, AVAX/BTC
+2025-03-02 23:39:01,612 - INFO - ... et 1 autres
+2025-03-02 23:39:05,023 - INFO - Paires AVAX disponibles sur gate: AVAX/USDT:USDT-250307, AVAX/USDT, AVAX/USDT:USDT-250314, AVAX/USDT:USDT, AVAX3S/USDT
+2025-03-02 23:39:05,023 - INFO - ... et 5 autres
+2025-03-02 23:39:05,039 - INFO - 
+===== RÉSULTATS DE LA VÉRIFICATION DES PAIRES =====
+2025-03-02 23:39:05,039 - INFO - 
+Tableau récapitulatif des paires:
+2025-03-02 23:39:05,039 - INFO - Paire        | binance | kucoin | gate | okx | huobi | bybit
+2025-03-02 23:39:05,039 - INFO - ------------|--------|-------|-----|----|------|-----
+2025-03-02 23:39:05,044 - INFO - 
+Recommandations pour les paires de trading:
+2025-03-02 23:39:05,044 - INFO - 
+Paires recommandées (par ordre de support):
+2025-03-02 23:39:05,044 - INFO - - AVAX/USDT: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - AVAX/USDC: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - ETH/USDT: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - ETH/USDC: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - BTC/USDT: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - BTC/USDC: Supporté par 6/6 exchanges (binance, kucoin, gate, okx, huobi, bybit)
+2025-03-02 23:39:05,044 - INFO - - AVAX/USD: Supporté par 1/6 exchanges (okx)
+2025-03-02 23:39:05,047 - INFO - Vérification terminée. Consultez trading_pairs_results.log pour les détails.

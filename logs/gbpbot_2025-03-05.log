@@ -1,0 +1,256 @@
+2025-03-05 13:19:49,273 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:19:49,278 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:19:49,278 - gbpbot.utils.config - WARNING - No configuration file found, using environment variables only
+2025-03-05 13:19:49,279 - root - INFO - GBPBot initialized with configuration
+2025-03-05 13:19:49,279 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:23:05,343 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:23:05,347 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:23:05,348 - gbpbot.utils.config - WARNING - No configuration file found, using environment variables only
+2025-03-05 13:23:05,348 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:23:05,349 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:23:05,349 - __main__ - INFO - Starting the bot...
+2025-03-05 13:23:05,349 - root - INFO - Starting GBPBot...
+2025-03-05 13:23:05,349 - root - ERROR - No blockchains enabled in configuration
+2025-03-05 13:23:05,350 - root - ERROR - Failed to initialize GBPBot
+2025-03-05 13:23:05,350 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:23:05,350 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:23:23,062 - root - INFO - Logging configured with level INFO
+2025-03-05 13:23:23,067 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:23:23,067 - gbpbot.utils.config - WARNING - No configuration file found, using environment variables only
+2025-03-05 13:23:23,067 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=False)
+2025-03-05 13:23:45,806 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:23:45,812 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:23:45,818 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:23:45,818 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:23:45,819 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:23:45,819 - __main__ - INFO - Starting the bot...
+2025-03-05 13:23:45,819 - root - INFO - Starting GBPBot...
+2025-03-05 13:23:45,823 - root - ERROR - Error initializing avalanche: cannot import name 'geth_poa_middleware' from 'web3.middleware' (C:\pythonProject1\venv_new\Lib\site-packages\web3\middleware\__init__.py)
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\main.py", line 129, in initialize
+    client = BlockchainClientFactory.get_client(blockchain_type, blockchain_config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\gbpbot\core\blockchain\base.py", line 188, in get_client
+    from gbpbot.core.blockchain.ethereum import EthereumClient
+  File "C:\pythonProject1\gbpbot\core\blockchain\ethereum.py", line 16, in <module>
+    from web3.middleware import geth_poa_middleware
+ImportError: cannot import name 'geth_poa_middleware' from 'web3.middleware' (C:\pythonProject1\venv_new\Lib\site-packages\web3\middleware\__init__.py)
+2025-03-05 13:23:45,824 - root - ERROR - Failed to initialize any blockchain clients
+2025-03-05 13:23:45,824 - root - ERROR - Failed to initialize GBPBot
+2025-03-05 13:23:45,824 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:23:45,824 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:27:48,214 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:27:48,218 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:27:48,221 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:27:48,221 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:27:48,221 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:27:48,221 - __main__ - INFO - Starting the bot...
+2025-03-05 13:27:48,222 - root - INFO - Starting GBPBot...
+2025-03-05 13:27:48,228 - root - INFO - Connecting to avalanche...
+2025-03-05 13:27:48,229 - gbpbot.core.blockchain.compat - ERROR - Could not import geth_poa_middleware from any known location
+2025-03-05 13:27:48,229 - gbpbot.core.blockchain.ethereum - ERROR - Error connecting to Ethereum: Could not import geth_poa_middleware. Please install a compatible version of web3.py.
+2025-03-05 13:27:48,229 - root - ERROR - Error initializing avalanche: Failed to connect to Ethereum: Could not import geth_poa_middleware. Please install a compatible version of web3.py.
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\core\blockchain\compat.py", line 20, in get_geth_poa_middleware
+    from web3.middleware.geth import geth_poa_middleware
+ModuleNotFoundError: No module named 'web3.middleware.geth'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\core\blockchain\compat.py", line 26, in get_geth_poa_middleware
+    from web3.middleware import geth_poa_middleware
+ImportError: cannot import name 'geth_poa_middleware' from 'web3.middleware' (C:\pythonProject1\venv_new\Lib\site-packages\web3\middleware\__init__.py)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\core\blockchain\ethereum.py", line 170, in connect
+    self.web3.middleware_onion.inject(get_geth_poa_middleware(), layer=0)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\gbpbot\core\blockchain\compat.py", line 49, in get_geth_poa_middleware
+    raise ImportError("Could not import geth_poa_middleware. Please install a compatible version of web3.py.")
+ImportError: Could not import geth_poa_middleware. Please install a compatible version of web3.py.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\main.py", line 133, in initialize
+    connected = await client.connect()
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\gbpbot\core\blockchain\ethereum.py", line 196, in connect
+    raise ConnectionError(f"Failed to connect to Ethereum: {e}")
+gbpbot.utils.exceptions.ConnectionError: Failed to connect to Ethereum: Could not import geth_poa_middleware. Please install a compatible version of web3.py.
+2025-03-05 13:27:48,231 - root - ERROR - Failed to initialize any blockchain clients
+2025-03-05 13:27:48,231 - root - ERROR - Failed to initialize GBPBot
+2025-03-05 13:27:48,231 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:27:48,231 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:28:07,712 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:28:07,717 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:28:07,719 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:28:07,719 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:28:07,720 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:28:07,720 - __main__ - INFO - Starting the bot...
+2025-03-05 13:28:07,720 - root - INFO - Starting GBPBot...
+2025-03-05 13:28:07,723 - root - INFO - Connecting to avalanche...
+2025-03-05 13:28:07,724 - gbpbot.core.blockchain.compat - INFO - Using dummy geth_poa_middleware implementation
+2025-03-05 13:28:07,724 - web3.providers.HTTPProvider - DEBUG - Making request HTTP. URI: http://localhost:8545, Method: web3_clientVersion
+2025-03-05 13:28:07,725 - web3._utils.http_session_manager.HTTPSessionManager - DEBUG - Session cached: http://localhost:8545, <requests.sessions.Session object at 0x0000015783234E10>
+2025-03-05 13:28:07,726 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:8545
+2025-03-05 13:28:11,815 - gbpbot.core.blockchain.ethereum - ERROR - Failed to connect to Ethereum node
+2025-03-05 13:28:11,815 - root - ERROR - Failed to connect to avalanche
+2025-03-05 13:28:11,815 - root - ERROR - Failed to initialize any blockchain clients
+2025-03-05 13:28:11,815 - root - ERROR - Failed to initialize GBPBot
+2025-03-05 13:28:11,815 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:28:11,815 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:29:15,945 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:29:15,951 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:29:15,953 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:29:15,953 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:29:15,953 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:29:15,954 - __main__ - INFO - Starting the bot...
+2025-03-05 13:29:15,954 - root - INFO - Starting GBPBot...
+2025-03-05 13:29:15,959 - gbpbot.core.blockchain.ethereum - INFO - Using RPC URL: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:29:15,960 - root - INFO - Connecting to avalanche...
+2025-03-05 13:29:15,961 - gbpbot.core.blockchain.compat - INFO - Using dummy geth_poa_middleware implementation
+2025-03-05 13:29:15,961 - web3.providers.HTTPProvider - DEBUG - Making request HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion
+2025-03-05 13:29:15,961 - web3._utils.http_session_manager.HTTPSessionManager - DEBUG - Session cached: https://api.avax.network/ext/bc/C/rpc, <requests.sessions.Session object at 0x000001AE05F89150>
+2025-03-05 13:29:15,963 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.avax.network:443
+2025-03-05 13:29:16,069 - urllib3.connectionpool - DEBUG - https://api.avax.network:443 "POST /ext/bc/C/rpc HTTP/1.1" 200 43
+2025-03-05 13:29:16,070 - web3.providers.HTTPProvider - DEBUG - Getting response HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'v0.14.1'}
+2025-03-05 13:29:16,077 - gbpbot.core.blockchain.ethereum - INFO - Connected to Ethereum node: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:29:16,077 - root - INFO - Successfully connected to avalanche
+2025-03-05 13:29:16,395 - root - ERROR - Failed to import strategy arbitrage: cannot import name 'BlockchainClient' from 'gbpbot.core.blockchain' (C:\pythonProject1\gbpbot\core\blockchain\__init__.py)
+2025-03-05 13:29:16,396 - root - INFO - Initialized 0 strategies
+2025-03-05 13:29:16,396 - root - INFO - GBPBot initialization complete
+2025-03-05 13:29:16,396 - root - WARNING - No active strategies to run
+2025-03-05 13:29:16,397 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:29:16,397 - gbpbot.core.blockchain.ethereum - INFO - Disconnected from Ethereum
+2025-03-05 13:29:16,397 - root - INFO - Disconnected from avalanche
+2025-03-05 13:29:16,397 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:29:34,134 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:29:34,139 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:29:34,142 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:29:34,142 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:29:34,143 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:29:34,143 - __main__ - INFO - Starting the bot...
+2025-03-05 13:29:34,143 - root - INFO - Starting GBPBot...
+2025-03-05 13:29:34,145 - gbpbot.core.blockchain.ethereum - INFO - Using RPC URL: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:29:34,146 - root - INFO - Connecting to avalanche...
+2025-03-05 13:29:34,146 - gbpbot.core.blockchain.compat - INFO - Using dummy geth_poa_middleware implementation
+2025-03-05 13:29:34,146 - web3.providers.HTTPProvider - DEBUG - Making request HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion
+2025-03-05 13:29:34,147 - web3._utils.http_session_manager.HTTPSessionManager - DEBUG - Session cached: https://api.avax.network/ext/bc/C/rpc, <requests.sessions.Session object at 0x000001A4E3175150>
+2025-03-05 13:29:34,148 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.avax.network:443
+2025-03-05 13:29:34,235 - urllib3.connectionpool - DEBUG - https://api.avax.network:443 "POST /ext/bc/C/rpc HTTP/1.1" 200 43
+2025-03-05 13:29:34,236 - web3.providers.HTTPProvider - DEBUG - Getting response HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'v0.14.1'}
+2025-03-05 13:29:34,242 - gbpbot.core.blockchain.ethereum - INFO - Connected to Ethereum node: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:29:34,242 - root - INFO - Successfully connected to avalanche
+2025-03-05 13:29:34,566 - root - ERROR - Error initializing strategy arbitrage: ArbitrageStrategy.__init__() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\main.py", line 220, in _initialize_strategies
+    strategy = strategy_class(
+               ^^^^^^^^^^^^^^^
+TypeError: ArbitrageStrategy.__init__() takes 2 positional arguments but 3 were given
+2025-03-05 13:29:34,567 - root - INFO - Initialized 0 strategies
+2025-03-05 13:29:34,567 - root - INFO - GBPBot initialization complete
+2025-03-05 13:29:34,567 - root - WARNING - No active strategies to run
+2025-03-05 13:29:34,567 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:29:34,568 - gbpbot.core.blockchain.ethereum - INFO - Disconnected from Ethereum
+2025-03-05 13:29:34,568 - root - INFO - Disconnected from avalanche
+2025-03-05 13:29:34,568 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:43:53,630 - root - INFO - Logging configured with level INFO
+2025-03-05 13:43:53,636 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:43:53,637 - gbpbot.utils.config - WARNING - No configuration file found, using environment variables only
+2025-03-05 13:43:53,637 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=False)
+2025-03-05 13:43:57,325 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:43:57,329 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:43:57,331 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:43:57,331 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:43:57,331 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:43:57,331 - __main__ - INFO - Starting the bot...
+2025-03-05 13:43:57,331 - root - INFO - Starting GBPBot...
+2025-03-05 13:43:57,332 - gbpbot.core.blockchain.ethereum - INFO - Using RPC URL: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:43:57,333 - root - INFO - Connecting to avalanche...
+2025-03-05 13:43:57,333 - gbpbot.core.blockchain.compat - INFO - Using dummy geth_poa_middleware implementation
+2025-03-05 13:43:57,333 - web3.providers.HTTPProvider - DEBUG - Making request HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion
+2025-03-05 13:43:57,334 - web3._utils.http_session_manager.HTTPSessionManager - DEBUG - Session cached: https://api.avax.network/ext/bc/C/rpc, <requests.sessions.Session object at 0x000002758BB1DAD0>
+2025-03-05 13:43:57,335 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.avax.network:443
+2025-03-05 13:43:57,461 - urllib3.connectionpool - DEBUG - https://api.avax.network:443 "POST /ext/bc/C/rpc HTTP/1.1" 200 43
+2025-03-05 13:43:57,462 - web3.providers.HTTPProvider - DEBUG - Getting response HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'v0.14.1'}
+2025-03-05 13:43:57,468 - gbpbot.core.blockchain.ethereum - INFO - Connected to Ethereum node: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:43:57,468 - root - INFO - Successfully connected to avalanche
+2025-03-05 13:43:57,786 - gbpbot.strategies.arbitrage - INFO - Arbitrage strategy initialized with profit threshold: 0.5%
+2025-03-05 13:43:57,786 - gbpbot.strategies.arbitrage - INFO - Initializing arbitrage strategy...
+2025-03-05 13:43:57,786 - gbpbot.strategies.arbitrage - INFO - Arbitrage strategy initialized successfully
+2025-03-05 13:43:57,786 - root - INFO - Strategy arbitrage initialized
+2025-03-05 13:43:57,787 - root - INFO - Initialized 1 strategies
+2025-03-05 13:43:57,787 - root - INFO - GBPBot initialization complete
+2025-03-05 13:43:57,787 - root - INFO - Starting GBPBot...
+2025-03-05 13:43:57,787 - root - ERROR - Error running GBPBot: ArbitrageStrategy.run() missing 1 required positional argument: 'token_pairs'
+Traceback (most recent call last):
+  File "C:\pythonProject1\gbpbot\main.py", line 285, in run
+    tasks.append(asyncio.create_task(strategy.run()))
+                                     ^^^^^^^^^^^^^^
+TypeError: ArbitrageStrategy.run() missing 1 required positional argument: 'token_pairs'
+2025-03-05 13:43:57,788 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:43:57,788 - gbpbot.strategies.arbitrage - INFO - Stopping arbitrage strategy...
+2025-03-05 13:43:57,788 - root - INFO - Strategy arbitrage stopped
+2025-03-05 13:43:57,788 - gbpbot.core.blockchain.ethereum - INFO - Disconnected from Ethereum
+2025-03-05 13:43:57,788 - root - INFO - Disconnected from avalanche
+2025-03-05 13:43:57,789 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:43:57,789 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:43:57,789 - gbpbot.strategies.arbitrage - INFO - Stopping arbitrage strategy...
+2025-03-05 13:43:57,789 - root - INFO - Strategy arbitrage stopped
+2025-03-05 13:43:57,789 - gbpbot.core.blockchain.ethereum - INFO - Disconnected from Ethereum
+2025-03-05 13:43:57,789 - root - INFO - Disconnected from avalanche
+2025-03-05 13:43:57,790 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:45:16,331 - root - INFO - Logging configured with level DEBUG
+2025-03-05 13:45:16,335 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:45:16,343 - gbpbot.utils.config - INFO - Loaded configuration from C:\pythonProject1\config\test_config.yaml
+2025-03-05 13:45:16,343 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=True)
+2025-03-05 13:45:16,343 - __main__ - INFO - Successfully created GBPBot instance!
+2025-03-05 13:45:16,343 - __main__ - INFO - Starting the bot...
+2025-03-05 13:45:16,345 - gbpbot.core.blockchain.ethereum - INFO - Using RPC URL: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:45:16,345 - root - INFO - Connecting to avalanche...
+2025-03-05 13:45:16,346 - gbpbot.core.blockchain.compat - INFO - Using dummy geth_poa_middleware implementation
+2025-03-05 13:45:16,346 - web3.providers.HTTPProvider - DEBUG - Making request HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion
+2025-03-05 13:45:16,347 - web3._utils.http_session_manager.HTTPSessionManager - DEBUG - Session cached: https://api.avax.network/ext/bc/C/rpc, <requests.sessions.Session object at 0x0000021A81835890>
+2025-03-05 13:45:16,348 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.avax.network:443
+2025-03-05 13:45:16,450 - urllib3.connectionpool - DEBUG - https://api.avax.network:443 "POST /ext/bc/C/rpc HTTP/1.1" 200 43
+2025-03-05 13:45:16,451 - web3.providers.HTTPProvider - DEBUG - Getting response HTTP. URI: https://api.avax.network/ext/bc/C/rpc, Method: web3_clientVersion, Response: {'jsonrpc': '2.0', 'id': 0, 'result': 'v0.14.1'}
+2025-03-05 13:45:16,457 - gbpbot.core.blockchain.ethereum - INFO - Connected to Ethereum node: https://api.avax.network/ext/bc/C/rpc
+2025-03-05 13:45:16,458 - root - INFO - Successfully connected to avalanche
+2025-03-05 13:45:16,775 - gbpbot.strategies.arbitrage - INFO - Arbitrage strategy initialized with profit threshold: 0.5%
+2025-03-05 13:45:16,775 - gbpbot.strategies.arbitrage - INFO - Initializing arbitrage strategy...
+2025-03-05 13:45:16,776 - gbpbot.strategies.arbitrage - INFO - Arbitrage strategy initialized successfully
+2025-03-05 13:45:16,776 - root - INFO - Strategy arbitrage initialized
+2025-03-05 13:45:16,776 - root - INFO - Initialized 1 strategies
+2025-03-05 13:45:16,776 - root - INFO - GBPBot initialization complete
+2025-03-05 13:45:16,776 - __main__ - INFO - Starting GBPBot...
+2025-03-05 13:45:16,776 - __main__ - INFO - Prepared 3 token pairs for arbitrage strategy
+2025-03-05 13:45:16,776 - root - INFO - Shutting down GBPBot...
+2025-03-05 13:45:16,776 - gbpbot.strategies.arbitrage - INFO - Stopping arbitrage strategy...
+2025-03-05 13:45:16,777 - root - INFO - Strategy arbitrage stopped
+2025-03-05 13:45:16,777 - gbpbot.core.blockchain.ethereum - INFO - Disconnected from Ethereum
+2025-03-05 13:45:16,777 - root - INFO - Disconnected from avalanche
+2025-03-05 13:45:16,777 - root - INFO - GBPBot shutdown complete
+2025-03-05 13:45:16,777 - gbpbot.strategies.arbitrage - INFO - Starting arbitrage strategy...
+2025-03-05 13:45:16,777 - gbpbot.strategies.arbitrage - INFO - Searching for arbitrage opportunities in 3 token pairs...
+2025-03-05 13:45:16,777 - gbpbot.strategies.arbitrage - INFO - Analyzing pair WAVAX/USDC for arbitrage opportunities...
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - DEBUG - Price difference for WAVAX/USDC: 1.51%
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - INFO - Found arbitrage opportunity for WAVAX/USDC: 1.41% net profit
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - INFO - Analyzing pair WAVAX/USDT for arbitrage opportunities...
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - DEBUG - Price difference for WAVAX/USDT: 1.51%
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - INFO - Found arbitrage opportunity for WAVAX/USDT: 1.41% net profit
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - INFO - Analyzing pair USDC/USDT for arbitrage opportunities...
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - DEBUG - Price difference for USDC/USDT: 1.51%
+2025-03-05 13:45:16,778 - gbpbot.strategies.arbitrage - INFO - Found arbitrage opportunity for USDC/USDT: 1.41% net profit
+2025-03-05 13:45:16,779 - gbpbot.strategies.arbitrage - INFO - Found 3 arbitrage opportunities
+2025-03-05 13:45:16,779 - gbpbot.strategies.arbitrage - INFO - Executing best opportunity: WAVAX/USDC with 1.41% profit
+2025-03-05 13:45:16,779 - gbpbot.strategies.arbitrage - INFO - Executing arbitrage trade for WAVAX/USDC...
+2025-03-05 13:45:16,779 - gbpbot.strategies.arbitrage - ERROR - Error executing trade for WAVAX/USDC: Not connected to Ethereum
+2025-03-05 13:45:16,779 - gbpbot.strategies.arbitrage - WARNING - Failed to execute arbitrage trade for WAVAX/USDC
+2025-03-05 13:50:38,033 - root - INFO - Logging configured with level INFO
+2025-03-05 13:50:38,039 - gbpbot.utils.config - INFO - Loaded environment variables from .env
+2025-03-05 13:50:38,040 - gbpbot.utils.config - WARNING - No configuration file found, using environment variables only
+2025-03-05 13:50:38,040 - root - INFO - GBPBot initialized with configuration (simulation_mode=True, is_testnet=False)

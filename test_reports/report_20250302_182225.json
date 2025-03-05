@@ -1,0 +1,7 @@
+{
+  "date": "2025-03-02T18:22:22.347681",
+  "results": {
+    "tests/unit": "PASSED",
+    "tests/integration": "FAILED"
+  }
+}

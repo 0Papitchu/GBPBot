@@ -1,0 +1,20 @@
+2025-03-02 23:38:53,113 - INFO - Démarrage des tests des endpoints RPC Avalanche...
+2025-03-02 23:38:58,792 - INFO - 
+===== RÉSULTATS DES TESTS RPC =====
+2025-03-02 23:38:58,792 - INFO - Endpoints testés: 12
+2025-03-02 23:38:58,792 - INFO - Endpoints fonctionnels: 8
+2025-03-02 23:38:58,792 - INFO - 
+Endpoints recommandés (du plus rapide au plus lent):
+2025-03-02 23:38:58,793 - INFO - 1. https://avalanche-c-chain.publicnode.com - 0.10s
+2025-03-02 23:38:58,793 - INFO - 2. https://api.avax.network/ext/bc/C/rpc - 0.12s
+2025-03-02 23:38:58,793 - INFO - 3. https://avax.meowrpc.com - 0.12s
+2025-03-02 23:38:58,793 - INFO - 4. https://avalanche.drpc.org - 0.13s
+2025-03-02 23:38:58,793 - INFO - 5. https://avalanche.rpc.thirdweb.com - 0.15s
+2025-03-02 23:38:58,793 - INFO - 
+Configuration recommandée pour .env:
+2025-03-02 23:38:58,793 - INFO - 
+# Configuration RPC optimisée
+PRIMARY_RPC_URL=https://avalanche-c-chain.publicnode.com
+BACKUP_RPC_URLS=https://api.avax.network/ext/bc/C/rpc,https://avax.meowrpc.com,https://avalanche.drpc.org
+
+2025-03-02 23:38:58,795 - INFO - Tests terminés. Consultez rpc_test_results.log pour les détails.

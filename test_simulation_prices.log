@@ -1,0 +1,77 @@
+2025-03-04 22:02:39.706 | INFO     | gbpbot.core.blockchain:_initialize_web3:273 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-04 22:02:39.707 | INFO     | gbpbot.core.price_feed.price_manager:__init__:31 - Initialisation du gestionnaire de prix
+2025-03-04 22:02:39.707 | DEBUG    | gbpbot.core.price_feed.price_manager:__init__:39 - Initialisation des feeds de prix
+2025-03-04 22:02:39.707 | INFO     | gbpbot.core.price_feed.dex_feed:__init__:47 - Feed DEX initialisé
+2025-03-04 22:02:39.707 | DEBUG    | gbpbot.core.price_feed.price_normalizer:__init__:26 - Normalisateur de prix initialisé avec seuil d'outlier: 2.0, sources min: 2
+2025-03-04 22:02:39.707 | DEBUG    | gbpbot.core.price_feed.price_manager:__init__:47 - Timeout du cache configuré à 5 secondes
+2025-03-04 22:02:39.707 | INFO     | gbpbot.core.price_feed.price_manager:__init__:52 - Gestionnaire de prix initialisé avec succès
+2025-03-04 22:02:39.708 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:671 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-04 22:02:39.708 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:672 - Balances simulées initiales: {'WAVAX': 10.0, 'USDT': 1000.0, 'USDC': 1000.0, 'WETH': 1.0}
+2025-03-04 22:02:39.716 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:709 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-04 22:02:39.716 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:727 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-04 22:02:39.802 | SUCCESS  | gbpbot.core.blockchain:_check_connection:746 - Connexion à la blockchain établie
+2025-03-04 22:02:39.803 | INFO     | __main__:run:179 - Démarrage du test des prix simulés...
+2025-03-04 22:02:40.003 | INFO     | scripts.update_simulation_prices:get_coingecko_prices:58 - Prix récupérés depuis CoinGecko: {'AVAX/USDT': 19.88, 'AVAX/USDC': 19.88, 'ETH/USDT': 2137.94, 'ETH/USDC': 2137.94, 'AVAX/ETH': 0.00929867068299391, 'USDT/USDC': 1.0}
+2025-03-04 22:02:40.275 | INFO     | scripts.update_simulation_prices:get_binance_prices:94 - Prix récupérés depuis Binance: {'AVAX/USDT': 19.91, 'AVAX/USDC': 19.92, 'ETH/USDT': 2132.99, 'ETH/USDC': 2132.79, 'AVAX/ETH': 0.00934, 'USDT/USDC': 1.0}
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur trader_joe: 34.80218805566719 (montant de sortie: 34.80218805566719)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur trader_joe: 34.72571158132197 (montant de sortie: 34.72571158132197)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur trader_joe: 0.019482572986999867 (montant de sortie: 0.019482572986999867)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur pangolin: 34.31959187717743 (montant de sortie: 34.31959187717743)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur pangolin: 34.359972362434256 (montant de sortie: 34.359972362434256)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur pangolin: 0.01917565132572969 (montant de sortie: 0.01917565132572969)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur sushi: 35.33824521279189 (montant de sortie: 35.33824521279189)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur sushi: 35.12690812341281 (montant de sortie: 35.12690812341281)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur sushi: 0.019804229625439186 (montant de sortie: 0.019804229625439186)
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur binance pour AVAX/USDT: 34.791122885029274
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur binance pour AVAX/USDC: 34.88038400102307
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur binance pour ETH/USDT: 1783.9191522087037
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur kucoin pour AVAX/USDT: 34.74189409360526
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur kucoin pour AVAX/USDC: 34.82162111971626
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur kucoin pour ETH/USDT: 1785.0260502275669
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur gate pour AVAX/USDT: 34.880698261234144
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur gate pour AVAX/USDC: 34.85374244493539
+2025-03-04 22:02:40.276 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur gate pour ETH/USDT: 1785.532780557409
+2025-03-04 22:02:40.277 | INFO     | __main__:run:189 - 
+Résultats du test des prix simulés:
+
+2025-03-04 22:02:40.278 | WARNING  | __main__:run:196 - 
+Certains prix simulés présentent des écarts importants avec les prix réels du marché.
+2025-03-04 22:02:40.278 | WARNING  | __main__:run:197 - Exécutez le script 'update_simulation_prices.py' pour mettre à jour les prix simulés.
+2025-03-04 22:02:55.179 | INFO     | gbpbot.core.blockchain:_initialize_web3:273 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-04 22:02:55.180 | INFO     | gbpbot.core.price_feed.price_manager:__init__:31 - Initialisation du gestionnaire de prix
+2025-03-04 22:02:55.180 | DEBUG    | gbpbot.core.price_feed.price_manager:__init__:39 - Initialisation des feeds de prix
+2025-03-04 22:02:55.180 | INFO     | gbpbot.core.price_feed.dex_feed:__init__:47 - Feed DEX initialisé
+2025-03-04 22:02:55.180 | DEBUG    | gbpbot.core.price_feed.price_normalizer:__init__:26 - Normalisateur de prix initialisé avec seuil d'outlier: 2.0, sources min: 2
+2025-03-04 22:02:55.180 | DEBUG    | gbpbot.core.price_feed.price_manager:__init__:47 - Timeout du cache configuré à 5 secondes
+2025-03-04 22:02:55.180 | INFO     | gbpbot.core.price_feed.price_manager:__init__:52 - Gestionnaire de prix initialisé avec succès
+2025-03-04 22:02:55.180 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:671 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-04 22:02:55.180 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:672 - Balances simulées initiales: {'WAVAX': 10.0, 'USDT': 1000.0, 'USDC': 1000.0, 'WETH': 1.0}
+2025-03-04 22:02:55.186 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:709 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-04 22:02:55.187 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:727 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-04 22:02:55.269 | SUCCESS  | gbpbot.core.blockchain:_check_connection:746 - Connexion à la blockchain établie
+2025-03-04 22:02:55.270 | INFO     | __main__:run:179 - Démarrage du test des prix simulés...
+2025-03-04 22:02:55.325 | INFO     | scripts.update_simulation_prices:get_coingecko_prices:58 - Prix récupérés depuis CoinGecko: {'AVAX/USDT': 19.88, 'AVAX/USDC': 19.88, 'ETH/USDT': 2137.94, 'ETH/USDC': 2137.94, 'AVAX/ETH': 0.00929867068299391, 'USDT/USDC': 1.0}
+2025-03-04 22:02:55.586 | INFO     | scripts.update_simulation_prices:get_binance_prices:94 - Prix récupérés depuis Binance: {'AVAX/USDT': 19.9, 'AVAX/USDC': 19.91, 'ETH/USDT': 2130.98, 'ETH/USDC': 2130.64, 'AVAX/ETH': 0.00934, 'USDT/USDC': 1.0}
+2025-03-04 22:02:55.586 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur trader_joe: 19.90169819171864 (montant de sortie: 19.90169819171864)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur trader_joe: 19.912151727915457 (montant de sortie: 19.912151727915457)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur trader_joe: 0.009366578350379112 (montant de sortie: 0.009366578350379112)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur pangolin: 19.60962455133249 (montant de sortie: 19.60962455133249)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur pangolin: 19.753304411339432 (montant de sortie: 19.753304411339432)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur pangolin: 0.009231952854928269 (montant de sortie: 0.009231952854928269)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur sushi: 20.143294311221037 (montant de sortie: 20.143294311221037)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur sushi: 20.15778635424615 (montant de sortie: 20.15778635424615)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_dex_price:866 - Prix simulé sur sushi: 0.009523182601206262 (montant de sortie: 0.009523182601206262)
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur binance pour AVAX/USDT: 19.937181916333984
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur binance pour AVAX/USDC: 19.895348679162044
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur binance pour ETH/USDT: 2137.4718435011278
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur kucoin pour AVAX/USDT: 19.832372342795633
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur kucoin pour AVAX/USDC: 19.814254094557747
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur kucoin pour ETH/USDT: 2129.6439497188444
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur gate pour AVAX/USDT: 19.99449756840552
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur gate pour AVAX/USDC: 19.968418154935904
+2025-03-04 22:02:55.587 | DEBUG    | gbpbot.core.blockchain:get_cex_price:922 - Prix simulé sur gate pour ETH/USDT: 2139.3353318433437
+2025-03-04 22:02:55.588 | INFO     | __main__:run:189 - 
+Résultats du test des prix simulés:
+
+2025-03-04 22:02:55.589 | SUCCESS  | __main__:run:194 - 
+Tous les prix simulés sont cohérents avec les prix réels du marché.

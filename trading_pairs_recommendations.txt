@@ -1,0 +1,4 @@
+# Paires de trading recommandées
+
+# Format: TOKEN_PAIRS=paire1,paire2,paire3
+TOKEN_PAIRS=AVAX/USDT,AVAX/USDC,ETH/USDT,ETH/USDC,BTC/USDT,BTC/USDC

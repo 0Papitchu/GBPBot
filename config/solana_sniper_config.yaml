@@ -1,0 +1,197 @@
+# Solana Memecoin Sniper Configuration
+# Optimized for high-speed sniping and MEV protection
+
+solana:
+  # RPC Configuration
+  # -----------------
+  # Multiple RPC endpoints with weights to balance load and optimize for speed
+  # For best results, use a combination of public endpoints and paid services like QuickNode, Alchemy
+  rpc_urls:
+    - "https://api.mainnet-beta.solana.com"        # Public RPC
+    - "https://solana-api.projectserum.com"        # Serum RPC
+    - "https://ssc-dao.genesysgo.net"              # GenesysGo RPC
+    # Add your premium RPC endpoints for better performance
+    # - "https://your-premium-rpc-endpoint.com"
+  
+  # Weights for RPC endpoints (higher value = more likely to be selected)
+  # Premium endpoints should have higher weights
+  rpc_url_weights: [1, 1, 1]
+  
+  # Connection timeout in seconds
+  timeout: 30
+  
+  # Transaction Settings
+  # -------------------
+  # Enable anti-MEV protection
+  anti_mev_enabled: true
+  
+  # Enable parallel requests for faster response times
+  parallel_requests: true
+  
+  # Maximum number of transaction retries
+  tx_retry_count: 3
+  
+  # Jito bundle settings for MEV protection
+  jito_enabled: true  # Enabled for enhanced MEV protection
+  jito_endpoint: "https://mainnet.jito.wtf"
+  jito_auth_token: "${JITO_AUTH_TOKEN}"  # Set this environment variable for production use
+  
+  # Priority Fee Settings
+  # --------------------
+  # Cache TTL for priority fees in seconds
+  priority_fee_cache_ttl: 5
+  
+  # Default priority fees in microlamports
+  default_priority_fee: 5000         # Normal transactions
+  default_high_priority_fee: 10000   # High priority
+  default_urgent_priority_fee: 20000 # Urgent transactions
+  default_sniping_priority_fee: 25000 # Sniping
+  
+  # Minimum priority fee for anti-MEV protection
+  min_anti_mev_fee: 2000
+  
+  # Compute unit limits
+  sniping_compute_unit_limit: 200000  # Higher limit for sniping
+  high_compute_unit_limit: 150000     # For high priority transactions
+  
+  # Sniper Settings
+  # --------------
+  # Risk tolerance
+  snipe_risky_tokens: false  # Set to true to allow sniping tokens with risks
+  
+  # Token detection lookback blocks
+  new_token_lookback_blocks: 1000
+  
+  # Maximum signatures to scan for new tokens
+  max_signatures_to_scan: 5000
+  
+  # Update interval for optimal routes (seconds)
+  route_update_interval: 300
+  
+  # MEV Protection Settings
+  # ----------------------
+  # Use Jito bundles for entry transactions (recommended for fastest execution)
+  use_jito_for_entry: true
+  
+  # Use Jito bundles for exit transactions
+  use_jito_for_exit: false
+  
+  # Value threshold to use Jito for exits (in USDC)
+  # Positions above this value will use Jito for exit transactions
+  jito_exit_threshold: 100
+  
+  # Transaction Settings
+  # ------------------
+  # Default slippage for entry transactions (%)
+  entry_slippage: 1.5
+  
+  # Default slippage for exit transactions (%)
+  exit_slippage: 2.0
+  
+  # Auto exit settings
+  auto_take_profit_enabled: true
+  take_profit_percentage: 100  # Exit at 100% profit
+  
+  # Staged take-profit levels
+  staged_take_profit:
+    - {percentage: 20, profit_target: 30}  # Sell 20% at 30% profit
+    - {percentage: 30, profit_target: 50}  # Sell 30% at 50% profit
+    - {percentage: 50, profit_target: 100} # Sell 50% at 100% profit
+  
+  # Stop loss settings
+  stop_loss_enabled: true
+  stop_loss_percentage: -15  # Exit at 15% loss
+  
+  # DEX Settings
+  # -----------
+  dex_addresses:
+    raydium:
+      program_id: "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
+      swap_authority: "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"
+    orca:
+      program_id: "9W959DqEETiGZocYWCQPaJ6sBmUzgfxXfqGeTEdp3aQP"
+    jupiter:
+      program_id: "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
+  
+  # Common token addresses
+  token_addresses:
+    SOL: "So11111111111111111111111111111111111111112"
+    USDC: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    USDT: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+    BONK: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+    WIF: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+    
+  # Wallet Settings
+  # -------------
+  # Wallet settings - DO NOT store private keys in this file for production
+  # Use environment variables or a secure key management system
+  wallet:
+    private_key_env: "SOLANA_PRIVATE_KEY"  # Load from environment variable
+    # Or specify a keyfile path
+    keyfile_path: ""
+  
+  # Analysis Settings
+  # ---------------
+  # Detect potentially malicious token contracts
+  contract_analysis:
+    # Suspicious keywords in token name/symbol
+    suspicious_keywords:
+      - "safe"
+      - "moon"
+      - "elon"
+      - "doge"
+      - "inu"
+      - "shib"
+      - "pepe"
+      - "scam"
+      - "pump"
+    
+    # Minimum token supply to be considered legitimate
+    min_token_supply: 1000
+    
+    # Maximum percentage of supply that can be owned by creator
+    max_creator_ownership_pct: 50
+
+# Profit Optimization Settings
+# --------------------------
+profit_optimization:
+  # Take profit strategies
+  take_profit_strategies:
+    aggressive:
+      - {multiplier: 3, percentage: 20}   # At 3x, sell 20%
+      - {multiplier: 8, percentage: 40}   # At 8x, sell another 40%
+      - {multiplier: 15, percentage: 100} # At 15x, sell remaining
+    standard:
+      - {multiplier: 2, percentage: 25}   # At 2x, sell 25%
+      - {multiplier: 5, percentage: 50}   # At 5x, sell another 50%
+      - {multiplier: 10, percentage: 100} # At 10x, sell remaining
+    conservative:
+      - {multiplier: 1.5, percentage: 30} # At 1.5x, sell 30%
+      - {multiplier: 3, percentage: 60}   # At 3x, sell another 60%
+      - {multiplier: 5, percentage: 100}  # At 5x, sell remaining
+  
+  # Stop loss settings
+  stop_loss_percentage: 15  # 15% drop from entry
+  
+  # Trailing stop loss (percentage below peak)
+  trailing_stop_loss: 10
+
+# Notification Settings
+# -------------------
+notifications:
+  enabled: true
+  telegram:
+    enabled: true
+    bot_token: ""
+    chat_id: ""
+  discord:
+    enabled: false
+    webhook_url: ""
+
+# Logging Settings
+# --------------
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "logs/solana_sniper.log"
+  max_size_mb: 10
+  backup_count: 5 

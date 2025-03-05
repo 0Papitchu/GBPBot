@@ -1,0 +1,377 @@
+2025-03-02 20:07:07.265 | INFO     | gbpbot.cli_interface:_save_user_config:95 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json
+2025-03-02 20:09:39.233 | INFO     | gbpbot.cli_interface:_save_user_config:95 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json
+2025-03-02 20:09:39.238 | INFO     | gbpbot.main:__init__:37 - Initialisation du bot sur Avalanche mainnet
+2025-03-02 20:09:39.239 | INFO     | gbpbot.core.blockchain:__init__:37 - Connecté au mainnet Avalanche
+2025-03-02 20:09:39.240 | INFO     | gbpbot.core.blockchain:__init__:70 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-02 20:09:39.240 | INFO     | gbpbot.core.blockchain:__init__:71 - Balance initiale: 5.0 WAVAX
+2025-03-02 20:09:39.262 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 20:09:39.274 | INFO     | gbpbot.core.blockchain:__init__:95 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-02 20:09:39.274 | INFO     | gbpbot.core.blockchain:__init__:115 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-02 20:09:39.302 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 20:09:39.306 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:09:39.307 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 5.0000
+2025-03-02 20:09:39.308 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:09:39.308 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 0.0000
+2025-03-02 20:09:39.308 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:09:39.308 | INFO     | gbpbot.main:start:98 - 🚀 Démarrage du bot en mode simulation...
+2025-03-02 20:09:39.309 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:09:39.309 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 5.0000
+2025-03-02 20:09:39.309 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:09:39.310 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 0.0000
+2025-03-02 20:09:39.310 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:09:39.310 | INFO     | gbpbot.main:_run_bot:118 - Durée de simulation réglée à 43200 secondes (12 heures)
+2025-03-02 20:09:39.311 | INFO     | gbpbot.main:_run_bot:123 - 🧪 TEST: Simulation de trades pour tester le rééquilibrage...
+2025-03-02 20:09:39.311 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:207 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-02 20:09:39.311 | INFO     | gbpbot.core.blockchain:simulate_trade:208 - [SIMULATION] Nouveaux soldes: WAVAX: 4.0000, USDC: 1.0080
+2025-03-02 20:09:39.312 | INFO     | gbpbot.core.blockchain:simulate_trade:215 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-02 20:09:39.312 | SUCCESS  | gbpbot.main:_run_bot:127 - 🧪 TEST: Trade simulé #1 réussi: 1.0 WAVAX → USDC
+2025-03-02 20:09:39.820 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:207 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-02 20:09:39.820 | INFO     | gbpbot.core.blockchain:simulate_trade:208 - [SIMULATION] Nouveaux soldes: WAVAX: 3.0000, USDC: 2.0160
+2025-03-02 20:09:39.821 | INFO     | gbpbot.core.blockchain:simulate_trade:215 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-02 20:09:39.821 | SUCCESS  | gbpbot.main:_run_bot:127 - 🧪 TEST: Trade simulé #2 réussi: 1.0 WAVAX → USDC
+2025-03-02 20:09:40.336 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:207 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-02 20:09:40.336 | INFO     | gbpbot.core.blockchain:simulate_trade:208 - [SIMULATION] Nouveaux soldes: WAVAX: 2.0000, USDC: 3.0240
+2025-03-02 20:09:40.337 | INFO     | gbpbot.core.blockchain:simulate_trade:215 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-02 20:09:40.337 | SUCCESS  | gbpbot.main:_run_bot:127 - 🧪 TEST: Trade simulé #3 réussi: 1.0 WAVAX → USDC
+2025-03-02 20:09:40.851 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:207 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-02 20:09:40.851 | INFO     | gbpbot.core.blockchain:simulate_trade:208 - [SIMULATION] Nouveaux soldes: WAVAX: 1.0000, USDC: 4.0320
+2025-03-02 20:09:40.852 | INFO     | gbpbot.core.blockchain:simulate_trade:215 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-02 20:09:40.852 | SUCCESS  | gbpbot.main:_run_bot:127 - 🧪 TEST: Trade simulé #4 réussi: 1.0 WAVAX → USDC
+2025-03-02 20:09:41.367 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:09:41.367 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:09:41.368 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:09:41.368 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:09:41.368 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:09:41.369 | INFO     | gbpbot.main:_check_portfolio_balance:556 - Ratio WAVAX/Stablecoins trop bas: 0.20 < 0.50
+2025-03-02 20:09:41.369 | INFO     | gbpbot.main:_check_portfolio_balance:557 - Lancement du rééquilibrage automatique du portefeuille
+2025-03-02 20:09:41.369 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:09:41.369 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:09:41.369 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:09:41.370 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:09:41.370 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:09:41.370 | INFO     | gbpbot.main:_rebalance_portfolio:339 - Rééquilibrage non nécessaire, solde WAVAX suffisant: 1.0000
+2025-03-02 20:09:41.371 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43197 secondes restantes
+2025-03-02 20:09:41.371 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:09:41.371 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:09:41.371 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:09:41.372 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:09:41.373 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:09:41.373 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:09:42.776 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:09:42.777 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:09:44.207 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:09:44.208 | WARNING  | gbpbot.core.price_feed:_get_pair_address:598 - Erreur lors de la récupération de l'adresse du pair sur trader_joe: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:09:46.113 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: Expecting value: line 1 column 1 (char 0)
+2025-03-02 20:09:47.919 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:09:48.027 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:09:51.807 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:09:52.390 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4283274e-11
+2025-03-02 20:09:52.390 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:09:52.390 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:09:53.789 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:09:53.790 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:09:55.174 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:09:55.174 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:09:56.717 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:09:57.017 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: Expecting value: line 1 column 1 (char 0)
+2025-03-02 20:09:58.418 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:09:58.419 | WARNING  | gbpbot.core.price_feed:_get_pair_address:598 - Erreur lors de la récupération de l'adresse du pair sur pangolin: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:09:58.866 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:09:58.866 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:09:58.867 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:09:58.867 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23441.57080880204
+2025-03-02 20:09:59.438 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:09:59.438 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.31% de profit entre pangolin et trader_joe
+2025-03-02 20:09:59.439 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:10:00.877 | WARNING  | gbpbot.core.price_feed:_get_pair_address:598 - Erreur lors de la récupération de l'adresse du pair sur pangolin: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:10:00.878 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:10:01.816 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:10:01.816 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:10:01.817 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:10:01.817 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:10:02.905 | WARNING  | gbpbot.core.price_feed:_get_pair_address:598 - Erreur lors de la récupération de l'adresse du pair sur pangolin: Expecting value: line 1 column 1 (char 0)
+2025-03-02 20:10:17.912 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43161 secondes restantes
+2025-03-02 20:10:17.913 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:10:17.913 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:10:17.913 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:10:17.914 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:10:17.914 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:10:17.914 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:10:19.304 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:10:19.305 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:10:20.678 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:10:20.678 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:10:22.047 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:10:22.048 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:10:22.160 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:10:22.161 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:10:22.161 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:10:22.161 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4283274e-11
+2025-03-02 20:10:22.162 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:10:22.162 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:10:23.280 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:10:23.281 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:10:23.281 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:10:23.282 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23441.57080880204
+2025-03-02 20:10:23.282 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:10:23.282 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.31% de profit entre pangolin et trader_joe
+2025-03-02 20:10:23.282 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:10:25.462 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:10:25.463 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:10:25.463 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:10:25.463 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:10:25.464 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4226396e-11
+2025-03-02 20:10:40.471 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43138 secondes restantes
+2025-03-02 20:10:40.472 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:10:40.472 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:10:40.473 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:10:40.473 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:10:40.473 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:10:40.474 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:10:40.653 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:10:40.653 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:10:40.654 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:10:40.654 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4280038e-11
+2025-03-02 20:10:40.654 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:10:40.654 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:10:41.711 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:10:41.712 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:10:41.712 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:10:41.712 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23443.135009943686
+2025-03-02 20:10:41.713 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:10:41.713 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.33% de profit entre pangolin et trader_joe
+2025-03-02 20:10:41.713 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:10:42.777 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:10:42.777 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:10:42.777 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:10:42.778 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:10:42.778 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4226396e-11
+2025-03-02 20:10:57.788 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43121 secondes restantes
+2025-03-02 20:10:57.789 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:10:57.789 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:10:57.790 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:10:57.790 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:10:57.791 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:10:57.792 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:10:59.170 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:10:59.170 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:11:00.274 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:11:00.275 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:11:00.275 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:11:00.275 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4280038e-11
+2025-03-02 20:11:00.275 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:11:00.275 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:11:02.463 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:11:02.463 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:11:02.463 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:11:02.464 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23443.135009943686
+2025-03-02 20:11:02.464 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:11:02.464 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.33% de profit entre pangolin et trader_joe
+2025-03-02 20:11:02.464 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:11:04.570 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:11:04.570 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:11:04.571 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:11:04.571 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:11:04.571 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4226396e-11
+2025-03-02 20:11:19.577 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43099 secondes restantes
+2025-03-02 20:11:19.577 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:11:19.578 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:11:19.578 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:11:19.578 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:11:19.578 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:11:19.579 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:11:19.630 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:11:19.630 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:11:19.630 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:11:19.631 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4280038e-11
+2025-03-02 20:11:19.631 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:11:19.631 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:11:20.688 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:11:20.688 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:11:20.688 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:11:20.689 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23443.135009943686
+2025-03-02 20:11:20.689 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:11:20.689 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.33% de profit entre pangolin et trader_joe
+2025-03-02 20:11:20.689 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:11:21.757 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:11:21.757 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:11:21.758 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:11:21.758 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:11:21.758 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4226396e-11
+2025-03-02 20:11:36.765 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43082 secondes restantes
+2025-03-02 20:11:36.765 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:11:36.766 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:11:36.766 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:11:36.766 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:11:36.766 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:11:36.767 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:11:38.184 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:11:38.185 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:11:38.247 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:11:38.247 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:11:38.247 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:11:38.248 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4279626e-11
+2025-03-02 20:11:38.248 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:11:38.248 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:11:39.316 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:11:39.316 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:11:39.316 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:11:39.317 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23443.33500994334
+2025-03-02 20:11:39.317 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:11:39.317 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.33% de profit entre pangolin et trader_joe
+2025-03-02 20:11:39.317 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:11:41.431 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:11:41.431 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:11:41.431 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:11:41.433 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:11:41.433 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4226396e-11
+2025-03-02 20:11:56.446 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43062 secondes restantes
+2025-03-02 20:11:56.446 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:11:56.447 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:11:56.447 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:11:56.447 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:11:56.448 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:11:56.448 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:11:56.560 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:11:56.560 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:11:56.561 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:11:56.561 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4279626e-11
+2025-03-02 20:11:56.561 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:11:56.561 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:11:57.636 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:11:57.637 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:11:57.637 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:11:57.638 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23443.33500994334
+2025-03-02 20:11:57.638 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:11:57.638 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.33% de profit entre pangolin et trader_joe
+2025-03-02 20:11:57.638 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:11:58.700 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:11:58.701 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:11:58.701 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:11:58.701 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:11:58.701 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4226396e-11
+2025-03-02 20:12:13.710 | INFO     | gbpbot.main:_run_bot:142 - 📝 Mode simulation: 43045 secondes restantes
+2025-03-02 20:12:13.710 | INFO     | gbpbot.main:_check_balances:236 - 💰 Soldes simulés actuels:
+2025-03-02 20:12:13.711 | INFO     | gbpbot.main:_check_balances:238 -   • WAVAX: 1.0000
+2025-03-02 20:12:13.712 | INFO     | gbpbot.main:_check_balances:238 -   • USDT: 0.0000
+2025-03-02 20:12:13.712 | INFO     | gbpbot.main:_check_balances:238 -   • USDC: 4.0320
+2025-03-02 20:12:13.713 | INFO     | gbpbot.main:_check_balances:238 -   • WETH: 0.0000
+2025-03-02 20:12:13.713 | INFO     | gbpbot.main:_should_stop_trading:296 - Valeur du portefeuille: initiale=5.0000, actuelle=5.0320, changement=0.64%
+2025-03-02 20:12:17.041 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDC
+2025-03-02 20:12:17.042 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDC
+2025-03-02 20:12:17.042 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDC
+2025-03-02 20:12:17.042 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4279626e-11
+2025-03-02 20:12:17.043 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4273298e-11
+2025-03-02 20:12:17.043 | INFO     | gbpbot.strategies.arbitrage:find_opportunities:822 - Recherche d'opportunités inverses avec USDC comme token d'entrée
+2025-03-02 20:12:18.473 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:12:18.474 | WARNING  | gbpbot.core.price_feed:_get_pair_address:598 - Erreur lors de la récupération de l'adresse du pair sur trader_joe: sent 1000 (OK); then received 1000 (OK)
+2025-03-02 20:12:19.434 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol USDC/WAVAX
+2025-03-02 20:12:19.434 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol USDC/WAVAX
+2025-03-02 20:12:19.434 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol USDC/WAVAX
+2025-03-02 20:12:20.916 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: Expecting value: line 1 column 1 (char 0)
+2025-03-02 20:12:21.336 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 23443.33500994334
+2025-03-02 20:12:21.336 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 7364.420709977394
+2025-03-02 20:12:21.337 | INFO     | gbpbot.core.price_feed:find_arbitrage_opportunities:667 - 💰 Opportunité trouvée: 218.33% de profit entre pangolin et trader_joe
+2025-03-02 20:12:21.337 | ERROR    | gbpbot.strategies.arbitrage:_calculate_net_profit:324 - Erreur lors du calcul du profit net: 'PerformanceTracker' object has no attribute 'get_daily_volume'
+2025-03-02 20:12:22.801 | ERROR    | gbpbot.core.price_feed:_make_rpc_request:496 - Erreur RPC sur wss://go.getblock.io/a8fbda56c0fd45d792cf68ce08d14107: cannot call recv while another coroutine is already waiting for the next message
+2025-03-02 20:12:23.713 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur binance: binance does not have market symbol WAVAX/USDT
+2025-03-02 20:12:23.714 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur kucoin: kucoin does not have market symbol WAVAX/USDT
+2025-03-02 20:12:23.714 | WARNING  | gbpbot.core.price_feed:fetch_price:200 - Erreur lors de la récupération du prix sur gate: gateio does not have market symbol WAVAX/USDT
+2025-03-02 20:12:23.714 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé trader_joe: 2.4246172e-11
+2025-03-02 20:12:23.714 | DEBUG    | gbpbot.core.price_feed:get_all_prices:301 - Prix normalisé pangolin: 2.4230226e-11
+2025-03-02 20:19:19.611 | INFO     | gbpbot.cli_interface:_save_user_config:96 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json
+2025-03-02 20:19:19.616 | INFO     | gbpbot.main:__init__:37 - Initialisation du bot sur Avalanche mainnet
+2025-03-02 20:19:19.618 | INFO     | gbpbot.core.blockchain:__init__:37 - Connecté au mainnet Avalanche
+2025-03-02 20:19:19.618 | INFO     | gbpbot.core.blockchain:__init__:70 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-02 20:19:19.618 | INFO     | gbpbot.core.blockchain:__init__:71 - Balance initiale: 5.0 WAVAX
+2025-03-02 20:19:19.644 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 20:19:19.660 | INFO     | gbpbot.core.blockchain:__init__:95 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-02 20:19:19.660 | INFO     | gbpbot.core.blockchain:__init__:115 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-02 20:19:19.677 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 20:26:01.074 | INFO     | gbpbot.cli_interface:_save_user_config:96 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json
+2025-03-02 20:26:01.079 | INFO     | gbpbot.main:__init__:37 - Initialisation du bot sur Avalanche mainnet
+2025-03-02 20:26:01.081 | INFO     | gbpbot.core.blockchain:__init__:37 - Connecté au mainnet Avalanche
+2025-03-02 20:26:01.081 | INFO     | gbpbot.core.blockchain:__init__:70 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-02 20:26:01.081 | INFO     | gbpbot.core.blockchain:__init__:71 - Balance initiale: 5.0 WAVAX
+2025-03-02 20:26:01.104 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 20:26:01.115 | INFO     | gbpbot.core.blockchain:__init__:95 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-02 20:26:01.116 | INFO     | gbpbot.core.blockchain:__init__:115 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-02 20:26:01.134 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 21:54:50.305 | ERROR    | gbpbot.cli_interface:main:539 - Erreur non gérée dans l'interface CLI
+Traceback (most recent call last):
+
+  File "C:\pythonProject1\gbpbot_cli.py", line 13, in <module>
+    main()
+    └ <function main at 0x00000226C1B374C0>
+
+> File "C:\pythonProject1\gbpbot\cli_interface.py", line 532, in main
+    asyncio.run(cli.run())
+    │       │   │   └ <function CLIInterface.run at 0x00000226C1BA1EE0>
+    │       │   └ <gbpbot.cli_interface.CLIInterface object at 0x00000226C1B97090>
+    │       └ <function run at 0x00000226A1E039C0>
+    └ <module 'asyncio' from 'C:\\Users\\randr\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\asyncio\\__init__.py'>
+
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object CLIInterface.run at 0x00000226BB7FAE90>
+           │      └ <function Runner.run at 0x00000226A1E59440>
+           └ <asyncio.runners.Runner object at 0x00000226C1B97010>
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │                        └ <Task finished name='Task-1' coro=<CLIInterface.run() done, defined at C:\pythonProject1\gbpbot\cli_interface.py:494> excepti...
+           │    └ None
+           └ <asyncio.runners.Runner object at 0x00000226C1B97010>
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           │      └ <method 'result' of '_asyncio.Task' objects>
+           └ <Task finished name='Task-1' coro=<CLIInterface.run() done, defined at C:\pythonProject1\gbpbot\cli_interface.py:494> excepti...
+
+  File "C:\pythonProject1\gbpbot\cli_interface.py", line 499, in run
+    choice = self.display_main_menu()
+             │    └ <function CLIInterface.display_main_menu at 0x00000226C1BA18A0>
+             └ <gbpbot.cli_interface.CLIInterface object at 0x00000226C1B97090>
+
+  File "C:\pythonProject1\gbpbot\cli_interface.py", line 126, in display_main_menu
+    return Prompt.ask("[bold yellow]Choisissez une option[/bold yellow]", choices=["1", "2", "3", "4", "5"])
+           │      └ <classmethod(<function PromptBase.ask at 0x00000226C1B1B6A0>)>
+           └ <class 'rich.prompt.Prompt'>
+
+  File "C:\pythonProject1\venv\Lib\site-packages\rich\prompt.py", line 149, in ask
+    return _prompt(default=default, stream=stream)
+           │               │               └ None
+           │               └ Ellipsis
+           └ <rich.prompt.Prompt object at 0x00000226C1B96050>
+  File "C:\pythonProject1\venv\Lib\site-packages\rich\prompt.py", line 292, in __call__
+    value = self.get_input(self.console, prompt, self.password, stream=stream)
+            │    │         │    │        │       │    │                └ None
+            │    │         │    │        │       │    └ False
+            │    │         │    │        │       └ <rich.prompt.Prompt object at 0x00000226C1B96050>
+            │    │         │    │        └ <text 'Choisissez une option [1/2/3/4/5]: ' [Span(0, 21, 'bold yellow'), Span(22, 33, 'prompt.choices')] 'prompt'>
+            │    │         │    └ <console width=157 ColorSystem.TRUECOLOR>
+            │    │         └ <rich.prompt.Prompt object at 0x00000226C1B96050>
+            │    └ <classmethod(<function PromptBase.get_input at 0x00000226C1B1B880>)>
+            └ <rich.prompt.Prompt object at 0x00000226C1B96050>
+  File "C:\pythonProject1\venv\Lib\site-packages\rich\prompt.py", line 211, in get_input
+    return console.input(prompt, password=password, stream=stream)
+           │       │     │                │                └ None
+           │       │     │                └ False
+           │       │     └ <text 'Choisissez une option [1/2/3/4/5]: ' [Span(0, 21, 'bold yellow'), Span(22, 33, 'prompt.choices')] 'prompt'>
+           │       └ <function Console.input at 0x00000226C1B1AD40>
+           └ <console width=157 ColorSystem.TRUECOLOR>
+  File "C:\pythonProject1\venv\Lib\site-packages\rich\console.py", line 2151, in input
+    result = input()
+
+EOFError
+2025-03-02 23:27:30.523 | INFO     | gbpbot.cli_interface:_save_user_config:96 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json
+2025-03-02 23:27:30.529 | INFO     | gbpbot.main:__init__:37 - Initialisation du bot sur Avalanche mainnet
+2025-03-02 23:27:30.530 | INFO     | gbpbot.core.blockchain:__init__:37 - Connecté au mainnet Avalanche
+2025-03-02 23:27:30.572 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 23:27:30.585 | INFO     | gbpbot.core.blockchain:__init__:89 - Portefeuille initialisé: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-02 23:27:30.602 | SUCCESS  | gbpbot.core.price_feed:_initialize_contracts:168 - Contrats DEX initialisés avec succès sur Avalanche mainnet
+2025-03-02 23:27:31.054 | INFO     | gbpbot.main:_check_balances:254 - 💰 Soldes actuels:
+2025-03-02 23:27:31.054 | INFO     | gbpbot.main:_check_balances:256 -   • WAVAX: 0.0000
+2025-03-02 23:27:31.055 | INFO     | gbpbot.main:_check_balances:256 -   • USDT: 0.0000
+2025-03-02 23:27:31.055 | INFO     | gbpbot.main:_check_balances:256 -   • USDC: 0.0000
+2025-03-02 23:27:31.055 | ERROR    | gbpbot.main:start:100 - Solde initial insuffisant: 0.0000 AVAX
+2025-03-03 02:45:46.781 | INFO     | gbpbot.cli_interface:_save_user_config:96 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json
+2025-03-03 02:46:31.396 | INFO     | gbpbot.cli_interface:_save_user_config:96 - Configuration sauvegardée dans C:\Users\randr\.gbpbot\user_config.json

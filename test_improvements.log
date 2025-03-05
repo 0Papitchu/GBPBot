@@ -1,0 +1,627 @@
+2025-03-03 22:38:34.379 | INFO     | __main__:main:157 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:38:34.379 | INFO     | __main__:test_rpc_manager:26 - === Test du gestionnaire RPC ===
+2025-03-03 22:38:34.379 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:95 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 22:39:11.893 | INFO     | __main__:main:172 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:39:11.893 | INFO     | __main__:test_rpc_manager:41 - === Test du gestionnaire RPC ===
+2025-03-03 22:39:11.893 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:110 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 22:39:12.000 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 102.00ms)
+2025-03-03 22:39:12.097 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 97.00ms)
+2025-03-03 22:39:12.175 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 78.00ms)
+2025-03-03 22:39:14.189 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:195 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-03 22:39:14.316 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avax.meowrpc.com en bonne santé (latence: 127.15ms)
+2025-03-03 22:39:14.316 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:135 - 5/5 nœuds RPC actifs
+2025-03-03 22:39:14.317 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:140 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 102.00ms, taux de succès: 100.00%)
+2025-03-03 22:39:14.317 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche-c-chain.publicnode.com (latence: 97.00ms, taux de succès: 100.00%)
+2025-03-03 22:39:14.317 | INFO     | __main__:test_rpc_manager:48 - Meilleur RPC: https://avalanche-c-chain.publicnode.com
+2025-03-03 22:39:14.317 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 102.00ms, taux de succès: 100.00%)
+2025-03-03 22:39:14.465 | SUCCESS  | __main__:test_rpc_manager:54 - Connexion Web3 établie, numéro de bloc actuel: 58173106
+2025-03-03 22:39:14.465 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://rpc.ankr.com/avalanche (latence: 78.00ms, taux de succès: 100.00%)
+2025-03-03 22:39:14.529 | SUCCESS  | __main__:test_rpc_manager:61 - Requête RPC réussie, numéro de bloc: 58173109
+2025-03-03 22:39:14.529 | INFO     | __main__:main:193 - === Résultats des tests ===
+2025-03-03 22:39:14.529 | INFO     | __main__:main:195 - Test du gestionnaire RPC: ✅ Réussi
+2025-03-03 22:39:22.716 | INFO     | __main__:main:172 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:39:22.716 | INFO     | __main__:test_price_feed_anomaly_detection:69 - === Test de la détection d'anomalies de prix ===
+2025-03-03 22:39:22.717 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://rpc.ankr.com/avalanche (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:39:22.725 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:39:22.741 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:39:22.741 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.0, Anomalie: False
+2025-03-03 22:39:22.741 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.5, Anomalie: False
+2025-03-03 22:39:22.742 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 31.0, Anomalie: False
+2025-03-03 22:39:22.742 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.8, Anomalie: False
+2025-03-03 22:39:22.742 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.2, Anomalie: False
+2025-03-03 22:39:22.743 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 0.0001 (changement de 100.00% par rapport au dernier prix 30.2)
+2025-03-03 22:39:22.743 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 0.0001, Anomalie: True
+2025-03-03 22:39:22.743 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10000.0 (changement de 9999999900.00% par rapport au dernier prix 0.0001)
+2025-03-03 22:39:22.743 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10000.0, Anomalie: True
+2025-03-03 22:39:22.743 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 50.0 (changement de 99.50% par rapport au dernier prix 10000.0)
+2025-03-03 22:39:22.743 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 50.0, Anomalie: True
+2025-03-03 22:39:22.743 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10.0 (changement de 80.00% par rapport au dernier prix 50.0)
+2025-03-03 22:39:22.744 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10.0, Anomalie: True
+2025-03-03 22:40:18.340 | INFO     | __main__:main:171 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:40:18.341 | INFO     | __main__:test_price_feed_anomaly_detection:69 - === Test de la détection d'anomalies de prix ===
+2025-03-03 22:40:18.341 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche-c-chain.publicnode.com (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:40:18.346 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:40:18.361 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:40:18.361 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.0, Anomalie: False
+2025-03-03 22:40:18.362 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.5, Anomalie: False
+2025-03-03 22:40:18.362 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 31.0, Anomalie: False
+2025-03-03 22:40:18.362 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.8, Anomalie: False
+2025-03-03 22:40:18.362 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.2, Anomalie: False
+2025-03-03 22:40:18.363 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 0.0001 (changement de 100.00% par rapport au dernier prix 30.2)
+2025-03-03 22:40:18.363 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 0.0001, Anomalie: True
+2025-03-03 22:40:18.363 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10000.0 (changement de 9999999900.00% par rapport au dernier prix 0.0001)
+2025-03-03 22:40:18.363 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10000.0, Anomalie: True
+2025-03-03 22:40:18.363 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 50.0 (changement de 99.50% par rapport au dernier prix 10000.0)
+2025-03-03 22:40:18.364 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 50.0, Anomalie: True
+2025-03-03 22:40:18.364 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10.0 (changement de 80.00% par rapport au dernier prix 50.0)
+2025-03-03 22:40:18.364 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10.0, Anomalie: True
+2025-03-03 22:40:18.364 | INFO     | __main__:test_price_feed_anomaly_detection:93 - Test de la détection d'anomalies de prix terminé avec succès
+2025-03-03 22:40:18.364 | INFO     | __main__:main:192 - === Résultats des tests ===
+2025-03-03 22:40:18.365 | INFO     | __main__:main:196 - Test de la détection d'anomalies de prix: ✅ Réussi
+2025-03-03 22:40:56.917 | INFO     | __main__:main:171 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:40:56.917 | INFO     | __main__:test_websocket_initialization:99 - === Test de l'initialisation des WebSockets ===
+2025-03-03 22:40:56.918 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche-c-chain.publicnode.com (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:40:56.930 | INFO     | gbpbot.core.price_feed:__init__:155 - Exchanges CEX initialisés
+2025-03-03 22:40:56.935 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:40:56.935 | INFO     | gbpbot.core.price_feed:__init__:187 - Tâche d'initialisation des WebSockets créée avec succès
+2025-03-03 22:40:56.951 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:40:56.951 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 22:40:56.951 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 22:40:56.952 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 22:40:56.952 | INFO     | __main__:test_websocket_initialization:112 - WebSockets initialisés, prix initiaux: {}
+2025-03-03 22:40:56.952 | INFO     | __main__:test_websocket_initialization:115 - Attente de mises à jour WebSocket...
+2025-03-03 22:40:56.952 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 22:40:56.952 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 22:40:56.952 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 22:40:57.950 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 22:40:57.967 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 22:40:57.975 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 22:40:57.976 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 22:41:06.948 | INFO     | __main__:test_websocket_initialization:119 - Prix WebSocket après attente: {'AVAX/USDT': {'price': 21.16, 'timestamp': 1741038061.0519996, 'source': 'binance_ws'}, 'AVAX/USDC': {'price': 21.15, 'timestamp': 1741038060.388677, 'source': 'binance_ws'}}
+2025-03-03 22:41:06.948 | INFO     | __main__:main:192 - === Résultats des tests ===
+2025-03-03 22:41:06.948 | INFO     | __main__:main:198 - Test de l'initialisation des WebSockets: ✅ Réussi
+2025-03-03 22:41:49.708 | INFO     | __main__:main:171 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:41:49.708 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 22:41:49.713 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 22:41:49.713 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 22:41:49.713 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:41:49.823 | INFO     | gbpbot.core.blockchain:_initialize_web3:256 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 22:41:49.829 | INFO     | gbpbot.core.blockchain:__init__:217 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 22:42:15.406 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:42:15.406 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 22:42:15.410 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 22:42:15.410 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 22:42:15.411 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://rpc.ankr.com/avalanche (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:42:15.488 | INFO     | gbpbot.core.blockchain:_initialize_web3:256 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 22:42:15.495 | INFO     | gbpbot.core.blockchain:__init__:217 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 22:42:15.496 | ERROR    | __main__:test_gbpbot_initialization:155 - Erreur lors du test du GBPBot: TransactionManager.__init__() takes 3 positional arguments but 4 were given
+2025-03-03 22:42:15.496 | INFO     | __main__:test_gbpbot_initialization:156 - Le test du GBPBot est ignoré en raison d'une erreur d'initialisation
+2025-03-03 22:42:15.496 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 22:42:15.496 | INFO     | __main__:main:205 - Test de l'initialisation du GBPBot: ❌ Échoué
+2025-03-03 22:42:24.728 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:42:24.728 | INFO     | __main__:test_rpc_manager:41 - === Test du gestionnaire RPC ===
+2025-03-03 22:42:24.728 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:110 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 22:42:24.817 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 84.04ms)
+2025-03-03 22:42:24.924 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 107.32ms)
+2025-03-03 22:42:24.996 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 71.56ms)
+2025-03-03 22:42:27.007 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:195 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-03 22:42:27.111 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avax.meowrpc.com en bonne santé (latence: 103.67ms)
+2025-03-03 22:42:27.111 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:135 - 5/5 nœuds RPC actifs
+2025-03-03 22:42:27.111 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:140 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 84.04ms, taux de succès: 100.00%)
+2025-03-03 22:42:27.112 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://rpc.ankr.com/avalanche (latence: 71.56ms, taux de succès: 100.00%)
+2025-03-03 22:42:27.112 | INFO     | __main__:test_rpc_manager:48 - Meilleur RPC: https://rpc.ankr.com/avalanche
+2025-03-03 22:42:27.112 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 84.04ms, taux de succès: 100.00%)
+2025-03-03 22:42:27.279 | SUCCESS  | __main__:test_rpc_manager:54 - Connexion Web3 établie, numéro de bloc actuel: 58173221
+2025-03-03 22:42:27.280 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 84.04ms, taux de succès: 100.00%)
+2025-03-03 22:42:27.361 | SUCCESS  | __main__:test_rpc_manager:61 - Requête RPC réussie, numéro de bloc: 58173221
+2025-03-03 22:42:27.361 | INFO     | __main__:test_price_feed_anomaly_detection:69 - === Test de la détection d'anomalies de prix ===
+2025-03-03 22:42:27.362 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche-c-chain.publicnode.com (latence: 107.32ms, taux de succès: 100.00%)
+2025-03-03 22:42:27.367 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:42:27.382 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:42:27.382 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.0, Anomalie: False
+2025-03-03 22:42:27.382 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.5, Anomalie: False
+2025-03-03 22:42:27.382 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 31.0, Anomalie: False
+2025-03-03 22:42:27.382 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.8, Anomalie: False
+2025-03-03 22:42:27.383 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.2, Anomalie: False
+2025-03-03 22:42:27.383 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 0.0001 (changement de 100.00% par rapport au dernier prix 30.2)
+2025-03-03 22:42:27.383 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 0.0001, Anomalie: True
+2025-03-03 22:42:27.383 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10000.0 (changement de 9999999900.00% par rapport au dernier prix 0.0001)
+2025-03-03 22:42:27.383 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10000.0, Anomalie: True
+2025-03-03 22:42:27.383 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 50.0 (changement de 99.50% par rapport au dernier prix 10000.0)
+2025-03-03 22:42:27.383 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 50.0, Anomalie: True
+2025-03-03 22:42:27.383 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10.0 (changement de 80.00% par rapport au dernier prix 50.0)
+2025-03-03 22:42:27.384 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10.0, Anomalie: True
+2025-03-03 22:42:27.384 | INFO     | __main__:test_price_feed_anomaly_detection:93 - Test de la détection d'anomalies de prix terminé avec succès
+2025-03-03 22:42:27.384 | INFO     | __main__:test_websocket_initialization:99 - === Test de l'initialisation des WebSockets ===
+2025-03-03 22:42:27.384 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche-c-chain.publicnode.com (latence: 107.32ms, taux de succès: 100.00%)
+2025-03-03 22:42:27.396 | INFO     | gbpbot.core.price_feed:__init__:155 - Exchanges CEX initialisés
+2025-03-03 22:42:27.397 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:42:27.398 | INFO     | gbpbot.core.price_feed:__init__:187 - Tâche d'initialisation des WebSockets créée avec succès
+2025-03-03 22:42:27.414 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:42:27.415 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 22:42:27.415 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 22:42:27.415 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 22:42:27.415 | INFO     | __main__:test_websocket_initialization:112 - WebSockets initialisés, prix initiaux: {}
+2025-03-03 22:42:27.415 | INFO     | __main__:test_websocket_initialization:115 - Attente de mises à jour WebSocket...
+2025-03-03 22:42:27.416 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 22:42:27.416 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 22:42:27.416 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 22:42:28.405 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 22:42:28.421 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 22:42:28.425 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 22:42:28.437 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 22:42:55.320 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:42:55.320 | INFO     | __main__:test_rpc_manager:41 - === Test du gestionnaire RPC ===
+2025-03-03 22:42:55.321 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:110 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 22:42:55.444 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 118.74ms)
+2025-03-03 22:42:55.537 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 92.79ms)
+2025-03-03 22:42:55.608 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 70.92ms)
+2025-03-03 22:42:57.610 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:195 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-03 22:42:57.712 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avax.meowrpc.com en bonne santé (latence: 101.87ms)
+2025-03-03 22:42:57.712 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:135 - 5/5 nœuds RPC actifs
+2025-03-03 22:42:57.713 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:140 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 118.74ms, taux de succès: 100.00%)
+2025-03-03 22:42:57.713 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 118.74ms, taux de succès: 100.00%)
+2025-03-03 22:42:57.713 | INFO     | __main__:test_rpc_manager:48 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc
+2025-03-03 22:42:57.713 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 118.74ms, taux de succès: 100.00%)
+2025-03-03 22:42:57.862 | SUCCESS  | __main__:test_rpc_manager:54 - Connexion Web3 établie, numéro de bloc actuel: 58173236
+2025-03-03 22:42:57.862 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 118.74ms, taux de succès: 100.00%)
+2025-03-03 22:42:57.948 | SUCCESS  | __main__:test_rpc_manager:61 - Requête RPC réussie, numéro de bloc: 58173237
+2025-03-03 22:42:57.948 | INFO     | __main__:test_price_feed_anomaly_detection:69 - === Test de la détection d'anomalies de prix ===
+2025-03-03 22:42:57.949 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 118.74ms, taux de succès: 100.00%)
+2025-03-03 22:42:57.954 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:42:57.969 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:42:57.969 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.0, Anomalie: False
+2025-03-03 22:42:57.969 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.5, Anomalie: False
+2025-03-03 22:42:57.970 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 31.0, Anomalie: False
+2025-03-03 22:42:57.970 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.8, Anomalie: False
+2025-03-03 22:42:57.970 | INFO     | __main__:test_price_feed_anomaly_detection:84 - Prix: 30.2, Anomalie: False
+2025-03-03 22:42:57.970 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 0.0001 (changement de 100.00% par rapport au dernier prix 30.2)
+2025-03-03 22:42:57.970 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 0.0001, Anomalie: True
+2025-03-03 22:42:57.970 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10000.0 (changement de 9999999900.00% par rapport au dernier prix 0.0001)
+2025-03-03 22:42:57.971 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10000.0, Anomalie: True
+2025-03-03 22:42:57.971 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 50.0 (changement de 99.50% par rapport au dernier prix 10000.0)
+2025-03-03 22:42:57.971 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 50.0, Anomalie: True
+2025-03-03 22:42:57.971 | WARNING  | gbpbot.core.price_feed:_is_price_anomaly:1719 - Prix anormal détecté pour WAVAX/USDC sur test_source: 10.0 (changement de 80.00% par rapport au dernier prix 50.0)
+2025-03-03 22:42:57.971 | INFO     | __main__:test_price_feed_anomaly_detection:90 - Prix: 10.0, Anomalie: True
+2025-03-03 22:42:57.971 | INFO     | __main__:test_price_feed_anomaly_detection:93 - Test de la détection d'anomalies de prix terminé avec succès
+2025-03-03 22:42:57.972 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 22:42:57.972 | INFO     | __main__:main:199 - Test du gestionnaire RPC: ✅ Réussi
+2025-03-03 22:42:57.972 | INFO     | __main__:main:201 - Test de la détection d'anomalies de prix: ✅ Réussi
+2025-03-03 22:55:30.954 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:55:30.955 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 22:55:30.962 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 22:55:30.962 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 22:55:30.962 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:55:31.056 | INFO     | gbpbot.core.blockchain:_initialize_web3:256 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 22:55:31.063 | INFO     | gbpbot.core.blockchain:__init__:217 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 22:55:31.065 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:55:31.080 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:55:31.081 | ERROR    | __main__:test_gbpbot_initialization:155 - Erreur lors du test du GBPBot: 'trader_joe_router'
+2025-03-03 22:55:31.081 | INFO     | __main__:test_gbpbot_initialization:156 - Le test du GBPBot est ignoré en raison d'une erreur d'initialisation
+2025-03-03 22:55:31.081 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 22:55:31.082 | INFO     | __main__:main:205 - Test de l'initialisation du GBPBot: ❌ Échoué
+2025-03-03 22:56:41.273 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 22:56:41.274 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 22:56:41.280 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 22:56:41.280 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 22:56:41.280 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://rpc.ankr.com/avalanche (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 22:56:41.355 | INFO     | gbpbot.core.blockchain:_initialize_web3:256 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 22:56:41.363 | INFO     | gbpbot.core.blockchain:__init__:217 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 22:56:41.364 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:56:41.380 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 22:56:41.381 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:654 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 22:56:41.381 | ERROR    | __main__:test_gbpbot_initialization:155 - Erreur lors du test du GBPBot: 'BlockchainClient' object has no attribute 'simulated_balances'
+2025-03-03 22:56:41.382 | INFO     | __main__:test_gbpbot_initialization:156 - Le test du GBPBot est ignoré en raison d'une erreur d'initialisation
+2025-03-03 22:56:41.382 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 22:56:41.382 | INFO     | __main__:main:205 - Test de l'initialisation du GBPBot: ❌ Échoué
+2025-03-03 23:00:39.006 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 23:00:39.006 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 23:00:39.011 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 23:00:39.011 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 23:00:39.012 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 23:00:39.122 | INFO     | gbpbot.core.blockchain:_initialize_web3:259 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 23:00:39.129 | INFO     | gbpbot.core.blockchain:__init__:221 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 23:00:39.130 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:00:39.145 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:00:39.145 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:650 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 23:00:39.145 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:651 - Balances simulées initiales: {'WAVAX': 10.0, 'USDT': 1000.0, 'USDC': 1000.0, 'WETH': 1.0}
+2025-03-03 23:00:39.147 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:688 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-03 23:00:39.148 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:708 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 23:00:39.220 | SUCCESS  | gbpbot.core.blockchain:_check_connection:727 - Connexion à la blockchain établie
+2025-03-03 23:00:39.232 | INFO     | gbpbot.core.price_feed:__init__:155 - Exchanges CEX initialisés
+2025-03-03 23:00:39.233 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:00:39.233 | INFO     | gbpbot.core.price_feed:__init__:187 - Tâche d'initialisation des WebSockets créée avec succès
+2025-03-03 23:00:39.250 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:00:39.251 | SUCCESS  | __main__:test_gbpbot_initialization:133 - GBPBot initialisé avec succès, connexion blockchain établie
+2025-03-03 23:00:39.251 | INFO     | __main__:test_gbpbot_initialization:139 - Démarrage du bot pour un test court...
+2025-03-03 23:00:39.251 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 23:00:39.252 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 23:00:39.252 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 10.0000
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1000.0000
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:start:121 - 🚀 Démarrage du bot en mode simulation...
+2025-03-03 23:00:39.252 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:39.253 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 10.0000
+2025-03-03 23:00:39.253 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:39.253 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1000.0000
+2025-03-03 23:00:39.253 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:39.253 | INFO     | gbpbot.main:_run_bot:141 - Durée de simulation réglée à 43200 secondes (12 heures)
+2025-03-03 23:00:39.254 | INFO     | gbpbot.main:_run_bot:146 - 🧪 TEST: Simulation de trades pour tester le rééquilibrage...
+2025-03-03 23:00:39.254 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:00:39.254 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 9.0000, USDC: 1001.0080
+2025-03-03 23:00:39.254 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:00:39.254 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #1 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:00:39.779 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:00:39.779 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 8.0000, USDC: 1002.0160
+2025-03-03 23:00:39.779 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:00:39.779 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #2 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:00:40.286 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:00:40.286 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 7.0000, USDC: 1003.0240
+2025-03-03 23:00:40.286 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:00:40.287 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #3 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:00:40.297 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 23:00:40.307 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 23:00:40.796 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:00:40.796 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 6.0000, USDC: 1004.0320
+2025-03-03 23:00:40.796 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:00:40.796 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #4 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:00:41.290 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:41.290 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:00:41.290 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:41.291 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:00:41.291 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:41.291 | WARNING  | gbpbot.main:_check_portfolio_balance:614 - Déséquilibre détecté: ratio WAVAX actuel = 0.00, cible = 0.50
+2025-03-03 23:00:41.291 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:41.291 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:00:41.291 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:41.292 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:00:41.292 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:41.292 | INFO     | gbpbot.main:_rebalance_portfolio:395 - Rééquilibrage non nécessaire, solde WAVAX suffisant: 6.0000
+2025-03-03 23:00:41.292 | INFO     | gbpbot.main:_run_bot:157 - Vérification de l'état des RPC...
+2025-03-03 23:00:41.292 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:110 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 23:00:41.388 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 92.01ms)
+2025-03-03 23:00:41.488 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 99.01ms)
+2025-03-03 23:00:41.562 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 73.74ms)
+2025-03-03 23:00:43.555 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:195 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-03 23:00:43.663 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avax.meowrpc.com en bonne santé (latence: 108.00ms)
+2025-03-03 23:00:43.663 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:135 - 5/5 nœuds RPC actifs
+2025-03-03 23:00:43.663 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:140 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 92.01ms, taux de succès: 100.00%)
+2025-03-03 23:00:43.664 | INFO     | gbpbot.main:_run_bot:169 - 📝 Mode simulation: 43195 secondes restantes
+2025-03-03 23:00:43.664 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:43.664 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:00:43.664 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:43.664 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:00:43.664 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:43.665 | ERROR    | gbpbot.main:monitor_trading_opportunities:586 - Erreur lors de l'analyse des opportunités de trading: GBPBot._should_stop_trading() takes 1 positional argument but 2 were given
+2025-03-03 23:00:43.665 | INFO     | gbpbot.main:_should_stop_trading:347 - Valeur du portefeuille: initiale=10.0000, actuelle=2010.0000, changement=20000.00%
+2025-03-03 23:00:43.665 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:43.665 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:00:43.665 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:43.666 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:00:43.666 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:43.666 | WARNING  | gbpbot.main:_check_portfolio_balance:614 - Déséquilibre détecté: ratio WAVAX actuel = 0.00, cible = 0.50
+2025-03-03 23:00:43.666 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:00:43.666 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:00:43.666 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:00:43.666 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:00:43.667 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:00:43.667 | INFO     | gbpbot.main:_rebalance_portfolio:395 - Rééquilibrage non nécessaire, solde WAVAX suffisant: 6.0000
+2025-03-03 23:00:43.667 | ERROR    | gbpbot.main:_update_trade_amount:453 - Erreur lors de la mise à jour du montant de trade: division by zero
+2025-03-03 23:00:43.667 | ERROR    | gbpbot.main:_run_bot:198 - Erreur dans la boucle principale: 'cycle_interval'
+2025-03-03 23:00:43.667 | ERROR    | gbpbot.main:start:130 - Erreur critique: 'GBPBot' object has no attribute '_print_statistics'
+2025-03-03 23:00:44.222 | DEBUG    | gbpbot.core.price_feed:_binance_ws_listener:1516 - Prix WebSocket Binance pour AVAX/USDT: 20.72
+2025-03-03 23:00:48.020 | DEBUG    | gbpbot.core.price_feed:_binance_ws_listener:1516 - Prix WebSocket Binance pour AVAX/USDT: 20.73
+2025-03-03 23:01:14.813 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 23:01:14.814 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 23:01:14.818 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 23:01:14.818 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 23:01:14.819 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 23:01:14.939 | INFO     | gbpbot.core.blockchain:_initialize_web3:259 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 23:01:14.946 | INFO     | gbpbot.core.blockchain:__init__:221 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 23:01:14.948 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:01:14.962 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:01:14.963 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:650 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 23:01:14.963 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:651 - Balances simulées initiales: {'WAVAX': 10.0, 'USDT': 1000.0, 'USDC': 1000.0, 'WETH': 1.0}
+2025-03-03 23:01:14.965 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:688 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-03 23:01:14.965 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:708 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 23:01:15.071 | SUCCESS  | gbpbot.core.blockchain:_check_connection:727 - Connexion à la blockchain établie
+2025-03-03 23:01:15.085 | INFO     | gbpbot.core.price_feed:__init__:155 - Exchanges CEX initialisés
+2025-03-03 23:01:15.086 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:01:15.087 | INFO     | gbpbot.core.price_feed:__init__:187 - Tâche d'initialisation des WebSockets créée avec succès
+2025-03-03 23:01:15.100 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:01:15.101 | SUCCESS  | __main__:test_gbpbot_initialization:133 - GBPBot initialisé avec succès, connexion blockchain établie
+2025-03-03 23:01:15.101 | INFO     | __main__:test_gbpbot_initialization:139 - Démarrage du bot pour un test court...
+2025-03-03 23:01:15.101 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 23:01:15.102 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 23:01:15.102 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 23:01:15.102 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:01:15.102 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 10.0000
+2025-03-03 23:01:15.102 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:01:15.103 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1000.0000
+2025-03-03 23:01:15.103 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:01:15.103 | INFO     | gbpbot.main:start:121 - 🚀 Démarrage du bot en mode simulation...
+2025-03-03 23:01:15.103 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:01:15.103 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 10.0000
+2025-03-03 23:01:15.103 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:01:15.104 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1000.0000
+2025-03-03 23:01:15.104 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:01:15.104 | INFO     | gbpbot.main:_run_bot:141 - Durée de simulation réglée à 43200 secondes (12 heures)
+2025-03-03 23:01:15.104 | INFO     | gbpbot.main:_run_bot:146 - 🧪 TEST: Simulation de trades pour tester le rééquilibrage...
+2025-03-03 23:01:15.104 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:01:15.105 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 9.0000, USDC: 1001.0080
+2025-03-03 23:01:15.105 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:01:15.105 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #1 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:01:15.623 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:01:15.623 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 8.0000, USDC: 1002.0160
+2025-03-03 23:01:15.623 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:01:15.624 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #2 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:01:16.138 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:356 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:01:16.138 | INFO     | gbpbot.core.blockchain:simulate_trade:357 - [SIMULATION] Nouveaux soldes: WAVAX: 7.0000, USDC: 1003.0240
+2025-03-03 23:01:16.138 | INFO     | gbpbot.core.blockchain:simulate_trade:364 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:01:16.139 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #3 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:01:16.140 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 23:01:16.150 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 23:02:59.838 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 23:02:59.839 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 23:02:59.843 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 23:02:59.843 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 23:02:59.843 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche.blockpi.network/v1/rpc/public (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 23:03:29.891 | ERROR    | gbpbot.core.blockchain:_initialize_web3:256 - La connexion Web3 n'est pas établie
+2025-03-03 23:03:29.891 | ERROR    | gbpbot.core.blockchain:_initialize_web3:263 - Erreur lors de l'initialisation de Web3: Échec de la connexion Web3
+2025-03-03 23:03:29.892 | ERROR    | __main__:test_gbpbot_initialization:155 - Erreur lors du test du GBPBot: Échec de la connexion Web3: Échec de la connexion Web3
+2025-03-03 23:03:29.892 | INFO     | __main__:test_gbpbot_initialization:156 - Le test du GBPBot est ignoré en raison d'une erreur d'initialisation
+2025-03-03 23:03:29.892 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 23:03:29.892 | INFO     | __main__:main:205 - Test de l'initialisation du GBPBot: ❌ Échoué
+2025-03-03 23:03:44.778 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 23:03:44.778 | INFO     | __main__:test_rpc_manager:41 - === Test du gestionnaire RPC ===
+2025-03-03 23:03:44.779 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:110 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 23:03:44.893 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 110.67ms)
+2025-03-03 23:03:44.984 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 90.67ms)
+2025-03-03 23:03:45.070 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 84.78ms)
+2025-03-03 23:03:47.075 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:195 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-03 23:03:47.192 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avax.meowrpc.com en bonne santé (latence: 116.61ms)
+2025-03-03 23:03:47.193 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:135 - 5/5 nœuds RPC actifs
+2025-03-03 23:03:47.193 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:140 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 110.67ms, taux de succès: 100.00%)
+2025-03-03 23:03:47.194 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 110.67ms, taux de succès: 100.00%)
+2025-03-03 23:03:47.194 | INFO     | __main__:test_rpc_manager:48 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc
+2025-03-03 23:03:47.194 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 110.67ms, taux de succès: 100.00%)
+2025-03-03 23:03:47.348 | SUCCESS  | __main__:test_rpc_manager:54 - Connexion Web3 établie, numéro de bloc actuel: 58174074
+2025-03-03 23:03:47.349 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://avalanche-c-chain.publicnode.com (latence: 90.67ms, taux de succès: 100.00%)
+2025-03-03 23:03:47.508 | SUCCESS  | __main__:test_rpc_manager:61 - Requête RPC réussie, numéro de bloc: 58174077
+2025-03-03 23:03:47.511 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 23:03:47.511 | INFO     | __main__:main:199 - Test du gestionnaire RPC: ✅ Réussi
+2025-03-03 23:04:14.422 | INFO     | __main__:main:176 - Démarrage des tests d'amélioration du bot GBP
+2025-03-03 23:04:14.422 | INFO     | __main__:test_gbpbot_initialization:125 - === Test de l'initialisation du GBPBot ===
+2025-03-03 23:04:14.427 | INFO     | gbpbot.main:__init__:38 - Initialisation du bot sur Avalanche mainnet
+2025-03-03 23:04:14.427 | INFO     | gbpbot.main:__init__:50 - Initialisation de la connexion blockchain avec le gestionnaire RPC...
+2025-03-03 23:04:14.427 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:253 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 1000.00ms, taux de succès: 100.00%)
+2025-03-03 23:04:14.532 | INFO     | gbpbot.core.blockchain:_initialize_web3:273 - Connexion Web3 établie via le gestionnaire RPC
+2025-03-03 23:04:14.539 | INFO     | gbpbot.core.blockchain:__init__:221 - Compte configuré: 0x788DA3A1BF420293e069248bE4499f8CB5336584
+2025-03-03 23:04:14.540 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:04:14.555 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:04:14.556 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:671 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 23:04:14.556 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:672 - Balances simulées initiales: {'WAVAX': 10.0, 'USDT': 1000.0, 'USDC': 1000.0, 'WETH': 1.0}
+2025-03-03 23:04:14.558 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:709 - Portefeuille de simulation initialisé: 0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf
+2025-03-03 23:04:14.558 | INFO     | gbpbot.core.blockchain:_load_contract_addresses:727 - 🔬 Mode simulation activé - Utilisation de balances simulées
+2025-03-03 23:04:14.643 | SUCCESS  | gbpbot.core.blockchain:_check_connection:746 - Connexion à la blockchain établie
+2025-03-03 23:04:14.654 | INFO     | gbpbot.core.price_feed:__init__:155 - Exchanges CEX initialisés
+2025-03-03 23:04:14.655 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:04:14.655 | INFO     | gbpbot.core.price_feed:__init__:187 - Tâche d'initialisation des WebSockets créée avec succès
+2025-03-03 23:04:14.669 | INFO     | gbpbot.core.price_feed:_initialize_contracts:397 - Contrats DEX initialisés sur le réseau mainnet
+2025-03-03 23:04:14.669 | SUCCESS  | __main__:test_gbpbot_initialization:133 - GBPBot initialisé avec succès, connexion blockchain établie
+2025-03-03 23:04:14.670 | INFO     | __main__:test_gbpbot_initialization:139 - Démarrage du bot pour un test court...
+2025-03-03 23:04:14.670 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdt
+2025-03-03 23:04:14.670 | INFO     | gbpbot.core.price_feed:initialize_websockets:1465 - Tâche WebSocket créée pour avaxusdc
+2025-03-03 23:04:14.670 | INFO     | gbpbot.core.price_feed:initialize_websockets:1469 - WebSockets initialisés pour 2 paires
+2025-03-03 23:04:14.670 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:14.670 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 10.0000
+2025-03-03 23:04:14.670 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:14.671 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1000.0000
+2025-03-03 23:04:14.671 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:14.671 | INFO     | gbpbot.main:start:121 - 🚀 Démarrage du bot en mode simulation...
+2025-03-03 23:04:14.671 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:14.671 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 10.0000
+2025-03-03 23:04:14.671 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:14.672 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1000.0000
+2025-03-03 23:04:14.672 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:14.672 | INFO     | gbpbot.main:_run_bot:141 - Durée de simulation réglée à 43200 secondes (12 heures)
+2025-03-03 23:04:14.672 | INFO     | gbpbot.main:_run_bot:146 - 🧪 TEST: Simulation de trades pour tester le rééquilibrage...
+2025-03-03 23:04:14.673 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:377 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:04:14.673 | INFO     | gbpbot.core.blockchain:simulate_trade:378 - [SIMULATION] Nouveaux soldes: WAVAX: 9.0000, USDC: 1001.0080
+2025-03-03 23:04:14.673 | INFO     | gbpbot.core.blockchain:simulate_trade:385 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:04:14.673 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #1 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:04:15.179 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:377 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:04:15.180 | INFO     | gbpbot.core.blockchain:simulate_trade:378 - [SIMULATION] Nouveaux soldes: WAVAX: 8.0000, USDC: 1002.0160
+2025-03-03 23:04:15.180 | INFO     | gbpbot.core.blockchain:simulate_trade:385 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:04:15.180 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #2 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:04:15.691 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:377 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:04:15.691 | INFO     | gbpbot.core.blockchain:simulate_trade:378 - [SIMULATION] Nouveaux soldes: WAVAX: 7.0000, USDC: 1003.0240
+2025-03-03 23:04:15.691 | INFO     | gbpbot.core.blockchain:simulate_trade:385 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:04:15.691 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #3 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:04:15.717 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdc
+2025-03-03 23:04:15.722 | INFO     | gbpbot.core.price_feed:_binance_ws_listener:1490 - WebSocket Binance connecté pour avaxusdt
+2025-03-03 23:04:16.218 | SUCCESS  | gbpbot.core.blockchain:simulate_trade:377 - [SIMULATION] Trade simulé: 1.0 WAVAX → 1.0080 USDC
+2025-03-03 23:04:16.218 | INFO     | gbpbot.core.blockchain:simulate_trade:378 - [SIMULATION] Nouveaux soldes: WAVAX: 6.0000, USDC: 1004.0320
+2025-03-03 23:04:16.218 | INFO     | gbpbot.core.blockchain:simulate_trade:385 - [SIMULATION] Profit estimé: 0.0080 USD (0.80%)
+2025-03-03 23:04:16.218 | SUCCESS  | gbpbot.main:_run_bot:150 - 🧪 TEST: Trade simulé #4 réussi: 1.0 WAVAX → USDC
+2025-03-03 23:04:16.729 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:16.729 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:04:16.729 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:16.729 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:04:16.729 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:16.730 | WARNING  | gbpbot.main:_check_portfolio_balance:614 - Déséquilibre détecté: ratio WAVAX actuel = 0.00, cible = 0.50
+2025-03-03 23:04:16.730 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:16.730 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:04:16.730 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:16.731 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:04:16.731 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:16.731 | INFO     | gbpbot.main:_rebalance_portfolio:395 - Rééquilibrage non nécessaire, solde WAVAX suffisant: 6.0000
+2025-03-03 23:04:16.731 | INFO     | gbpbot.main:_run_bot:157 - Vérification de l'état des RPC...
+2025-03-03 23:04:16.731 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:110 - Vérification de la santé des 5 nœuds RPC...
+2025-03-03 23:04:16.823 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 88.69ms)
+2025-03-03 23:04:16.915 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 91.34ms)
+2025-03-03 23:04:17.002 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 85.31ms)
+2025-03-03 23:04:18.999 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:195 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-03 23:04:19.104 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:179 - RPC https://avax.meowrpc.com en bonne santé (latence: 105.35ms)
+2025-03-03 23:04:19.105 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:135 - 5/5 nœuds RPC actifs
+2025-03-03 23:04:19.105 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:140 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 88.69ms, taux de succès: 100.00%)
+2025-03-03 23:04:19.105 | INFO     | gbpbot.main:_run_bot:169 - 📝 Mode simulation: 43195 secondes restantes
+2025-03-03 23:04:19.105 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:19.106 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:04:19.106 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:19.106 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:04:19.106 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:19.106 | ERROR    | gbpbot.main:monitor_trading_opportunities:586 - Erreur lors de l'analyse des opportunités de trading: GBPBot._should_stop_trading() takes 1 positional argument but 2 were given
+2025-03-03 23:04:19.106 | INFO     | gbpbot.main:_should_stop_trading:347 - Valeur du portefeuille: initiale=10.0000, actuelle=2010.0000, changement=20000.00%
+2025-03-03 23:04:19.106 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:19.107 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:04:19.107 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:19.107 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:04:19.107 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:19.107 | WARNING  | gbpbot.main:_check_portfolio_balance:614 - Déséquilibre détecté: ratio WAVAX actuel = 0.00, cible = 0.50
+2025-03-03 23:04:19.107 | INFO     | gbpbot.main:_check_balances:283 - 💰 Soldes simulés actuels:
+2025-03-03 23:04:19.107 | INFO     | gbpbot.main:_check_balances:285 -   • WAVAX: 6.0000
+2025-03-03 23:04:19.108 | INFO     | gbpbot.main:_check_balances:285 -   • USDT: 1000.0000
+2025-03-03 23:04:19.108 | INFO     | gbpbot.main:_check_balances:285 -   • USDC: 1004.0320
+2025-03-03 23:04:19.108 | INFO     | gbpbot.main:_check_balances:285 -   • WETH: 1.0000
+2025-03-03 23:04:19.108 | INFO     | gbpbot.main:_rebalance_portfolio:395 - Rééquilibrage non nécessaire, solde WAVAX suffisant: 6.0000
+2025-03-03 23:04:19.108 | ERROR    | gbpbot.main:_update_trade_amount:453 - Erreur lors de la mise à jour du montant de trade: division by zero
+2025-03-03 23:04:19.108 | ERROR    | gbpbot.main:_run_bot:198 - Erreur dans la boucle principale: 'cycle_interval'
+2025-03-03 23:04:19.108 | ERROR    | gbpbot.main:start:130 - Erreur critique: 'GBPBot' object has no attribute '_print_statistics'
+2025-03-03 23:04:26.092 | DEBUG    | gbpbot.core.price_feed:_binance_ws_listener:1516 - Prix WebSocket Binance pour AVAX/USDT: 20.87
+2025-03-03 23:04:44.667 | INFO     | __main__:main:197 - === Résultats des tests ===
+2025-03-03 23:04:44.667 | INFO     | __main__:main:205 - Test de l'initialisation du GBPBot: ✅ Réussi
+2025-03-04 00:45:26.272 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 00:45:26.272 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 00:45:26.272 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 00:45:26.272 | INFO     | __main__:test_rpc_manager:52 - 🔍 Test du gestionnaire RPC...
+2025-03-04 00:45:26.272 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:147 - Vérification de la santé des 5 nœuds RPC...
+2025-03-04 00:45:26.363 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 85.77ms)
+2025-03-04 00:45:26.373 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 95.78ms)
+2025-03-04 00:45:26.391 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://avax.meowrpc.com en bonne santé (latence: 113.78ms)
+2025-03-04 00:45:26.419 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 141.78ms)
+2025-03-04 00:45:32.276 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:278 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-04 00:45:32.277 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:159 - 4/5 nœuds RPC actifs
+2025-03-04 00:45:32.277 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:181 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 728.73ms, taux de succès: 100.00%)
+2025-03-04 00:48:36.693 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 00:48:36.693 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 00:48:36.693 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 00:48:36.694 | INFO     | __main__:test_rpc_manager:52 - 🔍 Test du gestionnaire RPC...
+2025-03-04 00:48:36.694 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:147 - Vérification de la santé des 5 nœuds RPC...
+2025-03-04 00:48:36.779 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 79.89ms)
+2025-03-04 00:48:36.791 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 91.85ms)
+2025-03-04 00:48:36.802 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 103.58ms)
+2025-03-04 00:48:36.808 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://avax.meowrpc.com en bonne santé (latence: 109.16ms)
+2025-03-04 00:48:42.263 | WARNING  | gbpbot.core.rpc_manager:_check_node_health:278 - RPC https://avalanche.blockpi.network/v1/rpc/public en échec: 
+2025-03-04 00:48:42.263 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:159 - 4/5 nœuds RPC actifs
+2025-03-04 00:48:42.264 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:181 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc (latence: 727.55ms, taux de succès: 100.00%)
+2025-03-04 00:48:42.264 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:322 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 727.55ms, taux de succès: 100.00%)
+2025-03-04 00:48:42.264 | INFO     | __main__:test_rpc_manager:59 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc
+2025-03-04 00:48:42.264 | DEBUG    | gbpbot.core.rpc_manager:get_best_rpc:322 - RPC sélectionné: https://api.avax.network/ext/bc/C/rpc (latence: 727.55ms, taux de succès: 100.00%)
+2025-03-04 00:48:42.448 | INFO     | __main__:test_rpc_manager:68 - Numéro de bloc actuel: 58177606
+2025-03-04 00:48:42.495 | INFO     | __main__:test_rpc_manager:72 - Prix du gaz actuel: 1.00 Gwei
+2025-03-04 00:48:42.495 | INFO     | __main__:test_rpc_manager:74 - ✅ Test du gestionnaire RPC réussi
+2025-03-04 00:48:42.495 | INFO     | __main__:test_cache_manager:178 - 🔍 Test du gestionnaire de cache...
+2025-03-04 00:48:42.496 | INFO     | __main__:test_cache_manager:191 - Cache RPC: OK
+2025-03-04 00:48:42.496 | INFO     | __main__:test_cache_manager:201 - Cache de prix: OK
+2025-03-04 00:48:42.496 | INFO     | __main__:test_cache_manager:208 - Statistiques du cache: {'hit_rates': {'rpc': 50.0, 'price': 100.0, 'contract': 0.0}, 'hits': {'rpc': 1, 'price': 1, 'contract': 0, 'total': 2}, 'misses': {'rpc': 1, 'price': 0, 'contract': 0, 'total': 1}, 'current_size': {'rpc': 2, 'price': 1, 'contract': 0, 'total': 3}, 'evicted_items': 0, 'expired_items': 0}
+2025-03-04 00:48:42.496 | INFO     | __main__:test_cache_manager:210 - ✅ Test du gestionnaire de cache réussi
+2025-03-04 00:48:42.496 | INFO     | __main__:test_anomaly_detector:217 - 🔍 Test du détecteur d'anomalies...
+2025-03-04 00:48:42.501 | INFO     | __main__:test_anomaly_detector:232 - Statistiques pour WAVAX/USDC: moyenne=21.5249, écart-type=0.1188
+2025-03-04 00:48:42.501 | WARNING  | gbpbot.utils.anomaly_detector:is_price_anomaly:188 - Anomalie détectée pour WAVAX/USDC (test): prix=32.2500, z-score=3.87, déviation=45.30%
+2025-03-04 00:48:42.501 | INFO     | __main__:test_anomaly_detector:242 - Anomalie détectée: {'pair': 'WAVAX/USDC', 'source': 'test', 'price': 32.25, 'timestamp': 1741045722.5010095, 'z_score': np.float64(3.8691898760118875), 'mean': np.float64(22.19524520840024), 'std': np.float64(2.598671844443973), 'deviation_percent': np.float64(45.30139089337176)}
+2025-03-04 00:48:42.501 | ERROR    | __main__:test_anomaly_detector:252 - Aucune anomalie détectée
+2025-03-04 00:48:42.502 | INFO     | __main__:main:394 - ==================================================
+2025-03-04 00:48:42.502 | INFO     | __main__:main:395 - Résultats des tests
+2025-03-04 00:48:42.502 | INFO     | __main__:main:396 - ==================================================
+2025-03-04 00:48:42.502 | INFO     | __main__:main:400 - Test rpc: ✅ RÉUSSI
+2025-03-04 00:48:42.502 | INFO     | __main__:main:400 - Test cache: ✅ RÉUSSI
+2025-03-04 00:48:42.502 | INFO     | __main__:main:400 - Test anomaly: ❌ ÉCHOUÉ
+2025-03-04 00:48:42.503 | ERROR    | __main__:main:407 - ❌ Certains tests ont échoué
+2025-03-04 00:51:12.877 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 00:51:12.877 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 00:51:12.877 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 00:51:12.878 | INFO     | __main__:test_rpc_manager:52 - 🔍 Test du gestionnaire RPC...
+2025-03-04 00:51:12.878 | INFO     | gbpbot.core.rpc_manager:check_rpc_health:147 - Vérification de la santé des 5 nœuds RPC...
+2025-03-04 00:51:12.955 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://rpc.ankr.com/avalanche en bonne santé (latence: 71.92ms)
+2025-03-04 00:51:12.969 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://avalanche-c-chain.publicnode.com en bonne santé (latence: 85.95ms)
+2025-03-04 00:51:12.971 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://api.avax.network/ext/bc/C/rpc en bonne santé (latence: 88.09ms)
+2025-03-04 00:51:13.003 | DEBUG    | gbpbot.core.rpc_manager:_check_node_health:250 - RPC https://avax.meowrpc.com en bonne santé (latence: 120.14ms)
+2025-03-04 00:51:24.012 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 00:51:24.012 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 00:51:24.013 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 00:51:24.013 | INFO     | __main__:test_anomaly_detector:217 - 🔍 Test du détecteur d'anomalies...
+2025-03-04 00:51:24.013 | INFO     | __main__:test_anomaly_detector:232 - Statistiques pour WAVAX/USDC: moyenne=21.4282, écart-type=0.0832
+2025-03-04 00:51:24.014 | WARNING  | gbpbot.utils.anomaly_detector:is_price_anomaly:193 - Anomalie détectée pour WAVAX/USDC (test): prix=32.2500, z-score=3.87, déviation=45.90%
+2025-03-04 00:51:24.014 | INFO     | __main__:test_anomaly_detector:242 - Anomalie détectée: {'pair': 'WAVAX/USDC', 'source': 'test', 'price': 32.25, 'timestamp': 1741045884.014981, 'z_score': 3.871153308142532, 'mean': 22.104518178369183, 'std': 2.620790501965124, 'deviation_percent': 45.89777411008615}
+2025-03-04 00:51:24.014 | INFO     | __main__:test_anomaly_detector:250 - Nombre d'anomalies détectées: 1
+2025-03-04 00:51:24.014 | INFO     | __main__:test_anomaly_detector:255 - ✅ Test du détecteur d'anomalies réussi
+2025-03-04 00:51:24.014 | INFO     | __main__:main:394 - ==================================================
+2025-03-04 00:51:24.015 | INFO     | __main__:main:395 - Résultats des tests
+2025-03-04 00:51:24.015 | INFO     | __main__:main:396 - ==================================================
+2025-03-04 00:51:24.015 | INFO     | __main__:main:400 - Test anomaly: ✅ RÉUSSI
+2025-03-04 00:51:24.015 | INFO     | __main__:main:404 - ✅ Tous les tests ont réussi
+2025-03-04 00:51:31.946 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 00:51:31.946 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 00:51:31.947 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 00:51:31.947 | INFO     | __main__:test_websocket_manager:262 - 🔍 Test du gestionnaire de WebSockets...
+2025-03-04 00:51:31.948 | INFO     | __main__:test_websocket_manager:269 - Paires à surveiller: ['avaxusdt', 'avaxusdc']
+2025-03-04 00:51:31.950 | INFO     | __main__:test_websocket_manager:295 - WebSocket connecté pour avaxusdt
+2025-03-04 00:51:31.950 | INFO     | __main__:test_websocket_manager:295 - WebSocket connecté pour avaxusdc
+2025-03-04 00:51:31.951 | INFO     | __main__:test_websocket_manager:301 - Attente des prix WebSocket (2 WebSockets initialisés)...
+2025-03-04 00:51:42.010 | ERROR    | __main__:test_websocket_manager:322 - ❌ Aucun prix reçu des WebSockets
+2025-03-04 00:51:42.010 | INFO     | __main__:main:394 - ==================================================
+2025-03-04 00:51:42.010 | INFO     | __main__:main:395 - Résultats des tests
+2025-03-04 00:51:42.010 | INFO     | __main__:main:396 - ==================================================
+2025-03-04 00:51:42.010 | INFO     | __main__:main:400 - Test websocket: ❌ ÉCHOUÉ
+2025-03-04 00:51:42.010 | ERROR    | __main__:main:407 - ❌ Certains tests ont échoué
+2025-03-04 21:48:14.992 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 21:48:14.992 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 21:48:14.992 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 21:48:14.992 | INFO     | __main__:test_rpc_manager:52 - 🔍 Test du gestionnaire RPC...
+2025-03-04 21:48:14.992 | INFO     | gbpbot.core.rpc.rpc_manager:check_rpc_health:734 - Vérification de la santé des 3 nœuds RPC...
+2025-03-04 21:48:14.992 | INFO     | gbpbot.core.rpc.rpc_manager:check_rpc_health:753 - 0/3 nœuds RPC actifs
+2025-03-04 21:48:14.993 | WARNING  | gbpbot.core.rpc.rpc_manager:check_rpc_health:785 - Aucun fournisseur RPC actif trouvé
+2025-03-04 21:50:29.316 | INFO     | __main__:main:371 - ==================================================
+2025-03-04 21:50:29.316 | INFO     | __main__:main:372 - Tests des améliorations du GBPBot
+2025-03-04 21:50:29.316 | INFO     | __main__:main:373 - ==================================================
+2025-03-04 21:50:29.316 | INFO     | __main__:test_rpc_manager:52 - 🔍 Test du gestionnaire RPC...
+2025-03-04 21:50:29.316 | INFO     | gbpbot.core.rpc.rpc_manager:check_rpc_health:734 - Vérification de la santé des 3 nœuds RPC...
+2025-03-04 21:50:29.317 | INFO     | gbpbot.core.rpc.rpc_manager:check_rpc_health:753 - 0/3 nœuds RPC actifs
+2025-03-04 21:50:29.317 | WARNING  | gbpbot.core.rpc.rpc_manager:check_rpc_health:785 - Aucun fournisseur RPC actif trouvé
+2025-03-04 21:50:29.317 | INFO     | __main__:test_rpc_manager:59 - Meilleur RPC: https://api.avax.network/ext/bc/C/rpc
+2025-03-04 21:50:29.553 | INFO     | __main__:test_rpc_manager:68 - Numéro de bloc actuel: 58225172
+2025-03-04 21:50:29.612 | INFO     | __main__:test_rpc_manager:72 - Prix du gaz actuel: 1.00 Gwei
+2025-03-04 21:50:29.612 | INFO     | __main__:test_rpc_manager:74 - ✅ Test du gestionnaire RPC réussi
+2025-03-04 21:50:29.612 | INFO     | __main__:test_cache_manager:178 - 🔍 Test du gestionnaire de cache...
+2025-03-04 21:50:29.612 | INFO     | __main__:test_cache_manager:191 - Cache RPC: OK
+2025-03-04 21:50:29.612 | INFO     | __main__:test_cache_manager:201 - Cache de prix: OK
+2025-03-04 21:50:29.613 | INFO     | __main__:test_cache_manager:208 - Statistiques du cache: {'hit_rates': {'rpc': 100.0, 'price': 100.0, 'contract': 0.0}, 'hits': {'rpc': 1, 'price': 1, 'contract': 0, 'total': 2}, 'misses': {'rpc': 0, 'price': 0, 'contract': 0, 'total': 0}, 'current_size': {'rpc': 1, 'price': 1, 'contract': 0, 'total': 2}, 'evicted_items': 0, 'expired_items': 0}
+2025-03-04 21:50:29.613 | INFO     | __main__:test_cache_manager:210 - ✅ Test du gestionnaire de cache réussi
+2025-03-04 21:50:29.613 | INFO     | __main__:test_anomaly_detector:217 - 🔍 Test du détecteur d'anomalies...
+2025-03-04 21:50:29.616 | INFO     | __main__:test_anomaly_detector:232 - Statistiques pour WAVAX/USDC: moyenne=21.4694, écart-type=0.1110
+2025-03-04 21:50:29.617 | WARNING  | gbpbot.utils.anomaly_detector:is_price_anomaly:193 - Anomalie détectée pour WAVAX/USDC (test): prix=32.2500, z-score=3.87, déviation=45.64%
+2025-03-04 21:50:29.617 | INFO     | __main__:test_anomaly_detector:242 - Anomalie détectée: {'pair': 'WAVAX/USDC', 'source': 'test', 'price': 32.25, 'timestamp': 1741121429.6172113, 'z_score': 3.8697008426510022, 'mean': 22.143147716281305, 'std': 2.6117916331730773, 'deviation_percent': 45.64325006190234}
+2025-03-04 21:50:29.617 | INFO     | __main__:test_anomaly_detector:250 - Nombre d'anomalies détectées: 1
+2025-03-04 21:50:29.617 | INFO     | __main__:test_anomaly_detector:255 - ✅ Test du détecteur d'anomalies réussi
+2025-03-04 21:50:29.617 | INFO     | __main__:test_websocket_manager:262 - 🔍 Test du gestionnaire de WebSockets...
+2025-03-04 21:50:29.618 | INFO     | __main__:test_websocket_manager:269 - Paires à surveiller: ['avaxusdt', 'avaxusdc']
+2025-03-04 21:50:29.619 | INFO     | __main__:test_websocket_manager:295 - WebSocket connecté pour avaxusdt
+2025-03-04 21:50:29.620 | INFO     | __main__:test_websocket_manager:295 - WebSocket connecté pour avaxusdc
+2025-03-04 21:50:29.620 | INFO     | __main__:test_websocket_manager:301 - Attente des prix WebSocket (2 WebSockets initialisés)...
+2025-03-04 21:50:39.691 | ERROR    | __main__:test_websocket_manager:322 - ❌ Aucun prix reçu des WebSockets
+2025-03-04 21:50:39.691 | INFO     | __main__:test_bot_initialization:329 - 🔍 Test d'initialisation du GBPBot...
+2025-03-04 21:50:39.691 | ERROR    | __main__:test_bot_initialization:345 - Erreur lors de l'initialisation du GBPBot: GBPBot.__init__() got an unexpected keyword argument 'network'
+2025-03-04 21:50:39.691 | INFO     | __main__:test_bot_initialization:346 - ⚠️ Test d'initialisation du GBPBot ignoré
+2025-03-04 21:50:39.692 | INFO     | __main__:main:394 - ==================================================
+2025-03-04 21:50:39.692 | INFO     | __main__:main:395 - Résultats des tests
+2025-03-04 21:50:39.692 | INFO     | __main__:main:396 - ==================================================
+2025-03-04 21:50:39.693 | INFO     | __main__:main:400 - Test rpc: ✅ RÉUSSI
+2025-03-04 21:50:39.693 | INFO     | __main__:main:400 - Test cache: ✅ RÉUSSI
+2025-03-04 21:50:39.693 | INFO     | __main__:main:400 - Test anomaly: ✅ RÉUSSI
+2025-03-04 21:50:39.693 | INFO     | __main__:main:400 - Test websocket: ❌ ÉCHOUÉ
+2025-03-04 21:50:39.693 | INFO     | __main__:main:400 - Test bot: ❌ ÉCHOUÉ
+2025-03-04 21:50:39.693 | ERROR    | __main__:main:407 - ❌ Certains tests ont échoué

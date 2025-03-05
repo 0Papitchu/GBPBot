@@ -1,0 +1,440 @@
+2025-03-02 23:38:53,113 - INFO - Démarrage des tests des endpoints RPC Avalanche...
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 34: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 64, in test_endpoint
+    logging.error(f"\u274c {endpoint} - Statut HTTP {response.status} en {response_time:.2f}s")
+Message: '\u274c https://avalanche.api.onfinality.io/public - Statut HTTP 401 en 0.10s'
+Arguments: ()
+2025-03-02 23:38:53,217 - ERROR - \u274c https://avalanche.api.onfinality.io/public - Statut HTTP 401 en 0.10s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://avalanche-c-chain.publicnode.com - Réponse en 0.10s'
+Arguments: ()
+2025-03-02 23:38:53,222 - INFO - \u2705 https://avalanche-c-chain.publicnode.com - Réponse en 0.10s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://api.avax.network/ext/bc/C/rpc - Réponse en 0.12s'
+Arguments: ()
+2025-03-02 23:38:53,235 - INFO - \u2705 https://api.avax.network/ext/bc/C/rpc - Réponse en 0.12s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://avax.meowrpc.com - Réponse en 0.12s'
+Arguments: ()
+2025-03-02 23:38:53,242 - INFO - \u2705 https://avax.meowrpc.com - Réponse en 0.12s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://avalanche.drpc.org - Réponse en 0.13s'
+Arguments: ()
+2025-03-02 23:38:53,255 - INFO - \u2705 https://avalanche.drpc.org - Réponse en 0.13s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://avalanche.rpc.thirdweb.com - Réponse en 0.15s'
+Arguments: ()
+2025-03-02 23:38:53,275 - INFO - \u2705 https://avalanche.rpc.thirdweb.com - Réponse en 0.15s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://avalanche.public-rpc.com - Réponse en 0.16s'
+Arguments: ()
+2025-03-02 23:38:53,283 - INFO - \u2705 https://avalanche.public-rpc.com - Réponse en 0.16s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\connector.py", line 1173, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\connector.py", line 884, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\resolver.py", line 33, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 867, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 54, in test_endpoint
+    async with session.post(endpoint, json=TEST_REQUEST, timeout=5) as response:
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\client.py", line 1194, in __aenter__
+    self._resp = await self._coro
+                 ^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\client.py", line 578, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\connector.py", line 544, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\connector.py", line 911, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\connector.py", line 1187, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host avax-mainnet.gateway.pokt.network:443 ssl:default [getaddrinfo failed]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 34: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 67, in test_endpoint
+    logging.error(f"\u274c {endpoint} - Erreur: {str(e)} en {response_time:.2f}s")
+Message: '\u274c https://avax-mainnet.gateway.pokt.network/v1/lb/605238bf6b986eea7cf36d5e - Erreur: Cannot connect to host avax-mainnet.gateway.pokt.network:443 ssl:default [getaddrinfo failed] en 0.16s'
+Arguments: ()
+2025-03-02 23:38:53,287 - ERROR - \u274c https://avax-mainnet.gateway.pokt.network/v1/lb/605238bf6b986eea7cf36d5e - Erreur: Cannot connect to host avax-mainnet.gateway.pokt.network:443 ssl:default [getaddrinfo failed] en 0.16s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://rpc.ankr.com/avalanche - Réponse en 0.32s'
+Arguments: ()
+2025-03-02 23:38:53,444 - INFO - \u2705 https://rpc.ankr.com/avalanche - Réponse en 0.32s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 34: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 64, in test_endpoint
+    logging.error(f"\u274c {endpoint} - Statut HTTP {response.status} en {response_time:.2f}s")
+Message: '\u274c https://avalanche-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161 - Statut HTTP 401 en 0.40s'
+Arguments: ()
+2025-03-02 23:38:53,521 - ERROR - \u274c https://avalanche-mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161 - Statut HTTP 401 en 0.40s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 33: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 60, in test_endpoint
+    logging.info(f"\u2705 {endpoint} - Réponse en {response_time:.2f}s")
+Message: '\u2705 https://1rpc.io/avax/c - Réponse en 0.80s'
+Arguments: ()
+2025-03-02 23:38:53,923 - INFO - \u2705 https://1rpc.io/avax/c - Réponse en 0.80s
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 54, in test_endpoint
+    async with session.post(endpoint, json=TEST_REQUEST, timeout=5) as response:
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\client.py", line 1194, in __aenter__
+    self._resp = await self._coro
+                 ^^^^^^^^^^^^^^^^
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\client.py", line 605, in _request
+    await resp.start(conn)
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\client_reqrep.py", line 961, in start
+    with self._timer:
+  File "C:\pythonProject1\venv\Lib\site-packages\aiohttp\helpers.py", line 735, in __exit__
+    raise asyncio.TimeoutError from None
+TimeoutError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u274c' in position 34: character maps to <undefined>
+Call stack:
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 110, in <module>
+    asyncio.run(test_all_endpoints())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 640, in run_until_complete
+    self.run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 321, in run_forever
+    super().run_forever()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 607, in run_forever
+    self._run_once()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 1922, in _run_once
+    handle._run()
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\pythonProject1\test_rpc_endpoints.py", line 67, in test_endpoint
+    logging.error(f"\u274c {endpoint} - Erreur: {str(e)} en {response_time:.2f}s")
+Message: '\u274c https://avalanche.blockpi.network/v1/rpc/public - Erreur:  en 5.65s'
+Arguments: ()
+2025-03-02 23:38:58,772 - ERROR - \u274c https://avalanche.blockpi.network/v1/rpc/public - Erreur:  en 5.65s
+2025-03-02 23:38:58,792 - INFO - 
+===== RÉSULTATS DES TESTS RPC =====
+2025-03-02 23:38:58,792 - INFO - Endpoints testés: 12
+2025-03-02 23:38:58,792 - INFO - Endpoints fonctionnels: 8
+2025-03-02 23:38:58,792 - INFO - 
+Endpoints recommandés (du plus rapide au plus lent):
+2025-03-02 23:38:58,793 - INFO - 1. https://avalanche-c-chain.publicnode.com - 0.10s
+2025-03-02 23:38:58,793 - INFO - 2. https://api.avax.network/ext/bc/C/rpc - 0.12s
+2025-03-02 23:38:58,793 - INFO - 3. https://avax.meowrpc.com - 0.12s
+2025-03-02 23:38:58,793 - INFO - 4. https://avalanche.drpc.org - 0.13s
+2025-03-02 23:38:58,793 - INFO - 5. https://avalanche.rpc.thirdweb.com - 0.15s
+2025-03-02 23:38:58,793 - INFO - 
+Configuration recommandée pour .env:
+2025-03-02 23:38:58,793 - INFO - 
+# Configuration RPC optimisée
+PRIMARY_RPC_URL=https://avalanche-c-chain.publicnode.com
+BACKUP_RPC_URLS=https://api.avax.network/ext/bc/C/rpc,https://avax.meowrpc.com,https://avalanche.drpc.org
+
+2025-03-02 23:38:58,795 - INFO - Tests terminés. Consultez rpc_test_results.log pour les détails.

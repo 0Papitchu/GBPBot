@@ -1,0 +1,42 @@
+Début de la correction des erreurs de type
+Recherche de fichiers à corriger dans tests/
+Traitement du fichier: tests\test_arbitrage.py
+[INFO] Ajout des types de retour aux fixtures
+[INFO] Ajout des types aux paramètres de test
+[INFO] Ajout des commentaires type: ignore aux accès aux tokens
+[INFO] Correction des erreurs de syntaxe avec les commentaires type: ignore
+[INFO] Correction de l'utilisation de await sur les fixtures
+[OK] Fichier corrigé: tests\test_arbitrage.py
+Traitement du fichier: tests\test_mev.py
+[INFO] Ajout des types de retour aux fixtures
+[INFO] Ajout des types aux paramètres de test
+[INFO] Ajout des commentaires type: ignore aux accès aux tokens
+[INFO] Correction des erreurs de syntaxe avec les commentaires type: ignore
+[INFO] Correction de l'utilisation de await sur les fixtures
+[OK] Fichier corrigé: tests\test_mev.py
+Traitement du fichier: tests\test_sniping.py
+[INFO] Ajout des types de retour aux fixtures
+[INFO] Ajout des types aux paramètres de test
+[INFO] Ajout des commentaires type: ignore aux accès aux tokens
+[INFO] Correction des erreurs de syntaxe avec les commentaires type: ignore
+[INFO] Correction de l'utilisation de await sur les fixtures
+[OK] Fichier corrigé: tests\test_sniping.py
+Traitement du fichier: tests\integration\test_trading_flow.py
+Le fichier tests\integration\test_trading_flow.py n'est pas dans la liste des fichiers à corriger.
+Traitement du fichier: tests\unit\test_mev_executor.py
+Le fichier tests\unit\test_mev_executor.py n'est pas dans la liste des fichiers à corriger.
+Recherche de fichiers à corriger dans gbpbot/
+Traitement du fichier: gbpbot\test_gbpbot.py
+Le fichier gbpbot\test_gbpbot.py n'est pas dans la liste des fichiers à corriger.
+Traitement du fichier: gbpbot\scripts\test_high_volume.py
+Le fichier gbpbot\scripts\test_high_volume.py n'est pas dans la liste des fichiers à corriger.
+Traitement du fichier: gbpbot\scripts\test_mev.py
+Le fichier gbpbot\scripts\test_mev.py n'est pas dans la liste des fichiers à corriger.
+Traitement du fichier: gbpbot\scripts\test_stealth.py
+Le fichier gbpbot\scripts\test_stealth.py n'est pas dans la liste des fichiers à corriger.
+
+Résumé:
+Fichiers vérifiés: 9
+Fichiers corrigés: 3
+
+Correction terminée!
