@@ -8,6 +8,8 @@ import time
 import uuid
 import logging
 import asyncio
+import json
+import aiohttp
 from typing import Dict, List, Optional, Tuple, Any
 
 class SolanaPriorityFeeOptimizer:
@@ -310,67 +312,114 @@ class SolanaTransactionBundler:
         return results
     
     async def _submit_jito_bundle(self, bundle: List, wait_for_confirmation: bool) -> Dict:
-        """Submit transactions as a bundle via Jito for MEV protection"""
-        try:
-            import aiohttp
+        """
+        Soumet un bundle de transactions au réseau Jito
+        
+        Args:
+            bundle: Liste des transactions à soumettre
+            wait_for_confirmation: Attendre la confirmation des transactions
             
-            # Prepare the bundle data
+        Returns:
+            Dict: Résultat de la soumission
+        """
+        if not self.jito_enabled:
+            self.logger.warning("Jito bundle submission requested but Jito is not enabled")
+            return {"success": False, "error": "Jito not enabled"}
+        
+        try:
+            # Préparer les données du bundle
             bundle_data = {
-                "jsonrpc": "2.0",
-                "id": str(uuid.uuid4()),
-                "method": "sendBundle",
-                "params": [
-                    {
-                        "transactions": [tx.to_json() for tx in bundle],
-                        "options": {
-                            "skipPreFlight": True
-                        }
-                    }
-                ]
+                "bundle": [tx.decode("utf-8") if isinstance(tx, bytes) else tx for tx in bundle],
+                "meta": {
+                    "source": "gbpbot",
+                    "timestamp": int(time.time() * 1000)
+                }
             }
             
-            # Set up headers with auth token
+            # En-têtes HTTP avec validation
             headers = {
                 "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": f"GBPBot/{self.config.get('version', '1.0.0')}",
                 "Authorization": f"Bearer {self.jito_auth_token}"
             }
             
-            # Send the bundle
-            async with aiohttp.ClientSession() as session:
-                async with session.post(self.jito_endpoint, json=bundle_data, headers=headers) as response:
-                    if response.status == 200:
-                        result = await response.json()
-                        self.logger.info(f"Successfully submitted Jito bundle: {result}")
-                        
-                        # Wait for confirmation if requested
-                        if wait_for_confirmation and 'result' in result:
-                            bundle_id = result['result']
-                            confirmation = await self._wait_for_jito_bundle(bundle_id)
-                            return {
-                                "success": True,
-                                "type": "jito_bundle",
-                                "bundle_id": bundle_id,
-                                "confirmation": confirmation
-                            }
-                        
-                        return {
-                            "success": True,
-                            "type": "jito_bundle",
-                            "bundle_id": result.get('result', None)
-                        }
-                    else:
-                        error_text = await response.text()
-                        self.logger.error(f"Failed to submit Jito bundle: {error_text}")
-                        
-                        # Fall back to parallel submission
-                        self.logger.info("Falling back to parallel submission")
-                        return await self._submit_parallel(bundle, wait_for_confirmation)
+            # Vérifier la taille du bundle pour éviter les attaques DoS
+            bundle_json = json.dumps(bundle_data)
+            if len(bundle_json) > self.config.get("max_bundle_size", 1024 * 1024):  # 1 MB par défaut
+                error_msg = f"Bundle trop grand: {len(bundle_json)} octets"
+                self.logger.error(error_msg)
+                return {"success": False, "error": error_msg}
             
+            # Timeouts pour éviter les blocages
+            timeout = aiohttp.ClientTimeout(
+                total=self.config.get("jito_timeout", 10),
+                connect=self.config.get("connect_timeout", 5),
+                sock_connect=self.config.get("sock_connect_timeout", 5),
+                sock_read=self.config.get("sock_read_timeout", 5)
+            )
+            
+            # Envoyer le bundle
+            connector = aiohttp.TCPConnector(ssl=True, limit=10)  # Force SSL and limit connections
+            async with aiohttp.ClientSession(timeout=timeout, connector=connector) as session:
+                try:
+                    async with session.post(self.jito_endpoint, json=bundle_data, headers=headers, allow_redirects=False) as response:
+                        # Vérifier la taille de la réponse pour éviter les attaques DoS
+                        content_length = response.headers.get('Content-Length')
+                        max_response_size = self.config.get("max_response_size", 10 * 1024 * 1024)  # 10 MB par défaut
+                        
+                        if content_length and int(content_length) > max_response_size:
+                            error_msg = f"Réponse trop grande: {content_length} octets"
+                            self.logger.warning(error_msg)
+                            return {"success": False, "error": error_msg}
+                        
+                        # Limiter la taille de la réponse
+                        content = await response.read()
+                        if len(content) > max_response_size:
+                            error_msg = f"Réponse trop grande: {len(content)} octets"
+                            self.logger.warning(error_msg)
+                            return {"success": False, "error": error_msg}
+                        
+                        if response.status == 200:
+                            try:
+                                result = json.loads(content)
+                                self.logger.info(f"Successfully submitted Jito bundle: {result}")
+                                
+                                # Wait for confirmation if requested
+                                if wait_for_confirmation and "bundleId" in result:
+                                    confirmation_result = await self._wait_for_jito_bundle(result["bundleId"])
+                                    return {
+                                        "success": True,
+                                        "bundle_id": result.get("bundleId"),
+                                        "confirmation": confirmation_result
+                                    }
+                                
+                                return {
+                                    "success": True,
+                                    "bundle_id": result.get("bundleId")
+                                }
+                            except json.JSONDecodeError as e:
+                                error_msg = f"Erreur de décodage JSON: {e}"
+                                self.logger.error(f"{error_msg}: {content[:200]}...")
+                                return {"success": False, "error": error_msg}
+                        else:
+                            error_msg = f"Erreur HTTP {response.status}: {response.reason}"
+                            self.logger.error(f"{error_msg}")
+                            return {"success": False, "error": error_msg, "status": response.status}
+                except aiohttp.ClientError as e:
+                    error_msg = f"Erreur de connexion: {str(e)}"
+                    self.logger.error(error_msg)
+                    return {"success": False, "error": error_msg}
+                except asyncio.TimeoutError:
+                    error_msg = "Timeout pendant la soumission du bundle"
+                    self.logger.error(error_msg)
+                    return {"success": False, "error": error_msg}
+                
         except Exception as e:
-            self.logger.error(f"Error submitting Jito bundle: {e}")
-            # Fall back to parallel submission
-            self.logger.info("Falling back to parallel submission due to error")
-            return await self._submit_parallel(bundle, wait_for_confirmation)
+            error_msg = f"Erreur inattendue: {str(e)}"
+            self.logger.error(error_msg)
+            self.logger.exception(e)
+            return {"success": False, "error": error_msg}
     
     async def _wait_for_jito_bundle(self, bundle_id: str, timeout: int = 60) -> Dict:
         """Wait for a Jito bundle to be confirmed"""

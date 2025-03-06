@@ -1,147 +1,161 @@
-# GBPBot - Advanced Arbitrage Trading Bot
+# GBPBot - Trading Bot pour MEME Coins
 
-GBPBot est un bot d'arbitrage avancé conçu pour détecter et exécuter des opportunités d'arbitrage sur la blockchain Avalanche (AVAX) et d'autres blockchains.
+![GBPBot Logo](https://img.shields.io/badge/GBPBot-Ultra%20Trading%20Bot-blue)
+![Version](https://img.shields.io/badge/Version-1.0.0-green)
+![Blockchains](https://img.shields.io/badge/Blockchains-Solana%20%7C%20AVAX%20%7C%20Sonic-orange)
 
-## Caractéristiques
+## 🚀 Présentation
 
-- **Multi-blockchain** : Support pour Avalanche (AVAX) avec possibilité d'extension à d'autres blockchains
-- **Détection d'arbitrage** : Identification des opportunités d'arbitrage entre différents DEX
-- **Exécution optimisée** : Transactions optimisées pour maximiser les profits
-- **Protection MEV** : Mécanismes de protection contre le frontrunning et autres attaques MEV
-- **Gestion des RPC** : Pool de connexions RPC avec sélection intelligente des fournisseurs
-- **Cache de prix** : Système de cache LRU pour les prix des tokens
-- **Monitoring** : Surveillance des performances et des opportunités d'arbitrage
+GBPBot est un bot de trading ultra-rapide, furtif et intelligent pour le trading de MEME coins sur Solana, AVAX et Sonic. Conçu pour maximiser les profits via le sniping de nouveaux tokens, l'arbitrage entre pools, et le front-running, GBPBot combine des stratégies avancées avec une architecture optimisée pour la performance.
 
-## Architecture
+**Caractéristiques principales :**
+- ✅ **Ultra-rapide** - Exécutions de transactions optimisées pour battre la concurrence
+- ✅ **Multi-stratégies** - Arbitrage, sniping, scalping et frontrunning
+- ✅ **Multi-chaînes** - Support pour Solana (prioritaire), AVAX et Sonic
+- ✅ **Intelligent** - Machine learning intégré pour l'analyse et l'adaptation
+- ✅ **Sécurisé** - Protection contre les rugpulls, honeypots et autres risques
+- ✅ **Flexible** - Mode automatique ou semi-automatique avec interface CLI ou Telegram
 
-GBPBot est construit avec une architecture modulaire qui permet une grande flexibilité et extensibilité :
+## 📋 Fonctionnalités
+
+### 1. Arbitrage entre DEX
+- Détection d'opportunités entre différents DEX (TraderJoe, Pangolin, Raydium...)
+- Flash arbitrage sans immobilisation de fonds
+- Optimisation du gas et priorité dans la mempool
+- Monitoring des écarts de prix en temps réel
+
+### 2. Sniping de Tokens
+- Détection ultra-rapide des nouveaux tokens à fort potentiel
+- Analyse automatique de la liquidité et du contrat
+- Filtres intelligents contre les scams et rugpulls
+- Stratégies de prise de profit optimisées
+
+### 3. Mode Automatique Intelligent
+- Adaptation en temps réel entre stratégies de sniping et arbitrage
+- Machine learning pour identifier les meilleures opportunités
+- Gestion optimisée des ressources et fonds
+- Analyse continue du marché et adaptation des paramètres
+
+### 4. Optimisation des Performances
+- Suite complète d'outils d'optimisation des performances
+- Auto-Optimizer pour surveillance et ajustement en temps réel
+- Monitoring des ressources système (CPU, RAM, GPU)
+- Paramètres optimisés pour votre configuration matérielle
+
+## 🛠️ Installation
+
+### Prérequis
+- Python 3.8 ou supérieur
+- Git
+- Solana CLI (pour les fonctionnalités Solana)
+- Wallet compatible avec chaque blockchain
+
+### Installation automatique
+```bash
+# Cloner le répertoire
+git clone https://github.com/votre-username/GBPBot.git
+cd GBPBot
+
+# Installer les dépendances
+python setup.py install
+```
+
+### Configuration
+1. Créez un fichier `.env` en copiant le fichier `.env.example`
+```bash
+cp .env.example .env
+```
+
+2. Modifiez le fichier `.env` avec vos informations personnelles :
+```
+PRIVATE_KEY=votre_clé_privée
+WALLET_ADDRESS=votre_adresse_wallet
+```
+
+3. Installez les outils d'optimisation pour maximiser les performances :
+```bash
+python setup_optimization_tools.py
+```
+
+## 💻 Utilisation
+
+### Démarrer le bot via l'interface CLI
+```bash
+python -m gbpbot.gbpbot_menu
+```
+
+### Démarrer le bot via Telegram
+```bash
+python -m gbpbot.telegram_bot
+```
+
+### Utiliser directement les modules
+```python
+# Exemple d'utilisation du module de sniping Solana
+from gbpbot.sniping import solana_memecoin_sniper
+
+# Initialiser le sniper
+sniper = solana_memecoin_sniper.create_memecoin_sniper()
+
+# Démarrer le sniping
+await sniper.start()
+```
+
+## 📊 Architecture
 
 ```
 gbpbot/
-├── core/
-│   ├── blockchain_factory.py    # Clients blockchain et factory
-│   ├── exceptions.py            # Exceptions personnalisées
-│   ├── mev_monitor.py           # Surveillance et protection MEV
-│   └── ...
-├── strategies/
-│   ├── arbitrage_strategy.py    # Stratégies d'arbitrage
-│   └── ...
-├── utils/
-│   ├── config.py                # Gestion de la configuration
-│   ├── logger.py                # Configuration des logs
-│   └── ...
-└── main.py                      # Point d'entrée principal
+├── core/                 # Composants fondamentaux
+├── strategies/           # Stratégies de trading
+├── sniping/              # Modules spécialisés pour le sniping
+├── machine_learning/     # Analyse prédictive et IA
+├── utils/                # Utilitaires et helpers
+├── blockchain/           # Intégrations blockchain
+├── cli/                  # Interface en ligne de commande
+├── telegram_bot.py       # Interface Telegram
+└── gbpbot_menu.py        # Menu principal
 ```
 
-## Installation
+## 🛡️ Sécurité
 
-### Prérequis
+GBPBot intègre plusieurs couches de sécurité :
+- Simulation de transactions avant exécution
+- Vérification de la liquidité des tokens
+- Détection des contrats malveillants
+- Analyse des honeypots
+- Stop-loss intelligents
 
-- Python 3.8+
-- pip
+## 🚧 Roadmap
 
-### Installation des dépendances
+- [x] Architecture système de base
+- [x] Module d'arbitrage entre DEX
+- [x] Module de sniping Solana
+- [x] Outils d'optimisation des performances
+- [ ] Interface web avec tableau de bord
+- [ ] Intégration de stratégies avancées de MEV
+- [ ] Support étendu pour plus de DEX
+- [ ] Système d'alertes et notifications avancées
 
-```bash
-pip install -r requirements.txt
-```
+## 📝 Documentation
 
-## Configuration
+Pour une documentation complète, consultez :
+- [GBPBOT_ROADMAP.md](GBPBOT_ROADMAP.md) - Feuille de route détaillée
+- [NOUVELLES_FONCTIONNALITES.md](NOUVELLES_FONCTIONNALITES.md) - Dernières fonctionnalités
+- [OPTIMIZATIONS_SUMMARY.md](OPTIMIZATIONS_SUMMARY.md) - Optimisations appliquées
+- [AUTO_OPTIMIZER_README.md](AUTO_OPTIMIZER_README.md) - Guide de l'optimiseur automatique
+- [gbpbot/USER_GUIDE.md](gbpbot/USER_GUIDE.md) - Guide utilisateur complet
 
-Créez un fichier de configuration `config.yaml` à la racine du projet :
+## 📢 Support
 
-```yaml
-# Configuration générale
-general:
-  log_level: INFO
-  debug_mode: false
+Pour toute question ou assistance, vous pouvez :
+- Ouvrir une issue sur GitHub
+- Rejoindre notre canal Telegram
+- Consulter la documentation incluse
 
-# Configuration Avalanche
-avalanche:
-  chain_id: 43114
-  native_token_address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"  # WAVAX
-  rpc_providers:
-    - url: "https://api.avax.network/ext/bc/C/rpc"
-      weight: 10
-    - url: "https://rpc.ankr.com/avalanche"
-      weight: 8
-    - url: "https://avalanche-c-chain.publicnode.com"
-      weight: 5
-  dex_routers:
-    traderjoe: "0x60aE616a2155Ee3d9A68541Ba4544862310933d4"
-    pangolin: "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106"
-    sushiswap: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
+## ⚠️ Avertissement
 
-# Configuration des tokens
-tokens:
-  base_tokens:
-    - symbol: "WAVAX"
-      address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
-    - symbol: "USDC"
-      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E"
-  target_tokens:
-    - symbol: "JOE"
-      address: "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd"
-    - symbol: "PNG"
-      address: "0x60781C2586D68229fde47564546784ab3fACA982"
-    - symbol: "LINK"
-      address: "0x5947BB275c521040051D82396192181b413227A3"
+Le trading de crypto-monnaies comporte des risques importants. GBPBot est un outil avancé qui nécessite une configuration et une surveillance appropriées. L'utilisation du bot se fait à vos propres risques.
 
-# Configuration de l'arbitrage
-arbitrage:
-  min_profit_percentage: 0.5
-  max_slippage: 0.5
-  gas_boost: 1.2
-  deadline_minutes: 20
-  mev_protection: true
-```
+## 📜 Licence
 
-## Utilisation
-
-### Démarrage du bot
-
-```bash
-python main.py
-```
-
-### Commandes disponibles
-
-- `python main.py --config=custom_config.yaml` : Utiliser un fichier de configuration personnalisé
-- `python main.py --debug` : Activer le mode debug
-- `python main.py --monitor-only` : Exécuter uniquement la surveillance sans exécuter d'arbitrages
-
-## Sécurité
-
-### Gestion des clés privées
-
-Les clés privées doivent être stockées de manière sécurisée. Nous recommandons d'utiliser des variables d'environnement ou un gestionnaire de secrets comme HashiCorp Vault.
-
-### Protection contre le MEV
-
-GBPBot intègre plusieurs mécanismes pour se protéger contre les attaques MEV :
-
-1. **Surveillance des transactions** : Détection des attaques sandwich et du frontrunning
-2. **Optimisation du gas** : Ajustement dynamique du gas price pour éviter le frontrunning
-3. **Mempools privés** : Support pour les mempools privés (comme Flashbots)
-
-## Développement
-
-### Ajout d'une nouvelle blockchain
-
-Pour ajouter le support d'une nouvelle blockchain, créez une nouvelle classe qui hérite de `BaseBlockchainClient` et implémentez les méthodes abstraites.
-
-### Ajout d'une nouvelle stratégie d'arbitrage
-
-Pour ajouter une nouvelle stratégie d'arbitrage, créez une nouvelle classe dans le dossier `strategies/` qui implémente l'interface de stratégie.
-
-## Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
-
-## Avertissement
-
-Le trading de crypto-monnaies comporte des risques importants. Ce bot est fourni à titre éducatif et expérimental. Utilisez-le à vos propres risques.
-
-## Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
+Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.

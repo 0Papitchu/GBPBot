@@ -1,0 +1,38 @@
+# Template de prompt pour l'analyse de marché
+
+"""
+Analyse de Marché
+================
+
+Ce template est utilisé pour formuler des requêtes d'analyse de marché
+aux modèles d'IA. Il inclut les informations nécessaires pour guider
+l'analyse et obtenir des insights pertinents.
+"""
+
+PROMPT_TEMPLATE = '''
+Analyse les données de marché suivantes et identifie les tendances, patterns et signaux importants:
+
+{market_data}
+
+Réponds UNIQUEMENT au format JSON avec la structure suivante:
+{{
+    "trend": "bullish|bearish|neutral",
+    "confidence": 0-100,
+    "key_indicators": ["indicateur1", "indicateur2", ...],
+    "patterns": [
+        {{
+            "name": "Nom du pattern",
+            "significance": "Description de l'importance",
+            "probability": 0-100
+        }}
+    ],
+    "short_term_prediction": "Description prédiction court terme",
+    "recommendations": [
+        {{
+            "action": "Action recommandée",
+            "reasoning": "Justification"
+        }}
+    ],
+    "risk_level": "high|medium|low"
+}}
+''' 

@@ -1,0 +1,31 @@
+2025-03-06 02:14:29,177 - GBPBot-Optimizer - INFO - Démarrage de l'optimisation de GBPBot...
+2025-03-06 02:14:30,187 - GBPBot-Optimizer - INFO - Informations système: {
+  "cpu": {
+    "count": 12,
+    "usage_percent": 3.7
+  },
+  "memory": {
+    "total": 17032929280,
+    "available": 2589196288,
+    "percent_used": 84.8
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 3060",
+    "memory": 12884901888,
+    "cuda_available": false
+  },
+  "disk": {
+    "total": 499195572224,
+    "free": 4970053632,
+    "percent_used": 99.0
+  }
+}
+2025-03-06 02:14:31,192 - GBPBot-Optimizer - INFO - Optimisations de mémoire appliquées: {'MAX_TRANSACTION_HISTORY': 10000, 'MAX_TOKEN_CACHE_SIZE': 2000, 'MAX_BLACKLIST_SIZE': 10000, 'MAX_CACHED_OPPORTUNITIES': 5000}
+2025-03-06 02:14:32,198 - GBPBot-Optimizer - INFO - Optimisations RPC appliquées: {'RPC_CONNECTION_LIMIT': 36, 'RPC_MAX_CONNECTIONS_PER_HOST': 10, 'RPC_SESSION_REFRESH_INTERVAL': 3600}
+2025-03-06 02:14:33,204 - GBPBot-Optimizer - INFO - Optimisations ML appliquées: {'ML_MAX_MEMORY_USAGE': 4060, 'ML_MAX_MODEL_SIZE': 1015, 'ML_BATCH_SIZE': 64, 'ML_GPU_ACCELERATION': 'auto', 'ML_MAX_GPU_MEMORY_MB': 9830}
+2025-03-06 02:14:33,205 - GBPBot-Optimizer - INFO - Optimisation du fichier cross_dex_arbitrage.py réussie
+2025-03-06 02:14:33,206 - GBPBot-Optimizer - INFO - Optimisation du fichier solana_memecoin_sniper.py réussie
+2025-03-06 02:14:33,208 - GBPBot-Optimizer - INFO - Fichier d'environnement sauvegardé: .env.optimized
+2025-03-06 02:14:33,208 - GBPBot-Optimizer - INFO - Optimisations terminées. Fichier de configuration optimisé: .env.optimized
+2025-03-06 02:14:33,208 - GBPBot-Optimizer - INFO - Pour appliquer ces optimisations, copiez le contenu de ce fichier dans votre .env principal

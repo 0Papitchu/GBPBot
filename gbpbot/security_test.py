@@ -247,16 +247,22 @@ class SecurityTester:
         
         if self.api_url.startswith("https://"):
             try:
+                # Toujours utiliser verify=True pour la sécurité
                 response = requests.get(f"{self.api_url}/health", timeout=self.timeout, verify=True)
                 if response.status_code == 200:
                     test_result["passed"] = True
                     test_result["details"] = "HTTPS configuré et fonctionnel"
                 else:
                     test_result["details"] = f"HTTPS configuré mais erreur: {response.status_code}"
+            except requests.exceptions.SSLError as e:
+                # En cas d'erreur SSL, fournir des informations sur la cause
+                test_result["details"] = f"Erreur de certificat SSL: {e}. Assurez-vous d'utiliser un certificat valide."
+                logger.warning(f"Erreur de certificat SSL: {e}")
             except requests.RequestException as e:
                 test_result["details"] = f"Erreur HTTPS: {e}"
         else:
             test_result["details"] = "HTTPS non configuré, utilisation de HTTP"
+            logger.warning("L'API n'utilise pas HTTPS. Cela pose un risque de sécurité en production.")
         
         self.results["ssl_tests"].append(test_result)
         logger.info(f"Test HTTPS: {test_result['details']}")

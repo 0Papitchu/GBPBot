@@ -3,6 +3,8 @@ import time
 import asyncio
 import aiohttp
 import random
+import psutil
+import gc
 from typing import Dict, List, Optional, Tuple, Any, Callable
 from loguru import logger
 from web3 import Web3
@@ -12,6 +14,15 @@ import hashlib
 import json
 from gbpbot.config.config_manager import config_manager
 from gbpbot.utils.cache_manager import cache_manager, cache_rpc_result
+import uuid
+import logging
+
+# Importer le gestionnaire de ressources
+try:
+    from gbpbot import resource_monitor
+except ImportError:
+    resource_monitor = None
+    logger.warning("Module resource_monitor non disponible, optimisation automatique désactivée")
 
 # Configurer asyncio pour Windows
 if os.name == 'nt':
@@ -34,6 +45,8 @@ class RPCManager:
     """
     
     _instance = None
+    logger = logging.getLogger("RPCManager")  # Logger de la classe
+    version = "1.0.0"  # Version du gestionnaire RPC
     
     def __new__(cls):
         """Implémentation du pattern Singleton"""
@@ -43,94 +56,210 @@ class RPCManager:
     
     def __init__(self):
         """
-        Initialise le gestionnaire de RPC
+        Initialisation du gestionnaire RPC
         """
-        if not hasattr(self, 'initialized'):
-            # Charger la configuration RPC
-            self.config = config_manager.get_config("rpc")
+        # Éviter de réinitialiser si déjà fait
+        if hasattr(self, 'initialized') and self.initialized:
+            return
+        
+        self.initialized = True
+        self.config = config_manager.get_config().get("rpc", {})
+        self.session = None
+        self.cache = {}
+        self.providers = {}
+        self.batch_queues = {}
+        self.web3_instances = {}
+        self.active_batch_calls = {}
+        
+        # Variables de performance
+        self.last_auto_optimization = 0
+        self.optimization_interval = self.config.get("optimization_interval", 300)  # 5 minutes
+        self.last_session_refresh = time.time()
+        self.session_refresh_interval = self.config.get("session_refresh_interval", 3600)  # 1 heure
+        
+        # Statistiques
+        self.stats = {
+            "total_calls": 0,
+            "successful_calls": 0,
+            "failed_calls": 0,
+            "response_times": [],
+            "active_connections": 0,
+            "batch_calls": 0,
+            "cache_hits": 0
+        }
+        
+        # Initialiser les fournisseurs et la session
+        self._init_providers()
+        self._init_session()
+        
+        # Planifier la tâche d'optimisation si le moniteur de ressources est disponible
+        if resource_monitor:
+            resource_monitor.register_handler(self._handle_resource_optimization)
+            logger.info("Gestionnaire d'optimisation de ressources enregistré pour le RPCManager")
+        
+        # Surveillance des ressources
+        self.connection_pool_optimization_task = asyncio.create_task(self._connection_pool_optimizer())
+        
+        # Planifier la tâche de rafraîchissement de session
+        self.session_refresh_task = asyncio.create_task(self._periodic_session_refresh())
+        
+        logger.info(f"Gestionnaire RPC initialisé avec {sum(len(networks) for networks in self.providers.values())} chaînes/réseaux configurés")
+
+    async def _connection_pool_optimizer(self):
+        """Optimise la taille du pool de connexions en fonction de l'utilisation système"""
+        while True:
+            try:
+                # Vérifier les ressources système
+                cpu_percent = psutil.cpu_percent(interval=1)
+                memory_percent = psutil.virtual_memory().percent
+                
+                # Récupérer la taille actuelle du pool
+                current_pool_size = self.config.get("connection_limit", 20)
+                
+                # Calculer la nouvelle taille du pool
+                new_pool_size = current_pool_size
+                
+                # Si CPU ou mémoire critiques, réduire le nombre de connexions
+                if cpu_percent > 90 or memory_percent > 85:
+                    new_pool_size = max(5, current_pool_size // 2)
+                    logger.warning(f"Ressources système critiques (CPU: {cpu_percent}%, MEM: {memory_percent}%), réduction du pool de connexions à {new_pool_size}")
+                # Si ressources ok et beaucoup de timeout, augmenter le pool
+                elif (cpu_percent < 60 and memory_percent < 70) and self.stats.get("timeout_rate", 0) > 0.1:
+                    new_pool_size = min(50, current_pool_size + 5)
+                    logger.info(f"Taux de timeout élevé, augmentation du pool de connexions à {new_pool_size}")
+                
+                # Appliquer le changement si nécessaire
+                if new_pool_size != current_pool_size:
+                    self.config["connection_limit"] = new_pool_size
+                    self.config["max_connections_per_host"] = max(2, new_pool_size // 4)
+                    await self._recreate_session()
+                
+                # Libérer de la mémoire si nécessaire
+                if memory_percent > 75:
+                    # Forcer la collecte des objets non référencés
+                    gc.collect()
+                    logger.debug("Collecte des objets non référencés forcée pour libérer de la mémoire")
+                
+                # Attendre avant la prochaine vérification
+                await asyncio.sleep(60)  # Vérifier toutes les minutes
+            except Exception as e:
+                logger.error(f"Erreur dans l'optimiseur de pool de connexions: {str(e)}")
+                await asyncio.sleep(120)  # Attendre plus longtemps en cas d'erreur
+
+    async def _periodic_session_refresh(self):
+        """Rafraîchit périodiquement la session pour éviter les fuites de mémoire"""
+        while True:
+            try:
+                # Attendre l'intervalle de rafraîchissement
+                await asyncio.sleep(self.session_refresh_interval)
+                
+                # Recréer la session
+                logger.info("Rafraîchissement périodique de la session RPC")
+                await self._recreate_session()
+                
+                # Actualiser les statistiques
+                self.stats["session_refreshes"] = self.stats.get("session_refreshes", 0) + 1
+                self.last_session_refresh = time.time()
+            except Exception as e:
+                logger.error(f"Erreur lors du rafraîchissement périodique de la session: {str(e)}")
+
+    def _handle_resource_optimization(self, state: Dict[str, Any]) -> None:
+        """
+        Gère les recommandations d'optimisation de ressources
+        
+        Args:
+            state: État des ressources système et recommandations
+        """
+        try:
+            # Ne pas optimiser trop fréquemment
+            now = time.time()
+            if now - self.last_auto_optimization < self.optimization_interval:
+                return
+                
+            self.last_auto_optimization = now
             
-            # Valeurs par défaut si la configuration est incomplète
-            default_config = {
-                "providers": {
-                    "avalanche": {
-                        "mainnet": [
-                            {"url": "https://api.avax.network/ext/bc/C/rpc", "weight": 10},
-                            {"url": "https://avalanche-c-chain.publicnode.com", "weight": 8},
-                            {"url": "https://rpc.ankr.com/avalanche", "weight": 7}
-                        ]
-                    }
-                },
-                "timeout": 10,
-                "max_retries": 3,
-                "retry_delay": 1,
-                "max_retry_delay": 30,
-                "jitter": True,
-                "batch_size": 10,
-                "batch_interval": 0.5
-            }
+            # Récupérer la taille recommandée du pool de connexions
+            connection_pool_size = state.get("recommended_connection_pool_size")
             
-            # Fusionner avec les valeurs par défaut
-            for key, value in default_config.items():
-                if key not in self.config:
-                    self.config[key] = value
-            
-            # S'assurer que la structure des providers est correcte
-            if "providers" not in self.config:
-                self.config["providers"] = default_config["providers"]
-            
-            # Initialiser les connexions
-            self.providers = {}
-            self.provider_stats = {}
-            self.provider_health = {}
-            self.active_providers = {}
-            self.session = None
-            self.batch_queue = {}
-            self.batch_lock = {}
-            
-            # Initialiser les statistiques
-            self.stats = {
-                "total_calls": 0,
-                "successful_calls": 0,
-                "failed_calls": 0,
-                "retried_calls": 0,
-                "cached_calls": 0,
-                "avg_response_time": 0,
-                "batch_calls": 0,
-                "batch_savings": 0,
-                "provider_stats": {}
-            }
-            
-            # Suivi de la dernière vérification de santé
-            self.last_health_check = 0
-            
-            # Initialiser les sessions aiohttp
-            self._init_session()
-            
-            # Initialiser les fournisseurs
-            self._init_providers()
-            
-            # Marquer comme initialisé
-            self.initialized = True
-            logger.info("Gestionnaire RPC initialisé")
-    
+            # Si une valeur est fournie, l'appliquer
+            if connection_pool_size and connection_pool_size != self.config.get("connection_limit"):
+                # Mettre à jour la configuration
+                old_limit = self.config.get("connection_limit")
+                self.config["connection_limit"] = connection_pool_size
+                self.config["max_connections_per_host"] = max(2, connection_pool_size // 4)  # 1/4 du total au max
+                logger.info(f"Taille du pool de connexions RPC mise à jour: {old_limit} -> {connection_pool_size}")
+                
+                # Réinitialiser la session pour appliquer les nouvelles limites
+                asyncio.create_task(self._recreate_session())
+        except Exception as e:
+            logger.error(f"Erreur lors du traitement de l'optimisation des ressources: {str(e)}")
+
+    async def _recreate_session(self) -> None:
+        """Recrée la session pour appliquer les nouvelles limites de connexion"""
+        try:
+            # Fermer l'ancienne session si elle existe
+            if self.session and not self.session.closed:
+                await self.session.close()
+                
+            # Créer une nouvelle session avec les paramètres mis à jour
+            await self._ensure_session()
+            logger.info("Session RPC recréée avec les nouvelles limites de connexion")
+        except Exception as e:
+            logger.error(f"Erreur lors de la recréation de la session RPC: {str(e)}")
+
     def _init_session(self):
         """
-        Initialise la session aiohttp pour les requêtes RPC
+        Initialise la session HTTP pour les appels RPC
         """
-        if self.session is None or self.session.closed:
-            # Ne pas créer de session immédiatement, mais seulement quand nécessaire
-            # La session sera créée lors du premier appel RPC
-            pass
+        try:
+            # Déterminer la limite de connexions optimale
+            connection_limit = self.config.get("connection_limit", 20)
+            
+            # Utiliser les valeurs du moniteur de ressources si disponible
+            if resource_monitor:
+                try:
+                    optimization_values = resource_monitor.get_optimization_values()
+                    if "connection_pool_size" in optimization_values:
+                        connection_limit = optimization_values["connection_pool_size"]
+                except Exception as e:
+                    logger.warning(f"Impossible de récupérer les valeurs d'optimisation: {e}")
+            
+            # Créer le connecteur TCP avec les paramètres optimisés
+            connector = aiohttp.TCPConnector(
+                limit=connection_limit,
+                limit_per_host=self.config.get("max_connections_per_host", max(2, connection_limit // 4)),
+                ttl_dns_cache=self.config.get("dns_cache_ttl", 300),
+                verify_ssl=self.config.get("verify_ssl", True),
+                keepalive_timeout=60.0,  # Maintenir les connexions ouvertes plus longtemps
+                force_close=self.config.get("force_close", False),
+                enable_cleanup_closed=True,  # Nettoyage automatique des connexions fermées
+            )
+            
+            # Créer la session aiohttp avec les timeouts appropriés
+            timeout = aiohttp.ClientTimeout(
+                total=self.config.get("timeout", 10),
+                connect=self.config.get("connect_timeout", 5),
+                sock_connect=self.config.get("sock_connect_timeout", 5),
+                sock_read=self.config.get("sock_read_timeout", 5)
+            )
+            
+            # Créer la session
+            self.session = aiohttp.ClientSession(
+                connector=connector,
+                timeout=timeout,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            logger.info(f"Session RPC initialisée (limite de connexions: {connection_limit}, par hôte: {self.config.get('max_connections_per_host', max(2, connection_limit // 4))})")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation de la session RPC: {str(e)}")
     
     async def _ensure_session(self):
         """
         S'assure qu'une session aiohttp est disponible
         """
         if self.session is None or self.session.closed:
-            self.session = aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=self.config["timeout"]),
-                headers={"Content-Type": "application/json"}
-            )
+            self._init_session()  # Réinitialiser la session avec les paramètres actuels
     
     def _init_providers(self):
         """Initialise les fournisseurs RPC à partir de la configuration"""
@@ -304,46 +433,33 @@ class RPCManager:
     async def call_rpc(self, method: str, params: List = None, chain: str = "avalanche", 
                       network: str = "mainnet", provider_id: str = None) -> Dict:
         """
-        Appelle une méthode RPC avec les paramètres fournis
+        Effectue un appel RPC vers le nœud sélectionné.
         
         Args:
             method: Méthode RPC à appeler
             params: Paramètres de la méthode
-            chain: Chaîne blockchain
-            network: Réseau
-            provider_id: ID du fournisseur à utiliser (optionnel)
+            chain: Chaîne blockchain à utiliser
+            network: Réseau à utiliser (mainnet, testnet, etc.)
+            provider_id: ID du fournisseur à utiliser (si None, le meilleur est sélectionné)
             
         Returns:
-            Dict: Résultat de l'appel RPC
+            Réponse JSON du nœud RPC
         """
-        # Vérifier si le mode simulation est activé
-        try:
-            from gbpbot.core.simulation import is_simulation_mode
-            from gbpbot.core.rpc.rpc_simulation import simulated_rpc_manager
+        if params is None:
+            params = []
             
-            if is_simulation_mode() and simulated_rpc_manager is not None:
-                logger.debug(f"Appel RPC simulé: {method}")
-                provider = simulated_rpc_manager.get_current_provider()
-                result = await provider.make_request(method, params or [])
-                return result
-        except ImportError:
-            # En cas d'erreur d'importation, continuer avec le mode normal
-            pass
-            
-        params = params or []
+        # Vérification de la taille des paramètres pour limiter les attaques DoS
+        # Convertir en JSON pour vérifier la taille réelle
+        params_json = json.dumps(params)
+        if len(params_json) > self.config.get("max_request_size", 1 * 1024 * 1024):  # 1 MB par défaut
+            error_msg = f"Requête trop grande: {len(params_json)} octets"
+            self.logger.error(error_msg)
+            return {"error": {"code": -32000, "message": error_msg}}
         
-        self.stats["total_calls"] += 1
+        # Génération d'un ID de requête unique pour le traçage
+        request_id = str(uuid.uuid4())
         
-        # S'assurer que la session est disponible
-        await self._ensure_session()
-        
-        # Obtenir le fournisseur
-        provider = await self._get_provider(chain, network, provider_id)
-        url = provider["url"]
-        provider_id = provider["id"]
-        
-        # Construire la requête
-        request_id = str(random.randint(1, 10000))
+        # Construction de la requête JSON-RPC
         payload = {
             "jsonrpc": "2.0",
             "method": method,
@@ -351,12 +467,17 @@ class RPCManager:
             "id": request_id
         }
         
-        # Enregistrer le début de l'appel
-        start_time = time.time()
+        # Tracer la requête pour le debugging
+        self.logger.debug(f"RPC request {request_id} - {chain}/{network}: {method} - params: {str(params)[:100]}{'...' if len(str(params)) > 100 else ''}")
         
-        # Effectuer la requête avec retries
+        # Récupération du meilleur fournisseur
+        provider = await self._get_provider(chain, network, provider_id)
+        url = provider["url"]
+        
+        # Variables pour les statistiques
+        start_time = time.time()
         max_retries = self.config["max_retries"]
-        retry_delay = self.config["retry_delay"]
+        base_delay = self.config["retry_delay"]
         max_retry_delay = self.config["max_retry_delay"]
         
         # Variables pour les retries
@@ -368,127 +489,118 @@ class RPCManager:
                     # Enregistrer le temps de réponse
                     response_time = (time.time() - start_time) * 1000  # en ms
                     
-                    # Vérifier le statut HTTP
-                    if response.status != 200:
-                        error_msg = f"Erreur HTTP {response.status}: {await response.text()}"
-                        logger.warning(f"Erreur RPC ({url}): {error_msg}")
-                        
-                        # Mettre à jour les statistiques
+                    # Vérifier si la taille de la réponse est acceptable
+                    content_length = response.headers.get('Content-Length')
+                    if content_length and int(content_length) > self.max_response_size:
+                        error_msg = f"Réponse trop grande: {content_length} octets"
+                        self.logger.warning(error_msg)
+                        await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
+                        return {"error": {"code": -32000, "message": error_msg}}
+                    
+                    # Lire la réponse avec une limite de taille
+                    content = await response.read()
+                    if len(content) > self.max_response_size:
+                        error_msg = f"Réponse trop grande: {len(content)} octets"
+                        self.logger.warning(error_msg)
+                        await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
+                        return {"error": {"code": -32000, "message": error_msg}}
+                    
+                    # Analyser la réponse JSON
+                    try:
+                        result = json.loads(content)
+                    except json.JSONDecodeError as e:
+                        error_msg = f"Erreur de décodage JSON: {e}"
+                        self.logger.warning(f"{error_msg} - Contenu: {content[:200]}...")
                         await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
                         
-                        # Réessayer avec un autre fournisseur si possible
+                        # Retry en cas d'erreur de décodage
                         if current_retry < max_retries:
-                            # Calculer le délai avant de réessayer
-                            if self.config["jitter"]:
-                                delay = min(max_retry_delay, retry_delay * (2 ** current_retry)) * (0.5 + random.random())
-                            else:
-                                delay = min(max_retry_delay, retry_delay * (2 ** current_retry))
-                            
-                            # Changer de fournisseur
-                            logger.debug(f"Changement de fournisseur après erreur, attente de {delay:.2f}s...")
-                            await asyncio.sleep(delay)
-                            
-                            # Incrémenter le compteur de retries
                             current_retry += 1
-                            self.stats["retried_calls"] += 1
-                            
-                            # Obtenir un nouveau fournisseur
-                            provider = await self._get_provider(chain, network)
-                            url = provider["url"]
-                            provider_id = provider["id"]
-                            
-                            # Recommencer la boucle
-                            start_time = time.time()
+                            delay = min(base_delay * (2 ** current_retry), max_retry_delay)
+                            self.logger.info(f"Retry {current_retry}/{max_retries} dans {delay:.2f}s...")
+                            await asyncio.sleep(delay)
                             continue
                         
-                        # Si on a épuisé les retries, lever une exception
-                        self.stats["failed_calls"] += 1
-                        raise Exception(f"Erreur RPC: {error_msg} (après {max_retries} tentatives)")
+                        return {"error": {"code": -32700, "message": error_msg}}
                     
-                    # Parser la réponse JSON
-                    try:
-                        result = await response.json()
-                    except Exception as e:
-                        error_msg = f"Erreur de parsing JSON: {str(e)}"
-                        logger.warning(f"Erreur RPC ({url}): {error_msg}")
-                        
+                    # Si la requête a réussi (même avec une erreur RPC)
+                    if response.status == 200:
                         # Mettre à jour les statistiques
+                        success = "error" not in result
+                        error_message = result.get("error", {}).get("message", "") if not success else None
+                        await self._update_provider_stats(chain, network, url, success, response_time, error_message)
+                        
+                        # Enregistrer la réponse pour le débogage
+                        if "error" in result:
+                            self.logger.warning(f"RPC error {request_id} - {chain}/{network}: {result['error']}")
+                        else:
+                            self.logger.debug(f"RPC success {request_id} - {chain}/{network}: {str(result)[:100]}...")
+                        
+                        return result
+                    else:
+                        # Erreur HTTP
+                        error_msg = f"Erreur HTTP {response.status}: {response.reason}"
+                        self.logger.warning(f"{error_msg} - URL: {url}")
                         await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
                         
-                        # Si on a épuisé les retries, lever une exception
-                        if current_retry >= max_retries:
-                            self.stats["failed_calls"] += 1
-                            raise Exception(f"Erreur RPC: {error_msg} (après {max_retries} tentatives)")
+                        # Retry en cas d'erreur HTTP
+                        if current_retry < max_retries:
+                            current_retry += 1
+                            delay = min(base_delay * (2 ** current_retry), max_retry_delay)
+                            self.logger.info(f"Retry {current_retry}/{max_retries} dans {delay:.2f}s...")
+                            await asyncio.sleep(delay)
+                            continue
                         
-                        # Sinon, réessayer
-                        current_retry += 1
-                        self.stats["retried_calls"] += 1
-                        continue
-                    
-                    # Vérifier s'il y a une erreur dans la réponse
-                    if "error" in result and result["error"] is not None:
-                        error_msg = f"Erreur RPC: {result['error']}"
-                        logger.warning(f"Erreur RPC ({url}): {error_msg}")
+                        return {"error": {"code": -32000, "message": error_msg}}
                         
-                        # Mettre à jour les statistiques
-                        await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
-                        
-                        # Si on a épuisé les retries, retourner l'erreur
-                        if current_retry >= max_retries:
-                            self.stats["failed_calls"] += 1
-                            return result
-                        
-                        # Sinon, réessayer
-                        current_retry += 1
-                        self.stats["retried_calls"] += 1
-                        continue
-                    
-                    # Mettre à jour les statistiques
-                    await self._update_provider_stats(chain, network, url, True, response_time)
-                    
-                    # Incrémenter le compteur de succès
-                    self.stats["successful_calls"] += 1
-                    
-                    # Retourner le résultat
-                    return result
-            
-            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+            except asyncio.TimeoutError:
+                response_time = (time.time() - start_time) * 1000  # en ms
+                error_msg = f"Timeout après {response_time:.2f}ms"
+                self.logger.warning(f"{error_msg} - URL: {url}")
+                await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
+                
+                # Retry en cas de timeout
+                if current_retry < max_retries:
+                    current_retry += 1
+                    delay = min(base_delay * (2 ** current_retry), max_retry_delay)
+                    self.logger.info(f"Retry {current_retry}/{max_retries} dans {delay:.2f}s...")
+                    await asyncio.sleep(delay)
+                    continue
+                
+                return {"error": {"code": -32000, "message": error_msg}}
+                
+            except (aiohttp.ClientError, OSError) as e:
+                response_time = (time.time() - start_time) * 1000  # en ms
                 error_msg = f"Erreur de connexion: {str(e)}"
-                logger.warning(f"Erreur RPC ({url}): {error_msg}")
+                self.logger.warning(f"{error_msg} - URL: {url}")
+                await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
                 
-                # Mettre à jour les statistiques
-                await self._update_provider_stats(chain, network, url, False, (time.time() - start_time) * 1000, error_msg)
+                # Retry en cas d'erreur de connexion
+                if current_retry < max_retries:
+                    current_retry += 1
+                    delay = min(base_delay * (2 ** current_retry), max_retry_delay)
+                    self.logger.info(f"Retry {current_retry}/{max_retries} dans {delay:.2f}s...")
+                    await asyncio.sleep(delay)
+                    continue
                 
-                # Si on a épuisé les retries, lever une exception
-                if current_retry >= max_retries:
-                    self.stats["failed_calls"] += 1
-                    raise Exception(f"Erreur RPC: {error_msg} (après {max_retries} tentatives)")
+                return {"error": {"code": -32000, "message": error_msg}}
+            
+            except Exception as e:
+                response_time = (time.time() - start_time) * 1000  # en ms
+                error_msg = f"Erreur inattendue: {str(e)}"
+                self.logger.error(error_msg)
+                self.logger.exception(e)
+                await self._update_provider_stats(chain, network, url, False, response_time, error_msg)
                 
-                # Sinon, réessayer
-                current_retry += 1
-                self.stats["retried_calls"] += 1
+                # Retry en cas d'erreur inattendue
+                if current_retry < max_retries:
+                    current_retry += 1
+                    delay = min(base_delay * (2 ** current_retry), max_retry_delay)
+                    self.logger.info(f"Retry {current_retry}/{max_retries} dans {delay:.2f}s...")
+                    await asyncio.sleep(delay)
+                    continue
                 
-                # Calculer le délai avant de réessayer
-                if self.config["jitter"]:
-                    delay = min(max_retry_delay, retry_delay * (2 ** current_retry)) * (0.5 + random.random())
-                else:
-                    delay = min(max_retry_delay, retry_delay * (2 ** current_retry))
-                
-                # Attendre avant de réessayer
-                logger.debug(f"Tentative {current_retry}/{max_retries} dans {delay:.2f}s...")
-                await asyncio.sleep(delay)
-                
-                # Changer de fournisseur
-                provider = await self._get_provider(chain, network)
-                url = provider["url"]
-                provider_id = provider["id"]
-                
-                # Recommencer la boucle
-                start_time = time.time()
-        
-        # Si on arrive ici, c'est qu'on a épuisé les retries sans succès
-        self.stats["failed_calls"] += 1
-        raise Exception(f"Erreur RPC: Toutes les tentatives ont échoué")
+                return {"error": {"code": -32000, "message": error_msg}}
     
     async def batch_call_rpc(self, calls: List[Dict], chain: str = "avalanche", 
                            network: str = "mainnet", provider_id: str = None) -> List[Dict]:
@@ -587,8 +699,8 @@ class RPCManager:
         
         # Initialiser la file d'attente pour cette chaîne/réseau si nécessaire
         queue_key = f"{chain}_{network}"
-        if queue_key not in self.batch_queue:
-            self.batch_queue[queue_key] = []
+        if queue_key not in self.batch_queues:
+            self.batch_queues[queue_key] = []
             self.batch_queue_ids[queue_key] = {}
         
         # Générer un ID unique pour cet appel
@@ -596,14 +708,14 @@ class RPCManager:
         call_id = self.batch_queue_counter
         
         # Ajouter l'appel à la file d'attente
-        self.batch_queue[queue_key].append({
+        self.batch_queues[queue_key].append({
             "method": method,
             "params": params,
             "id": call_id
         })
         
         # Associer l'ID à l'index dans la file d'attente
-        self.batch_queue_ids[queue_key][call_id] = len(self.batch_queue[queue_key]) - 1
+        self.batch_queue_ids[queue_key][call_id] = len(self.batch_queues[queue_key]) - 1
         
         return call_id
     
@@ -623,15 +735,15 @@ class RPCManager:
         """
         # Vérifier si la file d'attente existe
         queue_key = f"{chain}_{network}"
-        if queue_key not in self.batch_queue or not self.batch_queue[queue_key]:
+        if queue_key not in self.batch_queues or not self.batch_queues[queue_key]:
             return {}
         
         # Vérifier si la file d'attente est assez grande
-        if len(self.batch_queue[queue_key]) < min_batch_size:
+        if len(self.batch_queues[queue_key]) < min_batch_size:
             return {}
         
         # Limiter la taille du batch
-        calls = self.batch_queue[queue_key][:max_batch_size]
+        calls = self.batch_queues[queue_key][:max_batch_size]
         call_ids = [call["id"] for call in calls]
         
         # Exécuter le batch
@@ -645,11 +757,11 @@ class RPCManager:
                 call_results[call_id] = result.get("result") if "result" in result else None
         
         # Supprimer les appels traités de la file d'attente
-        self.batch_queue[queue_key] = self.batch_queue[queue_key][len(calls):]
+        self.batch_queues[queue_key] = self.batch_queues[queue_key][len(calls):]
         
         # Mettre à jour les IDs
         self.batch_queue_ids[queue_key] = {}
-        for i, call in enumerate(self.batch_queue[queue_key]):
+        for i, call in enumerate(self.batch_queues[queue_key]):
             self.batch_queue_ids[queue_key][call["id"]] = i
         
         return call_results

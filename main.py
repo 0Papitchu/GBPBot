@@ -1,229 +1,442 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-GBPBot - Bot d'arbitrage avancé pour Avalanche et autres blockchains
+GBPBot - Point d'entrée principal
+==================================
+
+Ce fichier sert de point d'entrée principal pour le GBPBot, permettant de lancer:
+- Le mode interactif avec menu CLI
+- Le mode Telegram
+- Le mode entièrement automatique
+- Le monitoring des performances
 """
 
-import argparse
-import asyncio
-import logging
 import os
 import sys
 import time
-from pathlib import Path
-from typing import Dict, List, Optional
+import signal
+import argparse
+import logging
+from typing import Dict, List, Optional, Union, Any
+from datetime import datetime
+import threading
+import json
 
-import yaml
-from loguru import logger
+# Ajout du répertoire parent au path pour les imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from gbpbot.core.blockchain_factory import BlockchainClientFactory
-from gbpbot.core.exceptions import GBPBotBaseException
-from gbpbot.core.mev_monitor import MEVMonitor
+# Configuration du logging
+log_dir = "logs"
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+log_file = os.path.join(log_dir, f"gbpbot_{timestamp}.log")
 
-def setup_logging(log_level: str = "INFO", log_file: Optional[str] = None):
-    """Configure le système de logging"""
-    # Supprimer le handler par défaut
-    logger.remove()
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger("GBPBot")
+
+# Bannière ASCII pour l'interface CLI
+def display_banner():
+    """Affiche la bannière ASCII du GBPBot"""
+    banner = """
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║   ██████╗ ██████╗ ██████╗ ██████╗  ██████╗ ████████╗                      ║
+║  ██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝                      ║
+║  ██║  ███╗██████╔╝██████╔╝██████╔╝██║   ██║   ██║                         ║
+║  ██║   ██║██╔══██╗██╔═══╝ ██╔══██╗██║   ██║   ██║                         ║
+║  ╚██████╔╝██████╔╝██║     ██████╔╝╚██████╔╝   ██║                         ║
+║   ╚═════╝ ╚═════╝ ╚═╝     ╚═════╝  ╚═════╝    ╚═╝  v1.0.0                 ║
+║                                                                            ║
+║  Trading Bot pour MEME Coins sur Solana, AVAX et Sonic                     ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+"""
+    print(banner)
+
+# Variables globales pour les modules actifs
+active_modules = {}
+stop_event = threading.Event()
+
+def load_config(config_path: str = None) -> Dict[str, Any]:
+    """
+    Charge la configuration du bot depuis les fichiers .env et config.json
     
-    # Ajouter un handler pour la console
-    logger.add(
-        sys.stderr,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        level=log_level,
-        colorize=True,
-    )
+    Args:
+        config_path: Chemin vers le fichier de configuration (optionnel)
+        
+    Returns:
+        Dict contenant la configuration complète
+    """
+    from dotenv import load_dotenv
     
-    # Ajouter un handler pour le fichier de log si spécifié
-    if log_file:
-        logger.add(
-            log_file,
-            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
-            level=log_level,
-            rotation="10 MB",
-            compression="zip",
-        )
+    # Chargement des variables d'environnement depuis .env
+    load_dotenv()
     
-    # Configurer le logging standard pour les bibliothèques tierces
-    logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+    config = {
+        # Configuration générale
+        "mode": os.getenv("BOT_MODE", "interactive"),
+        "log_level": os.getenv("LOG_LEVEL", "INFO"),
+        
+        # Configuration des blockchains
+        "blockchains": {
+            "solana": {
+                "enabled": os.getenv("ENABLE_SOLANA", "true").lower() == "true",
+                "rpc_url": os.getenv("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com"),
+                "private_key": os.getenv("SOLANA_PRIVATE_KEY", ""),
+                "alternative_rpcs": json.loads(os.getenv("SOLANA_ALTERNATIVE_RPCS", "[]"))
+            },
+            "avalanche": {
+                "enabled": os.getenv("ENABLE_AVALANCHE", "true").lower() == "true",
+                "rpc_url": os.getenv("AVALANCHE_RPC_URL", "https://api.avax.network/ext/bc/C/rpc"),
+                "private_key": os.getenv("AVALANCHE_PRIVATE_KEY", ""),
+                "alternative_rpcs": json.loads(os.getenv("AVALANCHE_ALTERNATIVE_RPCS", "[]"))
+            },
+            "sonic": {
+                "enabled": os.getenv("ENABLE_SONIC", "false").lower() == "true",
+                "rpc_url": os.getenv("SONIC_RPC_URL", ""),
+                "private_key": os.getenv("SONIC_PRIVATE_KEY", ""),
+                "alternative_rpcs": json.loads(os.getenv("SONIC_ALTERNATIVE_RPCS", "[]"))
+            }
+        },
+        
+        # Configuration des modules
+        "modules": {
+            "arbitrage": {
+                "enabled": os.getenv("ENABLE_ARBITRAGE", "true").lower() == "true",
+                "min_profit_percentage": float(os.getenv("ARBITRAGE_MIN_PROFIT", "0.5")),
+                "max_slippage": float(os.getenv("ARBITRAGE_MAX_SLIPPAGE", "1.0")),
+                "gas_multiplier": float(os.getenv("ARBITRAGE_GAS_MULTIPLIER", "1.05")),
+                "scan_interval": int(os.getenv("ARBITRAGE_SCAN_INTERVAL", "5")),
+                "pairs": json.loads(os.getenv("ARBITRAGE_PAIRS", "[]")),
+                "exchanges": json.loads(os.getenv("ARBITRAGE_EXCHANGES", "[]"))
+            },
+            "token_sniper": {
+                "enabled": os.getenv("ENABLE_TOKEN_SNIPER", "true").lower() == "true",
+                "min_liquidity": float(os.getenv("SNIPER_MIN_LIQUIDITY", "5000")),
+                "max_buy_amount": float(os.getenv("SNIPER_MAX_BUY_AMOUNT", "0.1")),
+                "auto_sell_multiplier": float(os.getenv("SNIPER_AUTO_SELL_MULTIPLIER", "1.5")),
+                "stop_loss_percentage": float(os.getenv("SNIPER_STOP_LOSS", "0.9")),
+                "scan_interval": int(os.getenv("SNIPER_SCAN_INTERVAL", "2")),
+                "blacklist_tokens": json.loads(os.getenv("SNIPER_BLACKLIST", "[]")),
+                "whitelist_tokens": json.loads(os.getenv("SNIPER_WHITELIST", "[]"))
+            },
+            "auto_mode": {
+                "enabled": os.getenv("ENABLE_AUTO_MODE", "false").lower() == "true",
+                "strategy": os.getenv("AUTO_MODE_STRATEGY", "balanced"),
+                "max_concurrent_trades": int(os.getenv("AUTO_MAX_CONCURRENT_TRADES", "3")),
+                "max_allocation_percentage": float(os.getenv("AUTO_MAX_ALLOCATION", "30")),
+                "risk_level": os.getenv("AUTO_RISK_LEVEL", "medium")
+            },
+            "telegram": {
+                "enabled": os.getenv("ENABLE_TELEGRAM", "false").lower() == "true",
+                "token": os.getenv("TELEGRAM_BOT_TOKEN", ""),
+                "allowed_users": json.loads(os.getenv("TELEGRAM_ALLOWED_USERS", "[]")),
+                "chat_id": os.getenv("TELEGRAM_CHAT_ID", "")
+            },
+            "performance": {
+                "enabled": os.getenv("ENABLE_PERFORMANCE_MONITOR", "false").lower() == "true",
+                "auto_optimize": os.getenv("ENABLE_AUTO_OPTIMIZER", "false").lower() == "true"
+            }
+        },
+        
+        # Paramètres d'optimisation
+        "optimization": {
+            "max_transaction_history": int(os.getenv("MAX_TRANSACTION_HISTORY", "10000")),
+            "max_token_cache_size": int(os.getenv("MAX_TOKEN_CACHE_SIZE", "2000")),
+            "max_concurrent_requests": int(os.getenv("MAX_CONCURRENT_REQUESTS", "100")),
+            "websocket_batch_size": int(os.getenv("WEBSOCKET_BATCH_SIZE", "20")),
+            "use_async_processing": os.getenv("USE_ASYNC_PROCESSING", "true").lower() == "true",
+            "memory_limit_mb": int(os.getenv("MEMORY_LIMIT_MB", "2048")),
+            "thread_pool_size": int(os.getenv("THREAD_POOL_SIZE", "8"))
+        }
+    }
     
-    # Intercepter les logs des bibliothèques tierces
-    for _log in ["asyncio", "web3", "urllib3", "eth", "solana"]:
-        logging.getLogger(_log).handlers = [InterceptHandler()]
-        logging.getLogger(_log).propagate = False
-
-
-class InterceptHandler(logging.Handler):
-    """Handler pour intercepter les logs standard et les rediriger vers loguru"""
+    # Si un fichier de configuration supplémentaire est spécifié, le charger
+    if config_path and os.path.exists(config_path):
+        try:
+            with open(config_path, "r") as f:
+                file_config = json.load(f)
+                
+            # Fusionner la configuration du fichier avec celle de l'environnement
+            def deep_merge(source, destination):
+                for key, value in source.items():
+                    if key in destination and isinstance(destination[key], dict) and isinstance(value, dict):
+                        deep_merge(value, destination[key])
+                    else:
+                        destination[key] = value
+                return destination
+            
+            config = deep_merge(file_config, config)
+            logger.info(f"Configuration chargée depuis {config_path}")
+        except Exception as e:
+            logger.error(f"Erreur lors du chargement de la configuration depuis {config_path}: {e}")
     
-    def emit(self, record):
-        # Récupérer le message original
-        logger_opt = logger.opt(depth=6, exception=record.exc_info)
-        logger_opt.log(record.levelname, record.getMessage())
+    return config
 
-
-def load_config(config_path: str) -> Dict:
-    """Charge la configuration depuis un fichier YAML"""
-    try:
-        with open(config_path, "r") as f:
-            config = yaml.safe_load(f)
-        return config
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement de la configuration: {str(e)}")
-        sys.exit(1)
-
-
-async def run_arbitrage_bot(config: Dict, monitor_only: bool = False):
-    """Exécute le bot d'arbitrage"""
-    try:
-        # Créer le client blockchain
-        blockchain_client = BlockchainClientFactory.create_client(
-            "avalanche", config.get("avalanche", {})
-        )
+def initialize_modules(config: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Initialise les modules du bot en fonction de la configuration
+    
+    Args:
+        config: Dictionnaire de configuration
         
-        # Récupérer les tokens à surveiller
-        tokens_config = config.get("tokens", {})
-        base_tokens = [token["address"] for token in tokens_config.get("base_tokens", [])]
-        target_tokens = [token["address"] for token in tokens_config.get("target_tokens", [])]
-        
-        # Récupérer la configuration d'arbitrage
-        arbitrage_config = config.get("arbitrage", {})
-        min_profit_percentage = arbitrage_config.get("min_profit_percentage", 0.5)
-        max_slippage = arbitrage_config.get("max_slippage", 0.5)
-        gas_boost = arbitrage_config.get("gas_boost", 1.2)
-        
-        # Créer le moniteur MEV si la protection est activée
-        mev_protection = arbitrage_config.get("mev_protection", False)
-        mev_monitor = None
-        if mev_protection:
-            mev_monitor = MEVMonitor(blockchain_client)
-        
-        logger.info("Démarrage du bot d'arbitrage GBPBot")
-        logger.info(f"Tokens de base: {base_tokens}")
-        logger.info(f"Tokens cibles: {target_tokens}")
-        
-        # Boucle principale
-        while True:
+    Returns:
+        Dict contenant les instances des modules initialisés
+    """
+    from gbpbot.clients.blockchain_client_factory import BlockchainClientFactory
+    from gbpbot.modules.arbitrage_engine import ArbitrageEngine
+    from gbpbot.modules.token_sniper import TokenSniper
+    from gbpbot.modules.auto_trader import AutoTrader
+    
+    modules = {}
+    
+    # Initialisation des clients blockchain
+    blockchain_clients = {}
+    for chain_name, chain_config in config["blockchains"].items():
+        if chain_config["enabled"] and chain_config["rpc_url"]:
             try:
-                # Surveiller l'activité MEV si la protection est activée
-                if mev_protection:
-                    logger.info("Surveillance de l'activité MEV...")
-                    all_tokens = base_tokens + target_tokens
-                    mev_report = await blockchain_client.monitor_mev_for_tokens(
-                        all_tokens, time_window_seconds=300
-                    )
-                    logger.info(f"Adresses suspectes détectées: {len(mev_report['suspicious_addresses'])}")
-                
-                # Si mode surveillance uniquement, passer à l'itération suivante
-                if monitor_only:
-                    logger.info("Mode surveillance uniquement, pas d'exécution d'arbitrage")
-                    await asyncio.sleep(30)
-                    continue
-                
-                # Rechercher des opportunités d'arbitrage pour chaque token de base
-                for base_token in base_tokens:
-                    logger.info(f"Recherche d'opportunités d'arbitrage pour {base_token}...")
-                    
-                    # Rechercher des opportunités
-                    opportunities = await blockchain_client.find_arbitrage_opportunities(
-                        base_token=base_token,
-                        target_tokens=target_tokens,
-                        min_profit_percentage=min_profit_percentage,
-                        amount=None,  # Utiliser le montant par défaut
-                        max_routes=5
-                    )
-                    
-                    if not opportunities:
-                        logger.info(f"Aucune opportunité d'arbitrage trouvée pour {base_token}")
-                        continue
-                    
-                    logger.info(f"Opportunités trouvées: {len(opportunities)}")
-                    
-                    # Exécuter la meilleure opportunité
-                    best_opportunity = opportunities[0]
-                    logger.info(f"Meilleure opportunité: {best_opportunity['profit_percentage']:.2f}% de profit")
-                    
-                    # TODO: Implémenter l'exécution de l'arbitrage avec une clé privée réelle
-                    # Pour l'instant, nous simulons l'exécution
-                    logger.info(f"Simulation de l'exécution de l'arbitrage: {best_opportunity}")
-                
-                # Attendre avant la prochaine itération
-                await asyncio.sleep(10)
-                
-            except GBPBotBaseException as e:
-                logger.error(f"Erreur GBPBot: {str(e)}")
-                await asyncio.sleep(5)
+                client = BlockchainClientFactory.create_client(
+                    blockchain=chain_name,
+                    rpc_url=chain_config["rpc_url"],
+                    private_key=chain_config["private_key"],
+                    alternative_rpcs=chain_config["alternative_rpcs"]
+                )
+                blockchain_clients[chain_name] = client
+                logger.info(f"Client {chain_name} initialisé avec succès")
             except Exception as e:
-                logger.exception(f"Erreur inattendue: {str(e)}")
-                await asyncio.sleep(10)
+                logger.error(f"Erreur lors de l'initialisation du client {chain_name}: {e}")
     
-    except KeyboardInterrupt:
-        logger.info("Arrêt du bot demandé par l'utilisateur")
-    except Exception as e:
-        logger.exception(f"Erreur critique: {str(e)}")
-        sys.exit(1)
+    # Initialisation du module d'arbitrage
+    if config["modules"]["arbitrage"]["enabled"]:
+        try:
+            arbitrage_engine = ArbitrageEngine(
+                blockchain_clients=blockchain_clients,
+                config=config["modules"]["arbitrage"]
+            )
+            modules["arbitrage"] = arbitrage_engine
+            logger.info("Module d'arbitrage initialisé avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation du module d'arbitrage: {e}")
+    
+    # Initialisation du module de sniping de tokens
+    if config["modules"]["token_sniper"]["enabled"]:
+        try:
+            token_sniper = TokenSniper(
+                blockchain_clients=blockchain_clients,
+                config=config["modules"]["token_sniper"]
+            )
+            modules["token_sniper"] = token_sniper
+            logger.info("Module de sniping de tokens initialisé avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation du module de sniping: {e}")
+    
+    # Initialisation du module automatique
+    if config["modules"]["auto_mode"]["enabled"]:
+        try:
+            auto_trader = AutoTrader(
+                blockchain_clients=blockchain_clients,
+                arbitrage_engine=modules.get("arbitrage"),
+                token_sniper=modules.get("token_sniper"),
+                config=config["modules"]["auto_mode"]
+            )
+            modules["auto_mode"] = auto_trader
+            logger.info("Module automatique initialisé avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation du module automatique: {e}")
+    
+    # Initialisation du monitoring de performances
+    if config["modules"]["performance"]["enabled"]:
+        try:
+            from gbpbot.utils.performance_monitor import SystemMonitor
+            performance_monitor = SystemMonitor(
+                auto_optimize=config["modules"]["performance"]["auto_optimize"]
+            )
+            modules["performance"] = performance_monitor
+            logger.info("Module de monitoring de performances initialisé avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation du monitoring: {e}")
+    
+    return modules
 
+def start_modules(modules: Dict[str, Any], stop_event: threading.Event) -> None:
+    """
+    Démarre les modules du bot
+    
+    Args:
+        modules: Dictionnaire contenant les instances des modules
+        stop_event: Événement pour arrêter les modules
+    """
+    global active_modules
+    
+    # Démarrage du monitoring de performances en premier
+    if "performance" in modules:
+        try:
+            modules["performance"].start()
+            active_modules["performance"] = modules["performance"]
+            logger.info("Module de monitoring de performances démarré")
+        except Exception as e:
+            logger.error(f"Erreur lors du démarrage du monitoring: {e}")
+    
+    # Démarrage des modules principaux
+    for module_name, module in modules.items():
+        if module_name == "performance":
+            continue  # Déjà démarré
+            
+        try:
+            if hasattr(module, "start"):
+                module.start(stop_event)
+                active_modules[module_name] = module
+                logger.info(f"Module {module_name} démarré avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors du démarrage du module {module_name}: {e}")
+
+def stop_modules() -> None:
+    """Arrête tous les modules actifs"""
+    global active_modules, stop_event
+    
+    logger.info("Arrêt des modules en cours...")
+    stop_event.set()
+    
+    # Arrêt des modules dans l'ordre inverse du démarrage
+    for module_name, module in reversed(list(active_modules.items())):
+        try:
+            if hasattr(module, "stop"):
+                module.stop()
+                logger.info(f"Module {module_name} arrêté avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'arrêt du module {module_name}: {e}")
+    
+    # Réinitialisation des variables globales
+    active_modules.clear()
+    stop_event.clear()
+
+def signal_handler(sig, frame):
+    """Gestionnaire de signal pour arrêter proprement le bot"""
+    logger.info("Signal d'arrêt reçu, arrêt du GBPBot en cours...")
+    stop_modules()
+    logger.info("GBPBot arrêté avec succès")
+    sys.exit(0)
+
+def start_interactive_mode(config: Dict[str, Any], modules: Dict[str, Any]) -> None:
+    """
+    Démarre le bot en mode interactif (menu CLI)
+    
+    Args:
+        config: Dictionnaire de configuration
+        modules: Dictionnaire contenant les instances des modules
+    """
+    from gbpbot.interfaces.cli_menu import start_cli_menu
+    start_cli_menu(config, modules, stop_event)
+
+def start_telegram_mode(config: Dict[str, Any], modules: Dict[str, Any]) -> None:
+    """
+    Démarre le bot en mode Telegram
+    
+    Args:
+        config: Dictionnaire de configuration
+        modules: Dictionnaire contenant les instances des modules
+    """
+    from gbpbot.interfaces.telegram_bot import start_telegram_bot
+    start_telegram_bot(config, modules, stop_event)
+
+def start_auto_mode(config: Dict[str, Any], modules: Dict[str, Any]) -> None:
+    """
+    Démarre le bot en mode entièrement automatique
+    
+    Args:
+        config: Dictionnaire de configuration
+        modules: Dictionnaire contenant les instances des modules
+    """
+    global stop_event
+    
+    logger.info("Démarrage en mode automatique...")
+    
+    # Vérifier si le module auto_mode est disponible
+    if "auto_mode" not in modules:
+        logger.error("Module auto_mode non initialisé. Impossible de démarrer en mode automatique.")
+        return
+    
+    # Démarrer tous les modules
+    start_modules(modules, stop_event)
+    
+    # Maintenir le processus principal en vie jusqu'à interruption
+    try:
+        while not stop_event.is_set():
+            time.sleep(1)
+    except KeyboardInterrupt:
+        logger.info("Interruption clavier détectée. Arrêt du GBPBot...")
+        stop_modules()
 
 def main():
-    """Point d'entrée principal"""
-    # Analyser les arguments de la ligne de commande
-    parser = argparse.ArgumentParser(description="GBPBot - Bot d'arbitrage avancé")
+    """Fonction principale du GBPBot"""
+    # Parser les arguments de ligne de commande
+    parser = argparse.ArgumentParser(description="GBPBot - Trading Bot pour MEME Coins")
     parser.add_argument(
-        "--config", 
-        type=str, 
-        default="config.yaml", 
+        "-m", "--mode",
+        choices=["interactive", "telegram", "auto"],
+        default=None,
+        help="Mode de fonctionnement du bot (interactive, telegram, auto)"
+    )
+    parser.add_argument(
+        "-c", "--config",
+        default=None,
         help="Chemin vers le fichier de configuration"
     )
     parser.add_argument(
-        "--log-level", 
-        type=str, 
-        default="INFO", 
-        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        help="Niveau de log"
-    )
-    parser.add_argument(
-        "--log-file", 
-        type=str, 
-        help="Fichier de log (optionnel)"
-    )
-    parser.add_argument(
-        "--debug", 
-        action="store_true", 
-        help="Activer le mode debug"
-    )
-    parser.add_argument(
-        "--monitor-only", 
-        action="store_true", 
-        help="Exécuter uniquement la surveillance sans exécuter d'arbitrages"
+        "-v", "--verbose",
+        action="store_true",
+        help="Activer le mode verbeux pour le débogage"
     )
     
     args = parser.parse_args()
     
-    # Configurer le logging
-    log_level = "DEBUG" if args.debug else args.log_level
-    setup_logging(log_level=log_level, log_file=args.log_file)
+    # Configurer le niveau de log
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Mode verbeux activé")
+    
+    # Afficher la bannière
+    display_banner()
+    
+    # Enregistrer le gestionnaire de signal
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
     
     # Charger la configuration
-    config_path = args.config
-    if not os.path.exists(config_path):
-        logger.error(f"Le fichier de configuration {config_path} n'existe pas")
-        sys.exit(1)
+    config = load_config(args.config)
     
-    config = load_config(config_path)
+    # Utiliser le mode spécifié en ligne de commande s'il existe
+    if args.mode:
+        config["mode"] = args.mode
     
-    # Mettre à jour la configuration avec les arguments de la ligne de commande
-    if args.debug:
-        config["general"] = config.get("general", {})
-        config["general"]["debug_mode"] = True
+    # Initialiser les modules
+    modules = initialize_modules(config)
     
-    # Exécuter le bot
-    try:
-        asyncio.run(run_arbitrage_bot(config, monitor_only=args.monitor_only))
-    except KeyboardInterrupt:
-        logger.info("Arrêt du bot")
-    except Exception as e:
-        logger.exception(f"Erreur critique: {str(e)}")
-        sys.exit(1)
-
+    # Démarrer le bot dans le mode approprié
+    if config["mode"] == "telegram":
+        if config["modules"]["telegram"]["enabled"]:
+            start_telegram_mode(config, modules)
+        else:
+            logger.error("Mode Telegram sélectionné mais non activé dans la configuration")
+            sys.exit(1)
+    elif config["mode"] == "auto":
+        if config["modules"]["auto_mode"]["enabled"]:
+            start_auto_mode(config, modules)
+        else:
+            logger.error("Mode automatique sélectionné mais non activé dans la configuration")
+            sys.exit(1)
+    else:  # Mode interactif par défaut
+        start_interactive_mode(config, modules)
 
 if __name__ == "__main__":
     main() 

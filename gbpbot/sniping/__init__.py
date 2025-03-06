@@ -1,13 +1,12 @@
 """
-Memecoin Sniping Module
+Module de sniping pour GBPBot.
 
-This module provides high-performance sniping capabilities for memecoins on
-various blockchains, with specialized focus on Solana for ultra-fast execution.
+Ce package contient les différents modules spécialisés pour le sniping de tokens.
 """
 
-from gbpbot.sniping.memecoin_sniper import SolanaMemecoinSniper
+from gbpbot.sniping.solana_integration import SolanaSnipingIntegration, create_solana_sniper
 
-__all__ = ['SolanaMemecoinSniper']
+__all__ = ['SolanaSnipingIntegration', 'create_solana_sniper']
 
 # Version
 __version__ = '0.1.0' 

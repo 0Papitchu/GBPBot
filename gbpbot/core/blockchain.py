@@ -187,6 +187,91 @@ class SecureKeyManager:
         
         return encrypted_key.decode()
 
+def encrypt_private_key(private_key: str, password: str) -> str:
+    """
+    Chiffre une clé privée à l'aide d'un mot de passe.
+    
+    Args:
+        private_key: La clé privée à chiffrer
+        password: Le mot de passe pour le chiffrement
+        
+    Returns:
+        La clé privée chiffrée encodée en base64
+    """
+    if not private_key or not password:
+        raise ValueError("La clé privée et le mot de passe ne peuvent pas être vides")
+    
+    # Génération d'un sel aléatoire pour le KDF
+    salt = os.urandom(16)
+    
+    # Dérivation de clé à partir du mot de passe
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=390000,  # Nombre élevé d'itérations pour augmenter la sécurité
+    )
+    key = kdf.derive(password.encode('utf-8'))
+    
+    # Chiffrement de la clé privée
+    f = Fernet(base64.urlsafe_b64encode(key))
+    
+    # S'assurer que la clé privée est encodée en bytes
+    if isinstance(private_key, str):
+        private_key_bytes = private_key.encode('utf-8')
+    else:
+        private_key_bytes = private_key
+    
+    encrypted_key = f.encrypt(private_key_bytes)
+    
+    # Combiner le sel et la clé chiffrée pour le stockage
+    result = base64.urlsafe_b64encode(salt + encrypted_key).decode('utf-8')
+    
+    return result
+
+def decrypt_private_key(encrypted_key: str, password: str) -> str:
+    """
+    Déchiffre une clé privée à l'aide du mot de passe.
+    
+    Args:
+        encrypted_key: La clé privée chiffrée
+        password: Le mot de passe pour le déchiffrement
+        
+    Returns:
+        La clé privée déchiffrée
+    """
+    if not encrypted_key or not password:
+        raise ValueError("La clé chiffrée et le mot de passe ne peuvent pas être vides")
+    
+    try:
+        # Décoder la chaîne complète
+        data = base64.urlsafe_b64decode(encrypted_key)
+        
+        # Vérifier que les données sont d'une longueur suffisante
+        if len(data) < 16:
+            raise ValueError("Données chiffrées invalides: données trop courtes")
+        
+        # Extraire le sel et la clé chiffrée
+        salt, encrypted_data = data[:16], data[16:]
+        
+        # Dérivation de clé à partir du mot de passe
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=390000,
+        )
+        key = kdf.derive(password.encode('utf-8'))
+        
+        # Déchiffrement de la clé privée
+        f = Fernet(base64.urlsafe_b64encode(key))
+        decrypted_key = f.decrypt(encrypted_data)
+        
+        return decrypted_key.decode('utf-8')
+    except Exception as e:
+        # Ne pas révéler trop d'informations sur l'erreur pour éviter les attaques par timing
+        raise ValueError(f"Erreur lors du déchiffrement de la clé privée: vérifiez le mot de passe") from e
+
 class BlockchainClient:
     """Client pour interagir avec la blockchain Avalanche"""
     

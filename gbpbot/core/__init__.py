@@ -1,12 +1,32 @@
 """
-Core components of the GBP Bot application.
+Fonctionnalités principales de GBPBot
+====================================
 
-This package contains the core components of the application, including
-blockchain clients, transaction handling, and other essential functionality.
+Ce module contient les fonctionnalités principales du bot GBPBot,
+notamment la configuration, la gestion des portefeuilles et les connexions RPC.
 """
 
-# Define what should be imported with "from gbpbot.core import *"
+# Définir les variables à exporter avec "from gbpbot.core import *"
 __all__ = []
+
+# Importer les sous-modules pour qu'ils soient accessibles via gbpbot.core.*
+try:
+    from . import config
+    __all__.append('config')
+except ImportError:
+    pass
+
+try:
+    from . import wallet
+    __all__.append('wallet')
+except ImportError:
+    pass
+
+try:
+    from . import rpc
+    __all__.append('rpc')
+except ImportError:
+    pass
 
 # Importer les modules principaux
 from gbpbot.core.rpc.rpc_manager import rpc_manager

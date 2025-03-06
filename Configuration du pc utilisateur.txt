@@ -1,0 +1,43 @@
+Configuration du pc utilisateur : 
+✅ Analyse des Ressources de ton PC 🚀
+
+D'après les résultats de tes commandes, voici comment ton PC se positionne par rapport aux recommandations pour l'IA et les bots classiques :
+
+📌 1️⃣ Processeur (CPU)
+Modèle : Intel Core i5-12400F
+Nombre de cœurs : 6
+Nombre de threads : 12
+📌 Analyse : ✔ Convient parfaitement pour un bot classique (Intel i5+ recommandé).
+✔ Peut faire tourner des modèles de Machine Learning, mais moins rapide qu’un i7/Ryzen 7.
+🔥 Optimisation possible : Overclocking (si la carte mère le permet).
+
+📌 2️⃣ Carte Graphique (GPU)
+Modèle : NVIDIA GeForce RTX 3060
+Mémoire Vidéo (VRAM) : 4 Go (calculé : 4293918720 / 1 073 741 824 = 4 Go environ).
+Pilote installé : 32.0.15.6636
+Compatible NVIDIA CUDA ? ✅ Oui !
+📌 Analyse : ✔ Carte parfaite pour l'IA et le Machine Learning (TensorFlow, PyTorch en CUDA).
+✔ Supporte CUDA pour accélérer les calculs IA.
+🔥 Optimisation possible : Mise à jour des pilotes NVIDIA sur 🔗 GeForce Drivers.
+
+📌 3️⃣ Mémoire Vive (RAM)TotalVisibleMemorySize : 16 633 720 KB → 16 Go
+📌 Analyse : ✔ Suffisant pour exécuter un bot classique et du Machine Learning léger.
+✔ Peut être amélioré à 32 Go pour gérer des modèles d’IA plus grands.
+🔥 Optimisation possible : Active le mode XMP dans le BIOS pour booster la vitesse de la RAM.
+
+📌 4️⃣ Stockage (SSD)
+Modèle : KINGSTON SNV2S500G
+Type : SSD NVMe
+📌 Analyse : ✔ SSD rapide, recommandé pour le Machine Learning et les bots.
+✔ Bonne réactivité du système (temps de chargement rapide).
+🔥 Optimisation possible : Vérifier les vitesses avec CrystalDiskMark et activer le mode "Meilleures performances" pour le SSD.
+
+🚀 Conclusion : Ton PC est-il prêt pour l'IA et les bots ?
+Composant	Recommandé pour l'IA	Minimum pour bot classique	Ton PC
+Processeur	Intel i7 / Ryzen 7+	Intel i5 / Ryzen 5+	✅ i5-12400F (Bon)
+Carte Graphique	NVIDIA RTX 3060+	Aucune (pas nécessaire sans ML)	✅ RTX 3060 (Parfait pour l'IA)
+RAM	16 Go+	8 Go	✅ 16 Go (OK, améliorable)
+Stockage	SSD rapide	SSD recommandé	✅ SSD NVMe (OK)
+✅ Ton PC est excellent pour un bot classique.
+✅ Ton PC peut faire du Machine Learning grâce au GPU RTX 3060.
+🚀 Si tu veux aller plus loin en IA, une extension de RAM à 32 Go serait un plus.

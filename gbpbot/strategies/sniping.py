@@ -728,3 +728,96 @@ class SnipingStrategy:
             "data": b'0x',  # Données de transaction encodées
             "value": Web3.to_wei(amount_in, "ether") if amount_in else 0  # Valeur en wei à envoyer
         } 
+    
+    async def stop(self) -> None:
+        """
+        Arrête la stratégie de sniping et nettoie les ressources
+        """
+        try:
+            logger.info("Arrêt de la stratégie de sniping...")
+            
+            # Arrêter les tâches en cours
+            if hasattr(self, '_monitoring_task') and self._monitoring_task and not self._monitoring_task.done():
+                self._monitoring_task.cancel()
+                try:
+                    await self._monitoring_task
+                except asyncio.CancelledError:
+                    pass
+                    
+            if hasattr(self, '_active_snipes_task') and self._active_snipes_task and not self._active_snipes_task.done():
+                self._active_snipes_task.cancel()
+                try:
+                    await self._active_snipes_task
+                except asyncio.CancelledError:
+                    pass
+                    
+            # Arrêter les filters d'événements
+            if hasattr(self, '_event_filters') and self._event_filters:
+                for filter_id, filter_obj in self._event_filters.items():
+                    try:
+                        # Pour les web3.py filters
+                        if hasattr(filter_obj, 'uninstall'):
+                            filter_obj.uninstall()
+                    except Exception as e:
+                        logger.error(f"Erreur lors de la suppression du filtre {filter_id}: {e}")
+            
+            logger.info("Stratégie de sniping arrêtée avec succès")
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'arrêt de la stratégie de sniping: {e}")
+            
+    def get_performance_stats(self) -> Dict:
+        """
+        Obtient les statistiques de performance de la stratégie de sniping
+        
+        Returns:
+            Dict: Statistiques de performance
+        """
+        # Collecter les statistiques depuis le début
+        total_snipes = 0
+        successful_snipes = 0
+        failed_snipes = 0
+        total_profit = 0
+        total_loss = 0
+        
+        # Récupérer les statistiques des snipes actifs et terminés
+        if hasattr(self, 'active_snipes'):
+            total_snipes += len(self.active_snipes)
+            
+            # Calculer le profit/perte estimé des snipes actifs
+            for snipe_id, snipe_data in self.active_snipes.items():
+                if 'entry_price' in snipe_data and 'current_price' in snipe_data:
+                    entry_price = snipe_data['entry_price']
+                    current_price = snipe_data['current_price']
+                    amount = snipe_data.get('amount', 0)
+                    
+                    if current_price > entry_price:
+                        total_profit += (current_price - entry_price) * amount
+                    else:
+                        total_loss += (entry_price - current_price) * amount
+        
+        # Récupérer les statistiques des snipes terminés
+        if hasattr(self, 'completed_snipes'):
+            total_snipes += len(self.completed_snipes)
+            
+            for snipe_id, snipe_data in self.completed_snipes.items():
+                if snipe_data.get('status') == 'successful':
+                    successful_snipes += 1
+                    if 'profit' in snipe_data:
+                        total_profit += snipe_data['profit']
+                else:
+                    failed_snipes += 1
+                    if 'loss' in snipe_data:
+                        total_loss += snipe_data['loss']
+        
+        return {
+            "total_snipes": total_snipes,
+            "successful_snipes": successful_snipes,
+            "failed_snipes": failed_snipes,
+            "success_rate": (successful_snipes / total_snipes) if total_snipes > 0 else 0,
+            "profit_total": total_profit,
+            "loss_total": total_loss,
+            "net_profit": total_profit - total_loss,
+            "trades_count": total_snipes,
+            "avg_profit_per_trade": (total_profit / successful_snipes) if successful_snipes > 0 else 0
+        } 

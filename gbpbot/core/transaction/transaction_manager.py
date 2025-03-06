@@ -11,11 +11,12 @@ from decimal import Decimal
 from loguru import logger
 from web3 import Web3
 from web3.types import TxParams, TxReceipt, Wei, HexBytes
+from collections import OrderedDict
 
 from gbpbot.config.config_manager import ConfigManager
 from gbpbot.core.rpc.rpc_manager import RPCManager
-from gbpbot.core.gas.gas_optimizer import gas_optimizer
-from gbpbot.core.monitoring.bot_monitor import BotMonitor
+from gbpbot.core.gas.gas_optimizer import GasOptimizer
+from gbpbot.core.monitoring.monitor import BotMonitor
 
 class TransactionManager:
     """Gestionnaire de transactions blockchain."""
@@ -31,6 +32,7 @@ class TransactionManager:
         self.config = ConfigManager().get_config()
         self.rpc_manager = RPCManager()
         self.monitor = monitor
+        self.gas_optimizer = GasOptimizer()
         
         # Configuration des transactions
         self.tx_config = self.config.get('transaction', {})
@@ -46,7 +48,9 @@ class TransactionManager:
         
         # État des transactions
         self.pending_transactions = {}
-        self.transaction_history = {}
+        # Utiliser OrderedDict pour faciliter la limitation de la taille
+        self.transaction_history = OrderedDict()
+        self.max_transaction_history = self.tx_config.get('max_transaction_history', 10000)
         self.nonce_lock = asyncio.Lock()
         self.current_nonce = None
         
@@ -95,94 +99,94 @@ class TransactionManager:
     
     async def send_transaction(self, tx_params: TxParams, wait_for_receipt: bool = True) -> Tuple[HexBytes, Optional[TxReceipt]]:
         """
-        Envoie une transaction avec optimisation des frais de gas.
+        Envoie une transaction blockchain.
         
         Args:
             tx_params: Paramètres de la transaction
             wait_for_receipt: Attendre le reçu de la transaction
             
         Returns:
-            Tuple[HexBytes, Optional[TxReceipt]]: (hash de la transaction, reçu de la transaction)
+            Tuple[HexBytes, Optional[TxReceipt]]: Hash de la transaction et reçu (si attendu)
         """
+        tx_id = str(uuid.uuid4())
+        start_time = time.time()
+        
         try:
-            # Vérifier le nombre de transactions en attente
+            # Vérifier que nous avons moins de transactions en attente que le maximum autorisé
             if len(self.pending_transactions) >= self.max_pending_txs:
-                logger.warning(f"Nombre maximum de transactions en attente atteint ({self.max_pending_txs})")
                 raise ValueError(f"Nombre maximum de transactions en attente atteint ({self.max_pending_txs})")
             
-            # Optimiser les paramètres de la transaction
-            optimized_tx = await gas_optimizer.optimize_transaction(tx_params)
-            
-            # Vérifier le prix du gas
-            if 'gasPrice' in optimized_tx and optimized_tx['gasPrice'] > self.max_gas_price:
-                logger.warning(f"Prix du gas trop élevé: {Web3.from_wei(optimized_tx['gasPrice'], 'gwei')} gwei (max: {Web3.from_wei(self.max_gas_price, 'gwei')} gwei)")
-                raise ValueError(f"Prix du gas trop élevé: {Web3.from_wei(optimized_tx['gasPrice'], 'gwei')} gwei")
-            elif 'maxFeePerGas' in optimized_tx and optimized_tx['maxFeePerGas'] > self.max_gas_price:
-                logger.warning(f"Prix du gas (maxFeePerGas) trop élevé: {Web3.from_wei(optimized_tx['maxFeePerGas'], 'gwei')} gwei (max: {Web3.from_wei(self.max_gas_price, 'gwei')} gwei)")
-                raise ValueError(f"Prix du gas (maxFeePerGas) trop élevé: {Web3.from_wei(optimized_tx['maxFeePerGas'], 'gwei')} gwei")
-            
-            # Ajouter le nonce si non spécifié
-            if 'nonce' not in optimized_tx:
-                async with self.nonce_lock:
-                    optimized_tx['nonce'] = self.current_nonce
-                    self.current_nonce += 1
-            
-            # Récupérer le web3
+            # Obtenir une instance web3
             web3 = await self.rpc_manager.get_web3()
+            blockchain = self.config.get('blockchain', {}).get('default', 'avalanche')
+            network = self.config.get(blockchain, {}).get('network', 'mainnet')
             
-            # Estimer le coût de la transaction
-            gas_limit = optimized_tx.get('gas', 0)
-            if gas_limit == 0:
-                # Estimer la limite de gas si non spécifiée
-                gas_limit = await web3.eth.estimate_gas(optimized_tx)
-                optimized_tx['gas'] = gas_limit
+            # Vérifier et optimiser le gas price
+            if 'gasPrice' not in tx_params or not tx_params['gasPrice']:
+                tx_params['gasPrice'] = await self.gas_optimizer.optimize_gas_price(blockchain, network)
             
-            cost_wei, cost_formatted = await gas_optimizer.estimate_transaction_cost(gas_limit)
+            # Vérifier que le gas price ne dépasse pas la limite
+            if int(tx_params['gasPrice']) > self.max_gas_price:
+                raise ValueError(f"Gas price trop élevé: {Web3.from_wei(tx_params['gasPrice'], 'gwei')} gwei > {Web3.from_wei(self.max_gas_price, 'gwei')} gwei")
+            
+            # Ajouter à la liste des transactions en attente
+            tx_info = {
+                'id': tx_id,
+                'params': tx_params,
+                'status': 'pending',
+                'timestamp': start_time,
+                'attempts': 0
+            }
+            self.pending_transactions[tx_id] = tx_info
             
             # Envoyer la transaction
-            logger.info(f"Envoi de la transaction (coût estimé: {cost_formatted})")
-            tx_hash = await web3.eth.send_transaction(optimized_tx)
+            logger.info(f"Envoi de la transaction {tx_id}")
+            tx_hash = await self.rpc_manager.send_raw_transaction(tx_params, blockchain, network)
             
-            # Créer un ID unique pour la transaction
-            tx_id = str(uuid.uuid4())
+            # Mettre à jour l'info de transaction
+            tx_info['hash'] = tx_hash.hex()
+            await self._add_to_transaction_history(tx_id, tx_info.copy())
             
-            # Enregistrer la transaction dans les transactions en attente
-            self.pending_transactions[tx_hash.hex()] = {
-                'id': tx_id,
-                'hash': tx_hash.hex(),
-                'params': optimized_tx,
-                'timestamp': time.time(),
-                'status': 'pending',
-                'cost_wei': cost_wei,
-                'cost_formatted': cost_formatted
-            }
-            
-            # Enregistrer la transaction dans l'historique
-            self.transaction_history[tx_id] = {
-                'id': tx_id,
-                'hash': tx_hash.hex(),
-                'params': optimized_tx,
-                'timestamp': time.time(),
-                'status': 'pending',
-                'cost_wei': cost_wei,
-                'cost_formatted': cost_formatted
-            }
-            
-            # Mettre à jour les métriques
-            self.monitor.increment_counter('transactions_sent')
-            self.monitor.set_gauge('pending_transactions', len(self.pending_transactions))
-            
-            logger.info(f"Transaction envoyée: {tx_hash.hex()} (ID: {tx_id})")
-            
-            # Attendre le reçu de la transaction si demandé
+            # Surveiller la transaction
             receipt = None
             if wait_for_receipt:
-                receipt = await self.wait_for_transaction_receipt(tx_hash)
+                receipt = await self.wait_for_transaction_receipt(tx_hash, self.tx_timeout)
+                tx_info['receipt'] = dict(receipt)
+                tx_info['status'] = 'confirmed' if receipt['status'] == 1 else 'failed'
+                await self._add_to_transaction_history(tx_id, tx_info.copy())
+                
+                # Si succès, logger et enregistrer les métriques
+                if receipt['status'] == 1:
+                    tx_duration = time.time() - start_time
+                    gas_used = receipt['gasUsed']
+                    gas_price = Web3.from_wei(tx_params['gasPrice'], 'gwei')
+                    tx_cost = Web3.from_wei(gas_used * tx_params['gasPrice'], 'ether')
+                    
+                    logger.success(
+                        f"Transaction {tx_id} confirmée en {tx_duration:.2f}s | "
+                        f"Gas: {gas_used} | Prix: {gas_price} gwei | Coût: {tx_cost} ETH"
+                    )
+                    
+                    # Enregistrer les métriques
+                    if self.monitor:
+                        self.monitor.record_transaction(tx_duration, gas_used, tx_cost)
+                else:
+                    logger.error(f"Transaction {tx_id} échouée")
+                
+                # Retirer des transactions en attente
+                if tx_id in self.pending_transactions:
+                    del self.pending_transactions[tx_id]
             
             return tx_hash, receipt
         except Exception as e:
+            # Mettre à jour le statut en cas d'erreur
+            if tx_id in self.pending_transactions:
+                self.pending_transactions[tx_id]['status'] = 'error'
+                self.pending_transactions[tx_id]['error'] = str(e)
+                await self._add_to_transaction_history(tx_id, self.pending_transactions[tx_id].copy())
+                del self.pending_transactions[tx_id]
+            
             logger.error(f"Erreur lors de l'envoi de la transaction: {str(e)}")
-            self.monitor.increment_counter('transaction_errors')
             raise
     
     async def wait_for_transaction_receipt(self, tx_hash: HexBytes, timeout: Optional[int] = None) -> TxReceipt:
@@ -325,7 +329,7 @@ class TransactionManager:
             Dict[str, Dict[str, Any]]: Transactions
         """
         if status is None:
-            return self.transaction_history
+            return dict(self.transaction_history)
         
         return {tx_id: tx for tx_id, tx in self.transaction_history.items() if tx.get('status') == status}
     
@@ -551,6 +555,25 @@ class TransactionManager:
         except Exception as e:
             logger.error(f"Erreur lors de l'accélération de la transaction {tx_hash}: {str(e)}")
             return None
+    
+    async def _add_to_transaction_history(self, tx_id: str, tx_data: Dict[str, Any]) -> None:
+        """
+        Ajoute une transaction à l'historique en limitant la taille maximale.
+        
+        Args:
+            tx_id: ID de la transaction
+            tx_data: Données de la transaction
+        """
+        # Ajouter la nouvelle transaction
+        self.transaction_history[tx_id] = tx_data
+        
+        # Limiter la taille de l'historique des transactions
+        if len(self.transaction_history) > self.max_transaction_history:
+            # Supprimer les transactions les plus anciennes
+            excess = len(self.transaction_history) - self.max_transaction_history
+            for _ in range(excess):
+                self.transaction_history.popitem(last=False)  # Supprime le premier élément (le plus ancien)
+            logger.debug(f"Historique des transactions limité à {self.max_transaction_history} entrées")
 
 # Instance singleton
 transaction_manager = None
