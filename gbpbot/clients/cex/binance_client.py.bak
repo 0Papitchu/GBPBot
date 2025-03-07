@@ -1,0 +1,851 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Client pour l'échange centralisé Binance.
+
+Ce module fournit une implémentation de l'interface BaseCEXClient pour interagir
+avec l'API de Binance. Il permet d'effectuer des opérations de trading, de récupérer
+des données de marché et de gérer les ordres sur la plateforme Binance.
+"""
+
+import logging
+import time
+import hmac
+import hashlib
+import json
+import asyncio
+from typing import Dict, List, Any, Optional, Union, cast
+from decimal import Decimal
+import aiohttp
+from urllib.parse import urlencode
+
+from gbpbot.clients.cex.base_cex_client import BaseCEXClient
+
+# Configuration du logger
+logger = logging.getLogger(__name__)
+
+class BinanceClient(BaseCEXClient):
+    """
+    Client pour la plateforme d'échange Binance.
+    
+    Cette classe implémente l'interface BaseCEXClient pour Binance,
+    permettant d'interagir avec l'API Binance pour le trading.
+    """
+    
+    # URLs de l'API
+    API_URL = "https://api.binance.com"
+    API_TESTNET_URL = "https://testnet.binance.vision"
+    
+    def __init__(
+        self,
+        exchange_name: str = "binance",
+        api_key: Optional[str] = None,
+        api_secret: Optional[str] = None,
+        passphrase: Optional[str] = None,
+        testnet: bool = False,
+        config: Optional[Dict[str, Any]] = None,
+        rate_limits: Optional[Dict[str, int]] = None
+    ):
+        """
+        Initialise le client Binance.
+        
+        Args:
+            exchange_name: Nom de l'échange ("binance")
+            api_key: Clé API pour l'authentification
+            api_secret: Secret API pour l'authentification
+            passphrase: Non utilisé pour Binance, inclus pour compatibilité
+            testnet: Utiliser le réseau de test
+            config: Configuration additionnelle
+            rate_limits: Limites de taux pour les requêtes API
+        """
+        super().__init__(
+            exchange_name=exchange_name,
+            api_key=api_key,
+            api_secret=api_secret,
+            passphrase=passphrase,
+            testnet=testnet,
+            config=config,
+            rate_limits=rate_limits
+        )
+        
+        # URL de l'API en fonction du mode testnet
+        self.api_url = self.API_TESTNET_URL if testnet else self.API_URL
+        
+        # Session HTTP
+        self._session: Optional[aiohttp.ClientSession] = None
+        
+        # Cache pour les données fréquemment utilisées
+        self._cache: Dict[str, Any] = {
+            "tickers": {},
+            "markets": {},
+            "balances": {},
+            "orderbooks": {}
+        }
+        
+        # TTL du cache en secondes
+        self._cache_ttl: Dict[str, int] = {
+            "tickers": 10,
+            "markets": 3600,
+            "balances": 30,
+            "orderbooks": 5
+        }
+        
+        # Timestamps de dernière mise à jour du cache
+        self._cache_timestamps: Dict[str, float] = {
+            "tickers": 0.0,
+            "markets": 0.0,
+            "balances": 0.0,
+            "orderbooks": 0.0
+        }
+        
+        logger.info(f"Client Binance initialisé (testnet: {testnet})")
+    
+    async def initialize(self) -> None:
+        """
+        Initialise le client et établit la connexion avec l'API Binance.
+        
+        Returns:
+            None
+        """
+        if self._session is None:
+            self._session = aiohttp.ClientSession()
+        
+        # Tester la connexion
+        try:
+            await self.get_exchange_info()
+            logger.info("Connexion à Binance établie avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation du client Binance: {str(e)}")
+            self._record_error(e)
+            raise
+    
+    async def shutdown(self) -> None:
+        """
+        Ferme proprement la connexion avec l'API Binance.
+        
+        Returns:
+            None
+        """
+        if self._session is not None:
+            await self._session.close()
+            self._session = None
+            logger.info("Session Binance fermée")
+    
+    async def _request(
+        self,
+        method: str,
+        endpoint: str,
+        params: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+        auth: bool = False
+    ) -> Any:
+        """
+        Effectue une requête à l'API Binance.
+        
+        Args:
+            method: Méthode HTTP (GET, POST, etc.)
+            endpoint: Point d'accès API
+            params: Paramètres de la requête
+            data: Données pour les requêtes POST
+            auth: Si True, la requête nécessite une authentification
+            
+        Returns:
+            Réponse de l'API
+            
+        Raises:
+            Exception: En cas d'erreur lors de la requête
+        """
+        if self._session is None:
+            await self.initialize()
+        
+        # Incrémenter le compteur de requêtes
+        self._increment_request_count()
+        self._update_rate_limit("requests", 1)
+        
+        # Préparer l'URL
+        url = f"{self.api_url}{endpoint}"
+        
+        # Préparer les headers
+        headers = {"Accept": "application/json", "User-Agent": "GBPBot/1.0"}
+        
+        # Ajouter l'authentification si nécessaire
+        if auth:
+            if not self.api_key or not self.api_secret:
+                raise ValueError("API key et secret sont requis pour les requêtes authentifiées")
+            
+            # Ajouter le timestamp pour Binance
+            if params is None:
+                params = {}
+            
+            params["timestamp"] = int(time.time() * 1000)
+            
+            # Signer la requête
+            query_string = urlencode(params)
+            signature = hmac.new(
+                self.api_secret.encode("utf-8"),
+                query_string.encode("utf-8"),
+                hashlib.sha256
+            ).hexdigest()
+            
+            params["signature"] = signature
+            headers["X-MBX-APIKEY"] = self.api_key
+        
+        try:
+            # Effectuer la requête avec une session non-None
+            session = cast(aiohttp.ClientSession, self._session)
+            async with session.request(
+                method=method,
+                url=url,
+                params=params,
+                json=data,
+                headers=headers,
+                timeout=30
+            ) as response:
+                # Vérifier le statut de la réponse
+                if response.status >= 400:
+                    error_text = await response.text()
+                    logger.error(f"Erreur API Binance ({response.status}): {error_text}")
+                    
+                    error = Exception(f"Erreur API Binance ({response.status}): {error_text}")
+                    self._record_error(error)
+                    raise error
+                
+                # Analyser la réponse JSON
+                result = await response.json()
+                return result
+        
+        except asyncio.TimeoutError as e:
+            logger.error(f"Timeout lors de la requête à Binance: {str(e)}")
+            self._record_error(e)
+            raise
+        
+        except Exception as e:
+            logger.error(f"Erreur lors de la requête à Binance: {str(e)}")
+            self._record_error(e)
+            raise
+    
+    def _is_cache_valid(self, cache_type: str) -> bool:
+        """
+        Vérifie si le cache est valide pour un type donné.
+        
+        Args:
+            cache_type: Type de cache à vérifier
+            
+        Returns:
+            True si le cache est valide, False sinon
+        """
+        if cache_type not in self._cache_timestamps:
+            return False
+        
+        current_time = time.time()
+        last_update = self._cache_timestamps[cache_type]
+        ttl = self._cache_ttl[cache_type]
+        
+        return current_time - last_update < ttl
+    
+    def _get_from_cache(self, cache_type: str, key: Optional[str] = None) -> Any:
+        """
+        Récupère des données depuis le cache.
+        
+        Args:
+            cache_type: Type de cache (tickers, markets, etc.)
+            key: Clé spécifique dans le cache (ex: symbole pour les tickers)
+            
+        Returns:
+            Données en cache ou None si le cache est invalide
+        """
+        if not self._is_cache_valid(cache_type):
+            return None
+        
+        if key is not None and cache_type in self._cache:
+            return self._cache[cache_type].get(key)
+        
+        return self._cache.get(cache_type)
+    
+    def _update_cache(self, cache_type: str, data: Any, key: Optional[str] = None) -> None:
+        """
+        Met à jour le cache pour un type donné.
+        
+        Args:
+            cache_type: Type de cache (tickers, markets, etc.)
+            data: Données à mettre en cache
+            key: Clé spécifique dans le cache (ex: symbole pour les tickers)
+            
+        Returns:
+            None
+        """
+        if cache_type not in self._cache:
+            return
+        
+        if key is not None:
+            if cache_type not in self._cache:
+                self._cache[cache_type] = {}
+            self._cache[cache_type][key] = data
+        else:
+            self._cache[cache_type] = data
+        
+        self._cache_timestamps[cache_type] = time.time()
+    
+    async def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Récupère les informations de ticker pour un symbole donné.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT")
+            
+        Returns:
+            Dict contenant les informations de ticker (bid, ask, last, volume, etc.)
+        """
+        # Normaliser le symbole pour Binance (remplacer / par rien)
+        binance_symbol = symbol.replace("/", "")
+        
+        # Vérifier le cache
+        cached_ticker = self._get_from_cache("tickers", binance_symbol)
+        if cached_ticker:
+            return cached_ticker
+        
+        # Récupérer le ticker
+        endpoint = "/api/v3/ticker/24hr"
+        params = {"symbol": binance_symbol}
+        
+        raw_ticker = await self._request("GET", endpoint, params=params)
+        
+        # Formater le ticker
+        ticker = {
+            "symbol": symbol,
+            "bid": Decimal(str(raw_ticker["bidPrice"])),
+            "ask": Decimal(str(raw_ticker["askPrice"])),
+            "last": Decimal(str(raw_ticker["lastPrice"])),
+            "high": Decimal(str(raw_ticker["highPrice"])),
+            "low": Decimal(str(raw_ticker["lowPrice"])),
+            "volume": Decimal(str(raw_ticker["volume"])),
+            "quoteVolume": Decimal(str(raw_ticker["quoteVolume"])),
+            "timestamp": raw_ticker["closeTime"],
+            "change": Decimal(str(raw_ticker["priceChange"])),
+            "percentage": Decimal(str(raw_ticker["priceChangePercent"]))
+        }
+        
+        # Mettre en cache
+        self._update_cache("tickers", ticker, binance_symbol)
+        
+        return ticker
+    
+    async def get_price(self, symbol: str) -> Decimal:
+        """
+        Récupère le prix actuel pour un symbole donné.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT")
+            
+        Returns:
+            Prix actuel sous forme de Decimal
+        """
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Récupérer le prix directement (plus efficace que get_ticker)
+        endpoint = "/api/v3/ticker/price"
+        params = {"symbol": binance_symbol}
+        
+        price_data = await self._request("GET", endpoint, params=params)
+        return Decimal(str(price_data["price"]))
+    
+    async def get_orderbook(self, symbol: str, limit: int = 20) -> Dict[str, List]:
+        """
+        Récupère le carnet d'ordres pour un symbole donné.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT")
+            limit: Nombre maximum d'ordres à récupérer de chaque côté
+            
+        Returns:
+            Dict contenant les listes d'ordres bid et ask
+        """
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Vérifier le cache
+        cache_key = f"{binance_symbol}_{limit}"
+        cached_orderbook = self._get_from_cache("orderbooks", cache_key)
+        if cached_orderbook:
+            return cached_orderbook
+        
+        # Récupérer le carnet d'ordres
+        endpoint = "/api/v3/depth"
+        params = {
+            "symbol": binance_symbol,
+            "limit": min(limit, 1000)  # Binance limite à 1000 niveaux max
+        }
+        
+        raw_orderbook = await self._request("GET", endpoint, params=params)
+        
+        # Formater le carnet d'ordres
+        orderbook = {
+            "symbol": symbol,
+            "bids": [
+                [Decimal(str(price)), Decimal(str(amount))]
+                for price, amount in raw_orderbook["bids"]
+            ],
+            "asks": [
+                [Decimal(str(price)), Decimal(str(amount))]
+                for price, amount in raw_orderbook["asks"]
+            ],
+            "timestamp": int(time.time() * 1000)
+        }
+        
+        # Mettre en cache
+        self._update_cache("orderbooks", orderbook, cache_key)
+        
+        return orderbook
+    
+    async def get_balance(self, currency: Optional[str] = None) -> Union[Dict[str, Decimal], Decimal]:
+        """
+        Récupère le solde du compte pour une ou toutes les devises.
+        
+        Args:
+            currency: Devise spécifique à récupérer (ex: "BTC"). Si None, récupère toutes les devises.
+            
+        Returns:
+            Si currency est spécifié, retourne le solde pour cette devise.
+            Sinon, retourne un dictionnaire de tous les soldes.
+        """
+        # Cette requête nécessite une authentification
+        endpoint = "/api/v3/account"
+        
+        # Vérifier le cache pour tous les soldes
+        cached_balances = self._get_from_cache("balances")
+        if cached_balances:
+            if currency:
+                return cached_balances.get(currency, Decimal("0"))
+            return cached_balances
+        
+        # Récupérer les soldes
+        account_info = await self._request("GET", endpoint, auth=True)
+        
+        # Formater les soldes (ne garder que les devises avec un solde > 0)
+        balances = {}
+        for asset_data in account_info["balances"]:
+            asset = asset_data["asset"]
+            free = Decimal(str(asset_data["free"]))
+            locked = Decimal(str(asset_data["locked"]))
+            total = free + locked
+            
+            if total > 0:
+                balances[asset] = total
+        
+        # Mettre en cache
+        self._update_cache("balances", balances)
+        
+        # Retourner le solde spécifique ou tous les soldes
+        if currency:
+            return balances.get(currency, Decimal("0"))
+        
+        return balances
+    
+    async def create_order(
+        self,
+        symbol: str,
+        order_type: str,
+        side: str,
+        amount: Decimal,
+        price: Optional[Decimal] = None,
+        params: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Crée un nouvel ordre sur l'échange.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT")
+            order_type: Type d'ordre ("limit", "market", etc.)
+            side: Côté de l'ordre ("buy" ou "sell")
+            amount: Quantité à acheter ou vendre
+            price: Prix pour les ordres limit. Non utilisé pour les ordres market.
+            params: Paramètres supplémentaires spécifiques à l'échange
+            
+        Returns:
+            Dict contenant les informations sur l'ordre créé
+        """
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Mettre à jour le compteur d'ordres
+        self._update_rate_limit("orders", 1)
+        
+        # Préparer les paramètres de l'ordre
+        order_params = {
+            "symbol": binance_symbol,
+            "side": side.upper(),
+            "type": order_type.upper(),
+            "quantity": str(amount)
+        }
+        
+        # Ajouter le prix pour les ordres limit
+        if order_type.lower() == "limit" and price is not None:
+            order_params["price"] = str(price)
+            order_params["timeInForce"] = "GTC"  # Good Till Cancel
+        
+        # Ajouter les paramètres supplémentaires
+        if params:
+            order_params.update(params)
+        
+        # Créer l'ordre
+        endpoint = "/api/v3/order"
+        raw_order = await self._request("POST", endpoint, params=order_params, auth=True)
+        
+        # Formater l'ordre
+        order = {
+            "id": str(raw_order["orderId"]),
+            "symbol": symbol,
+            "type": order_type.lower(),
+            "side": side.lower(),
+            "amount": Decimal(str(raw_order["origQty"])),
+            "price": Decimal(str(raw_order.get("price", "0"))),
+            "status": raw_order["status"].lower(),
+            "timestamp": raw_order["transactTime"],
+            "filled": Decimal(str(raw_order.get("executedQty", "0"))),
+            "remaining": Decimal(str(raw_order["origQty"])) - Decimal(str(raw_order.get("executedQty", "0"))),
+            "cost": Decimal(str(raw_order.get("cummulativeQuoteQty", "0"))),
+            "raw": raw_order
+        }
+        
+        # Invalider le cache des ordres et des soldes
+        self._cache_timestamps["balances"] = 0.0
+        
+        return order
+    
+    async def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Annule un ordre existant.
+        
+        Args:
+            order_id: ID de l'ordre à annuler
+            symbol: Symbole de la paire de trading (requis pour Binance)
+            
+        Returns:
+            Dict contenant les informations sur l'ordre annulé
+        """
+        if not symbol:
+            raise ValueError("Symbol is required for cancelling orders on Binance")
+        
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Préparer les paramètres
+        params = {
+            "symbol": binance_symbol,
+            "orderId": order_id
+        }
+        
+        # Annuler l'ordre
+        endpoint = "/api/v3/order"
+        raw_order = await self._request("DELETE", endpoint, params=params, auth=True)
+        
+        # Formater l'ordre
+        order = {
+            "id": str(raw_order["orderId"]),
+            "symbol": symbol,
+            "status": "canceled",
+            "timestamp": time.time() * 1000,
+            "raw": raw_order
+        }
+        
+        # Invalider le cache des ordres et des soldes
+        self._cache_timestamps["balances"] = 0.0
+        
+        return order
+    
+    async def get_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Récupère les informations sur un ordre spécifique.
+        
+        Args:
+            order_id: ID de l'ordre à récupérer
+            symbol: Symbole de la paire de trading (requis pour Binance)
+            
+        Returns:
+            Dict contenant les informations sur l'ordre
+        """
+        if not symbol:
+            raise ValueError("Symbol is required for getting order info on Binance")
+        
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Préparer les paramètres
+        params = {
+            "symbol": binance_symbol,
+            "orderId": order_id
+        }
+        
+        # Récupérer l'ordre
+        endpoint = "/api/v3/order"
+        raw_order = await self._request("GET", endpoint, params=params, auth=True)
+        
+        # Formater l'ordre
+        order = {
+            "id": str(raw_order["orderId"]),
+            "symbol": symbol,
+            "type": raw_order["type"].lower(),
+            "side": raw_order["side"].lower(),
+            "amount": Decimal(str(raw_order["origQty"])),
+            "price": Decimal(str(raw_order.get("price", "0"))),
+            "status": raw_order["status"].lower(),
+            "timestamp": raw_order["time"],
+            "filled": Decimal(str(raw_order["executedQty"])),
+            "remaining": Decimal(str(raw_order["origQty"])) - Decimal(str(raw_order["executedQty"])),
+            "cost": Decimal(str(raw_order.get("cummulativeQuoteQty", "0"))),
+            "raw": raw_order
+        }
+        
+        return order
+    
+    async def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Récupère tous les ordres ouverts.
+        
+        Args:
+            symbol: Symbole de la paire de trading pour filtrer les ordres.
+                   Si None, récupère tous les ordres ouverts.
+            
+        Returns:
+            Liste de dictionnaires contenant les informations sur les ordres ouverts
+        """
+        # Préparer les paramètres
+        params = {}
+        if symbol:
+            params["symbol"] = symbol.replace("/", "")
+        
+        # Récupérer les ordres ouverts
+        endpoint = "/api/v3/openOrders"
+        raw_orders = await self._request("GET", endpoint, params=params, auth=True)
+        
+        # Formater les ordres
+        orders = []
+        for raw_order in raw_orders:
+            symbol_with_slash = f"{raw_order['symbol'][:3]}/{raw_order['symbol'][3:]}"
+            if len(raw_order['symbol']) > 6:
+                # Gérer les cas où le symbole ne suit pas le format standard (ex: BTCUSDT)
+                # Cette logique pourrait nécessiter des ajustements selon les symboles utilisés
+                base_asset_length = 3  # Par défaut, on suppose que l'actif de base a 3 caractères
+                if raw_order['symbol'].startswith("BTC") or raw_order['symbol'].startswith("ETH"):
+                    base_asset_length = 3
+                elif raw_order['symbol'].startswith("BNB") or raw_order['symbol'].startswith("SOL"):
+                    base_asset_length = 3
+                else:
+                    # Tenter de deviner en fonction des paires connues
+                    for known_base in ["BTC", "ETH", "BNB", "SOL", "USDT", "BUSD"]:
+                        if raw_order['symbol'].startswith(known_base):
+                            base_asset_length = len(known_base)
+                            break
+                
+                symbol_with_slash = f"{raw_order['symbol'][:base_asset_length]}/{raw_order['symbol'][base_asset_length:]}"
+            
+            order = {
+                "id": str(raw_order["orderId"]),
+                "symbol": symbol_with_slash,
+                "type": raw_order["type"].lower(),
+                "side": raw_order["side"].lower(),
+                "amount": Decimal(str(raw_order["origQty"])),
+                "price": Decimal(str(raw_order.get("price", "0"))),
+                "status": raw_order["status"].lower(),
+                "timestamp": raw_order["time"],
+                "filled": Decimal(str(raw_order["executedQty"])),
+                "remaining": Decimal(str(raw_order["origQty"])) - Decimal(str(raw_order["executedQty"])),
+                "cost": Decimal(str(raw_order.get("cummulativeQuoteQty", "0"))),
+                "raw": raw_order
+            }
+            orders.append(order)
+        
+        return orders
+    
+    async def get_closed_orders(
+        self,
+        symbol: Optional[str] = None,
+        since: Optional[int] = None,
+        limit: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Récupère les ordres fermés (exécutés ou annulés).
+        
+        Args:
+            symbol: Symbole de la paire de trading pour filtrer les ordres.
+            since: Timestamp en millisecondes pour récupérer les ordres depuis cette date.
+            limit: Nombre maximum d'ordres à récupérer.
+            
+        Returns:
+            Liste de dictionnaires contenant les informations sur les ordres fermés.
+        """
+        if not symbol:
+            raise ValueError("Symbol is required for getting closed orders on Binance")
+        
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Préparer les paramètres
+        params: Dict[str, Any] = {
+            "symbol": binance_symbol
+        }
+        
+        if since:
+            params["startTime"] = since
+        
+        if limit:
+            params["limit"] = limit
+        
+        # Récupérer les ordres fermés
+        endpoint = "/api/v3/allOrders"
+        raw_orders = await self._request("GET", endpoint, params=params, auth=True)
+        
+        # Formater les ordres
+        orders = []
+        for raw_order in raw_orders:
+            # Ne conserver que les ordres fermés
+            if raw_order["status"] in ["FILLED", "CANCELED", "REJECTED", "EXPIRED"]:
+                order = {
+                    "id": str(raw_order["orderId"]),
+                    "symbol": symbol,
+                    "type": raw_order["type"].lower(),
+                    "side": raw_order["side"].lower(),
+                    "amount": Decimal(str(raw_order["origQty"])),
+                    "price": Decimal(str(raw_order.get("price", "0"))),
+                    "status": raw_order["status"].lower(),
+                    "timestamp": raw_order["time"],
+                    "filled": Decimal(str(raw_order["executedQty"])),
+                    "remaining": Decimal(str(raw_order["origQty"])) - Decimal(str(raw_order["executedQty"])),
+                    "cost": Decimal(str(raw_order.get("cummulativeQuoteQty", "0"))),
+                    "raw": raw_order
+                }
+                orders.append(order)
+        
+        return orders
+    
+    async def get_my_trades(
+        self,
+        symbol: Optional[str] = None,
+        since: Optional[int] = None,
+        limit: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Récupère l'historique des trades du compte.
+        
+        Args:
+            symbol: Symbole de la paire de trading pour filtrer les trades.
+            since: Timestamp en millisecondes pour récupérer les trades depuis cette date.
+            limit: Nombre maximum de trades à récupérer.
+            
+        Returns:
+            Liste de dictionnaires contenant les informations sur les trades.
+        """
+        if not symbol:
+            raise ValueError("Symbol is required for getting trades on Binance")
+        
+        # Normaliser le symbole pour Binance
+        binance_symbol = symbol.replace("/", "")
+        
+        # Préparer les paramètres
+        params: Dict[str, Any] = {
+            "symbol": binance_symbol
+        }
+        
+        if since:
+            params["startTime"] = since
+        
+        if limit:
+            params["limit"] = limit
+        
+        # Récupérer les trades
+        endpoint = "/api/v3/myTrades"
+        raw_trades = await self._request("GET", endpoint, params=params, auth=True)
+        
+        # Formater les trades
+        trades: List[Dict[str, Any]] = []
+        for raw_trade in raw_trades:
+            trade = {
+                "id": str(raw_trade["id"]),
+                "order_id": str(raw_trade["orderId"]),
+                "symbol": symbol,
+                "side": "buy" if raw_trade["isBuyer"] else "sell",
+                "amount": Decimal(str(raw_trade["qty"])),
+                "price": Decimal(str(raw_trade["price"])),
+                "cost": Decimal(str(raw_trade["quoteQty"])),
+                "fee": {
+                    "cost": Decimal(str(raw_trade["commission"])),
+                    "currency": raw_trade["commissionAsset"]
+                },
+                "timestamp": raw_trade["time"],
+                "raw": raw_trade
+            }
+            trades.append(trade)
+        
+        return trades
+    
+    async def get_markets(self) -> List[Dict[str, Any]]:
+        """
+        Récupère la liste des marchés disponibles sur l'échange.
+        
+        Returns:
+            Liste de dictionnaires contenant les informations sur les marchés.
+        """
+        # Vérifier le cache
+        cached_markets = self._get_from_cache("markets")
+        if cached_markets:
+            return cast(List[Dict[str, Any]], cached_markets)
+        
+        # Récupérer les informations d'échange
+        exchange_info = await self.get_exchange_info()
+        
+        # Formater les marchés
+        markets: List[Dict[str, Any]] = []
+        for symbol_info in exchange_info["symbols"]:
+            # Ne considérer que les marchés actifs
+            if symbol_info["status"] == "TRADING":
+                base_asset = symbol_info["baseAsset"]
+                quote_asset = symbol_info["quoteAsset"]
+                symbol = f"{base_asset}/{quote_asset}"
+                
+                # Récupérer les filtres pour les limites de montant
+                amount_limits = {"min": Decimal("0"), "max": Decimal("inf")}
+                price_limits = {"min": Decimal("0"), "max": Decimal("inf")}
+                
+                for filter_info in symbol_info["filters"]:
+                    if filter_info["filterType"] == "LOT_SIZE":
+                        amount_limits["min"] = Decimal(str(filter_info["minQty"]))
+                        amount_limits["max"] = Decimal(str(filter_info["maxQty"]))
+                    elif filter_info["filterType"] == "PRICE_FILTER":
+                        price_limits["min"] = Decimal(str(filter_info["minPrice"]))
+                        price_limits["max"] = Decimal(str(filter_info["maxPrice"]))
+                
+                market = {
+                    "symbol": symbol,
+                    "base": base_asset,
+                    "quote": quote_asset,
+                    "active": True,
+                    "limits": {
+                        "amount": amount_limits,
+                        "price": price_limits
+                    },
+                    "precision": {
+                        "amount": symbol_info["baseAssetPrecision"],
+                        "price": symbol_info["quotePrecision"]
+                    },
+                    "raw": symbol_info
+                }
+                markets.append(market)
+        
+        # Mettre en cache
+        self._update_cache("markets", markets)
+        
+        return markets
+    
+    async def get_exchange_info(self) -> Dict[str, Any]:
+        """
+        Récupère les informations générales sur l'échange.
+        
+        Returns:
+            Dict contenant les informations sur l'échange.
+        """
+        endpoint = "/api/v3/exchangeInfo"
+        exchange_info = await self._request("GET", endpoint)
+        
+        return exchange_info 

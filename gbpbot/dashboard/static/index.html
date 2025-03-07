@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBPBot Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="bi bi-rocket-takeoff"></i> GBPBot
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('dashboard')">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('strategies')">
+                                <i class="bi bi-graph-up"></i> Stratégies
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('backtest')">
+                                <i class="bi bi-clock-history"></i> Backtesting
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('trades')">
+                                <i class="bi bi-currency-exchange"></i> Trades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('config')">
+                                <i class="bi bi-gear"></i> Configuration
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" @click="setActivePage('logs')">
+                                <i class="bi bi-journal-text"></i> Logs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-flex">
+                    <span class="navbar-text me-3">
+                        <i class="bi" :class="connectionStatus.icon"></i> {{ connectionStatus.text }}
+                    </span>
+                    <span class="navbar-text">
+                        <i class="bi bi-circle-fill" :class="botStatus.class"></i> {{ botStatus.text }}
+                    </span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid mt-3">
+            <!-- Dashboard -->
+            <div v-if="activePage === 'dashboard'">
+                <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+                
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Solde Total</h5>
+                                <h2 class="card-text text-primary">{{ formatCurrency(totalBalance) }}</h2>
+                                <p class="card-text" :class="profitClass">
+                                    <i :class="profitIcon"></i> {{ formatPercentage(dailyProfitPct) }} aujourd'hui
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Trades Aujourd'hui</h5>
+                                <h2 class="card-text text-primary">{{ dailyTrades }}</h2>
+                                <p class="card-text">
+                                    <span class="text-success">{{ dailySuccessfulTrades }}</span> réussis / 
+                                    <span class="text-danger">{{ dailyFailedTrades }}</span> échoués
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Opportunités</h5>
+                                <h2 class="card-text text-primary">{{ opportunities.length }}</h2>
+                                <p class="card-text">
+                                    <span class="text-success">{{ executedOpportunities }}</span> exécutées / 
+                                    <span class="text-warning">{{ pendingOpportunities }}</span> en attente
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Stratégies Actives</h5>
+                                <h2 class="card-text text-primary">{{ activeStrategies.length }}</h2>
+                                <p class="card-text">
+                                    <i class="bi bi-clock"></i> {{ uptime }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Performance</h5>
+                                <div class="btn-group mb-3">
+                                    <button class="btn btn-sm" :class="timeframeClass('day')" @click="setTimeframe('day')">Jour</button>
+                                    <button class="btn btn-sm" :class="timeframeClass('week')" @click="setTimeframe('week')">Semaine</button>
+                                    <button class="btn btn-sm" :class="timeframeClass('month')" @click="setTimeframe('month')">Mois</button>
+                                </div>
+                                <canvas id="performanceChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Soldes par Actif</h5>
+                                <canvas id="balanceChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Dernières Opportunités</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Timestamp</th>
+                                                <th>Type</th>
+                                                <th>Symbole</th>
+                                                <th>Spread</th>
+                                                <th>Profit Est.</th>
+                                                <th>Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="opp in recentOpportunities" :key="opp.id">
+                                                <td>{{ formatTime(opp.timestamp) }}</td>
+                                                <td>{{ opp.type }}</td>
+                                                <td>{{ opp.symbol }}</td>
+                                                <td>{{ formatPercentage(opp.spread_pct) }}</td>
+                                                <td>{{ formatCurrency(opp.estimated_profit) }}</td>
+                                                <td>
+                                                    <span class="badge" :class="opportunityStatusClass(opp.status)">
+                                                        {{ opp.status }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Derniers Trades</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Timestamp</th>
+                                                <th>Symbole</th>
+                                                <th>Côté</th>
+                                                <th>Prix</th>
+                                                <th>Montant</th>
+                                                <th>Valeur</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="trade in recentTrades" :key="trade.id">
+                                                <td>{{ formatTime(trade.timestamp) }}</td>
+                                                <td>{{ trade.symbol }}</td>
+                                                <td>
+                                                    <span class="badge" :class="trade.side === 'buy' ? 'bg-success' : 'bg-danger'">
+                                                        {{ trade.side }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ formatCurrency(trade.price) }}</td>
+                                                <td>{{ trade.amount.toFixed(6) }}</td>
+                                                <td>{{ formatCurrency(trade.value) }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stratégies -->
+            <div v-if="activePage === 'strategies'">
+                <h2><i class="bi bi-graph-up"></i> Stratégies</h2>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Stratégies Disponibles</h5>
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action" 
+                                       v-for="strategy in availableStrategies" 
+                                       :key="strategy.name"
+                                       @click="selectStrategy(strategy)">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">{{ strategy.name }}</h6>
+                                        </div>
+                                        <p class="mb-1">{{ strategy.description }}</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card" v-if="selectedStrategy">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ selectedStrategy.name }}</h5>
+                                <p>{{ selectedStrategy.description }}</p>
+                                
+                                <h6>Paramètres</h6>
+                                <form @submit.prevent="startStrategy">
+                                    <div class="mb-3" v-for="(value, key) in selectedStrategy.parameters" :key="key">
+                                        <label :for="key" class="form-label">{{ formatParameterName(key) }}</label>
+                                        <input :type="getInputType(value)" class="form-control" :id="key" v-model="strategyParams[key]">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Démarrer la Stratégie</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Stratégies Actives</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Nom</th>
+                                                <th>Démarré</th>
+                                                <th>Statut</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="strategy in activeStrategies" :key="strategy.name">
+                                                <td>{{ strategy.name }}</td>
+                                                <td>{{ formatTime(strategy.start_time) }}</td>
+                                                <td>
+                                                    <span class="badge" :class="strategyStatusClass(strategy.status)">
+                                                        {{ strategy.status }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-danger" @click="stopStrategy(strategy.name)">
+                                                        <i class="bi bi-stop-fill"></i> Arrêter
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backtesting -->
+            <div v-if="activePage === 'backtest'">
+                <h2><i class="bi bi-clock-history"></i> Backtesting</h2>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Configuration du Backtest</h5>
+                                <form @submit.prevent="runBacktest">
+                                    <div class="mb-3">
+                                        <label for="backtest-strategy" class="form-label">Stratégie</label>
+                                        <select class="form-select" id="backtest-strategy" v-model="backtestConfig.strategy_name">
+                                            <option v-for="strategy in availableStrategies" :key="strategy.name" :value="strategy.name">
+                                                {{ strategy.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="backtest-symbols" class="form-label">Symboles</label>
+                                        <input type="text" class="form-control" id="backtest-symbols" v-model="backtestSymbols">
+                                        <small class="form-text text-muted">Séparés par des virgules (ex: BTC/USDT,ETH/USDT)</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="backtest-start-date" class="form-label">Date de début</label>
+                                        <input type="date" class="form-control" id="backtest-start-date" v-model="backtestConfig.start_date">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="backtest-end-date" class="form-label">Date de fin</label>
+                                        <input type="date" class="form-control" id="backtest-end-date" v-model="backtestConfig.end_date">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="backtest-timeframe" class="form-label">Timeframe</label>
+                                        <select class="form-select" id="backtest-timeframe" v-model="backtestConfig.timeframe">
+                                            <option value="1m">1 minute</option>
+                                            <option value="5m">5 minutes</option>
+                                            <option value="15m">15 minutes</option>
+                                            <option value="1h">1 heure</option>
+                                            <option value="4h">4 heures</option>
+                                            <option value="1d">1 jour</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="backtest-data-source" class="form-label">Source de données</label>
+                                        <select class="form-select" id="backtest-data-source" v-model="backtestConfig.data_source">
+                                            <option value="binance">Binance</option>
+                                            <option value="kucoin">KuCoin</option>
+                                            <option value="gate_io">Gate.io</option>
+                                            <option value="csv">CSV</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="backtest-initial-balance" class="form-label">Solde initial (USDT)</label>
+                                        <input type="number" class="form-control" id="backtest-initial-balance" v-model="initialBalanceUSDT">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Lancer le Backtest</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card" v-if="backtestResults">
+                            <div class="card-body">
+                                <h5 class="card-title">Résultats du Backtest</h5>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Rendement Total</h6>
+                                                <h3 :class="backtestResults.total_return >= 0 ? 'text-success' : 'text-danger'">
+                                                    {{ formatPercentage(backtestResults.total_return) }}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Ratio de Sharpe</h6>
+                                                <h3 :class="backtestResults.sharpe_ratio >= 1 ? 'text-success' : 'text-warning'">
+                                                    {{ backtestResults.sharpe_ratio.toFixed(2) }}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Drawdown Max</h6>
+                                                <h3 class="text-danger">
+                                                    {{ formatPercentage(backtestResults.max_drawdown) }}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title">Taux de Réussite</h6>
+                                                <h3 :class="backtestResults.win_rate >= 50 ? 'text-success' : 'text-danger'">
+                                                    {{ formatPercentage(backtestResults.win_rate) }}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <canvas id="backtestChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Historique des Backtests</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Stratégie</th>
+                                                <th>Symboles</th>
+                                                <th>Période</th>
+                                                <th>Rendement</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(backtest, index) in backtestHistory" :key="index">
+                                                <td>{{ formatDate(backtest.date) }}</td>
+                                                <td>{{ backtest.strategy }}</td>
+                                                <td>{{ backtest.symbols.join(', ') }}</td>
+                                                <td>{{ formatDate(backtest.start_date) }} - {{ formatDate(backtest.end_date) }}</td>
+                                                <td :class="backtest.return >= 0 ? 'text-success' : 'text-danger'">
+                                                    {{ formatPercentage(backtest.return) }}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary" @click="viewBacktestDetails(backtest)">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Autres pages à implémenter -->
+            <div v-if="activePage === 'trades'">
+                <h2><i class="bi bi-currency-exchange"></i> Trades</h2>
+                <!-- Contenu de la page Trades -->
+            </div>
+
+            <div v-if="activePage === 'config'">
+                <h2><i class="bi bi-gear"></i> Configuration</h2>
+                <!-- Contenu de la page Configuration -->
+            </div>
+
+            <div v-if="activePage === 'logs'">
+                <h2><i class="bi bi-journal-text"></i> Logs</h2>
+                <!-- Contenu de la page Logs -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html> 

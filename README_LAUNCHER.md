@@ -1,103 +1,125 @@
-# GBPBot - Point d'Entrée Unique
+# Guide de Lancement du GBPBot
 
-Ce document explique comment utiliser le nouveau point d'entrée unifié pour GBPBot, qui permet de lancer le bot et le dashboard avec une seule commande.
+Ce document explique les différentes méthodes pour lancer le GBPBot et ses composants.
 
-## Lancement Simplifié
+## 🚀 Options de Lancement
 
-Pour lancer le bot avec le nouveau système unifié, exécutez simplement :
+Le GBPBot dispose de plusieurs scripts de lancement adaptés à différents systèmes d'exploitation et cas d'utilisation:
+
+### 1. Scripts Principaux Recommandés
+
+#### Pour Windows:
+```batch
+start_gbpbot.bat
+```
+
+#### Pour Linux/macOS:
+```bash
+./start_gbpbot.sh
+```
+
+Ces scripts vérifient l'environnement, installent les dépendances nécessaires et offrent un menu interactif avec les options suivantes:
+- Mode normal (CLI)
+- Mode simulation (sans transactions réelles)
+- Mode debug (logs supplémentaires)
+- Dashboard web
+- Quitter
+
+### 2. Scripts Python Spécifiques
+
+#### Script principal du bot:
+```bash
+python run_gbpbot.py [options]
+```
+
+Options disponibles:
+- `--mode {cli,dashboard,auto,telegram}`: Mode de fonctionnement
+- `--debug`: Active les logs détaillés
+- `--simulation`: Lance le bot en mode simulation (sans transactions réelles)
+- `--optimize`: Active les optimisations matérielles
+- `--blockchains BLOCKCHAINS`: Liste des blockchains à utiliser (séparées par des virgules)
+
+#### Dashboard uniquement:
+```bash
+python gbpbot/dashboard/run_dashboard.py [options]
+```
+
+Options disponibles:
+- `--host HOST`: Adresse d'hôte (défaut: 0.0.0.0)
+- `--port PORT`: Port d'écoute (défaut: 8000)
+- `--simulate`: Active la génération de métriques simulées pour les tests
+- `--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}`: Niveau de log
+
+### 3. Script Unifié Alternatif
 
 ```bash
 python run_bot.py
 ```
 
-## Fonctionnalités
+Ce script offre une interface unifiée qui:
+- Vérifie et installe automatiquement les dépendances manquantes
+- Propose de lancer le dashboard en parallèle
+- Affiche un menu interactif pour gérer le bot
 
-Le nouveau lanceur offre les fonctionnalités suivantes :
+## 🔧 Choix de la Méthode de Lancement
 
-1. **Installation automatique des dépendances**
-   - Vérifie et installe automatiquement les packages Python nécessaires
-   - Gère les dépendances manquantes comme `python-dotenv`, `loguru`, etc.
+### Méthode recommandée
+- **Utilisateurs Windows**: Utilisez `start_gbpbot.bat`
+- **Utilisateurs Linux/macOS**: Utilisez `start_gbpbot.sh`
 
-2. **Configuration automatique**
-   - Crée automatiquement un fichier `.env` par défaut s'il n'existe pas
-   - Charge les variables d'environnement pour configurer le bot
+Ces scripts sont optimisés pour chaque système d'exploitation et offrent la meilleure expérience utilisateur avec une interface colorée, une gestion des erreurs robuste et une configuration guidée.
 
-3. **Option de lancement du dashboard**
-   - Vous pouvez choisir de lancer le dashboard en parallèle du bot
-   - Le dashboard s'ouvre dans une fenêtre séparée (sous Windows) ou en arrière-plan (sous Linux/Mac)
+### Cas d'utilisation spécifiques
+- **Lancement du dashboard uniquement**: Utilisez `python gbpbot/dashboard/run_dashboard.py`
+- **Intégration dans des scripts personnalisés**: Utilisez `run_gbpbot.py` avec les options appropriées
+- **Développement et tests**: Utilisez `run_bot.py` qui offre une expérience simplifiée
 
-4. **Menu principal interactif**
-   - Lancer le bot avec les paramètres du fichier `.env`
-   - Configurer les paramètres de manière interactive
-   - Afficher la configuration actuelle
-   - Afficher les statistiques
-   - Quitter proprement l'application
+## 📋 Exemple de Configuration
 
-5. **Gestion propre des processus**
-   - Arrêt automatique du dashboard lors de la fermeture du programme
-   - Gestion des interruptions (Ctrl+C)
+Avant de lancer le GBPBot, assurez-vous d'avoir un fichier `.env` correctement configuré avec vos clés API, préférences de trading, etc.
 
-## Guide d'utilisation
+Vous pouvez générer ce fichier en exécutant:
+```bash
+python scripts/setup_run_environment.py
+```
 
-### Première utilisation
+## 🔍 Vérification du Système
 
-1. Exécutez `python run_bot.py`
-2. Le script vérifiera et installera les dépendances manquantes
-3. Un fichier `.env` par défaut sera créé s'il n'existe pas
-4. Vous serez invité à choisir si vous souhaitez lancer le dashboard en parallèle (y/n)
-5. Le menu principal s'affichera avec les options disponibles
+Pour vérifier que votre système est correctement configuré pour exécuter le GBPBot:
+```bash
+python scripts/system_check.py
+```
 
-### Options du menu principal
+Ce script vérifiera:
+- La version de Python
+- Les dépendances requises
+- Les connexions aux blockchains
+- Les capacités GPU pour l'IA
+- Les permissions de stockage
 
-- **1 : Lancer le bot**
-  - Démarre le bot avec les paramètres définis dans le fichier `.env`
-  - Affiche la configuration actuelle avant le lancement
-  - Utilise les soldes initiaux définis dans le fichier `.env` en mode simulation
+## 🛠️ Dépannage
 
-- **2 : Configurer les paramètres**
-  - Permet de modifier les paramètres du bot de manière interactive
-  - Les modifications sont enregistrées dans le fichier `.env`
-  - Inclut des options pour le mode simulation, le réseau de test, les seuils de profit, etc.
+1. **Problèmes de dépendances**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- **3 : Afficher la configuration actuelle**
-  - Affiche les paramètres actuels du bot depuis le fichier `.env`
-  - Les informations sensibles (clés API, mots de passe) sont masquées
+2. **Erreurs d'affichage des emojis dans les logs**:
+   Sur Windows, utilisez un terminal qui supporte UTF-8 comme Windows Terminal.
 
-- **4 : Afficher les statistiques**
-  - Affiche les dernières entrées des fichiers de log
-  - Utile pour surveiller l'activité récente du bot
+3. **Le dashboard ne se lance pas**:
+   Vérifiez que les modules `fastapi` et `uvicorn` sont installés:
+   ```bash
+   pip install fastapi uvicorn websockets
+   ```
 
-- **5 : Quitter**
-  - Ferme proprement l'application
-  - Arrête tous les processus en arrière-plan
+4. **Problèmes de connexion aux API blockchain**:
+   Vérifiez vos clés API et connexion internet.
 
-## Compatibilité
+## 🔄 Options Avancées
 
-Ce lanceur est compatible avec :
-- Windows
-- Linux
-- macOS
+Pour les utilisateurs avancés, vous pouvez personnaliser le comportement du GBPBot en:
 
-## Dépannage
-
-Si vous rencontrez des problèmes :
-
-1. **Le dashboard ne se lance pas**
-   - Vérifiez que le module `gbpbot.cli` est correctement installé
-   - Essayez de lancer manuellement `python -m gbpbot.cli`
-
-2. **Erreurs d'importation**
-   - Vérifiez que vous êtes dans le répertoire racine du projet
-   - Assurez-vous que toutes les dépendances sont installées
-
-3. **Le bot ne démarre pas**
-   - Vérifiez les fichiers de configuration
-   - Consultez les logs pour plus d'informations
-
-## Personnalisation
-
-Vous pouvez personnaliser le comportement du lanceur en modifiant le fichier `run_bot.py`. Les principales sections que vous pourriez vouloir modifier sont :
-
-- La liste `REQUIRED_PACKAGES` pour ajouter ou supprimer des dépendances
-- La fonction `run_bot()` pour modifier le comportement du bot
-- La liste `configurable_params` dans `configure_parameters()` pour ajouter ou supprimer des paramètres configurables 
+1. Créant des scripts batch/shell personnalisés basés sur les existants
+2. Modifiant directement les scripts Python
+3. Utilisant les modules Python du GBPBot dans vos propres applications 

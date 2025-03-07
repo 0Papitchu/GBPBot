@@ -1,0 +1,30 @@
+2025-03-07 20:42:36,057 - INFO - Variables d'environnement chargées depuis .env
+2025-03-07 20:42:36,057 - INFO - === VÉRIFICATION DU SYSTÈME GBPBOT ===
+2025-03-07 20:42:36,058 - INFO - 
+--- Vérification: Version Python ---
+2025-03-07 20:42:36,059 - INFO - Version Python: 3.11.4
+2025-03-07 20:42:36,065 - INFO - 
+--- Vérification: Dépendances critiques ---
+2025-03-07 20:42:38,069 - ERROR - Dépendances manquantes: python-dotenv
+2025-03-07 20:42:38,069 - INFO - Exécutez: pip install -r requirements.txt
+2025-03-07 20:42:38,071 - INFO - 
+--- Vérification: Dépendances optionnelles ---
+2025-03-07 20:42:38,968 - WARNING - Dépendances optionnelles manquantes: torch, tensorflow, scikit-learn, streamlit
+2025-03-07 20:42:38,969 - INFO - 
+--- Vérification: Connexions Blockchain ---
+2025-03-07 20:42:39,110 - INFO - Connexion RPC Solana OK
+2025-03-07 20:42:39,110 - INFO - Connexion RPC Avalanche OK
+2025-03-07 20:42:39,110 - ERROR - Erreur de connexion RPC Sonic: HTTPSConnectionPool(host='mainnet.sonic.ooo', port=443): Max retries exceeded with url: /rpc (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000197C077FED0>: Failed to resolve 'mainnet.sonic.ooo' ([Errno 11001] getaddrinfo failed)"))
+2025-03-07 20:42:39,112 - INFO - 
+--- Vérification: Permissions de stockage ---
+2025-03-07 20:42:39,113 - INFO - Permissions d'écriture OK pour: logs/
+2025-03-07 20:42:39,114 - INFO - Permissions d'écriture OK pour: data/
+2025-03-07 20:42:39,115 - INFO - Permissions d'écriture OK pour: config/
+2025-03-07 20:42:39,117 - INFO - 
+--- Vérification: Capacités GPU ---
+2025-03-07 20:42:39,118 - INFO - TensorFlow non installé, vérification GPU ignorée.
+2025-03-07 20:42:39,120 - INFO - 
+--- Vérification des variables d'environnement ---
+2025-03-07 20:42:39,130 - INFO - Résultats sauvegardés dans C:\GBPBot\logs\system_check_results_20250307_204239.json
+2025-03-07 20:42:39,130 - INFO - 
+=== RÉSUMÉ DE LA VÉRIFICATION ===

@@ -63,7 +63,7 @@ class LLaMAClient(LLMProvider):
         
         logger.info(f"Client LLaMA initialisé avec le modèle à {self.model_path}")
     
-    def generate_text(
+    async def generate_text(
         self, 
         prompt: str,
         max_tokens: int = 500,

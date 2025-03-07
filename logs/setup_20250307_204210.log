@@ -1,0 +1,6 @@
+2025-03-07 20:42:11,887 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package solana-py: No module named 'solana.keypair'
+2025-03-07 20:42:11,898 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-07 20:42:11,899 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-07 20:42:11,906 - setup - ERROR - Erreur lors de la configuration du gestionnaire de secrets: no running event loop
+2025-03-07 20:42:35,229 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000201809A8510>

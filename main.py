@@ -163,8 +163,8 @@ def load_config(config_path: str = None) -> Dict[str, Any]:
     
     # Si un fichier de configuration supplémentaire est spécifié, le charger
     if config_path and os.path.exists(config_path):
-        try:
-            with open(config_path, "r") as f:
+    try:
+        with open(config_path, "r") as f:
                 file_config = json.load(f)
                 
             # Fusionner la configuration du fichier avec celle de l'environnement
@@ -178,7 +178,7 @@ def load_config(config_path: str = None) -> Dict[str, Any]:
             
             config = deep_merge(file_config, config)
             logger.info(f"Configuration chargée depuis {config_path}")
-        except Exception as e:
+    except Exception as e:
             logger.error(f"Erreur lors du chargement de la configuration depuis {config_path}: {e}")
     
     return config
@@ -313,7 +313,7 @@ def stop_modules() -> None:
             if hasattr(module, "stop"):
                 module.stop()
                 logger.info(f"Module {module_name} arrêté avec succès")
-        except Exception as e:
+            except Exception as e:
             logger.error(f"Erreur lors de l'arrêt du module {module_name}: {e}")
     
     # Réinitialisation des variables globales
@@ -394,7 +394,7 @@ def main():
     )
     parser.add_argument(
         "-v", "--verbose",
-        action="store_true",
+        action="store_true", 
         help="Activer le mode verbeux pour le débogage"
     )
     
@@ -434,7 +434,7 @@ def main():
             start_auto_mode(config, modules)
         else:
             logger.error("Mode automatique sélectionné mais non activé dans la configuration")
-            sys.exit(1)
+        sys.exit(1)
     else:  # Mode interactif par défaut
         start_interactive_mode(config, modules)
 

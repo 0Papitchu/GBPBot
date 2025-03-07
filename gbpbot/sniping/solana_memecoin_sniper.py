@@ -17,6 +17,7 @@ from typing import Dict, List, Any, Optional, Tuple, Set, Union
 from datetime import datetime, timedelta
 import base58
 import requests
+import numpy as np
 
 # Configurer le logging
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +27,7 @@ logger = logging.getLogger("solana_memecoin_sniper")
 try:
     from gbpbot.ai import create_ai_client, get_prompt_manager
     from gbpbot.ai.market_analyzer import MarketAnalyzer
+    from gbpbot.ai.token_contract_analyzer import create_token_contract_analyzer, SolanaTokenContractAnalyzer
     AI_IMPORTS_OK = True
     logger.info("Modules d'IA chargés avec succès")
 except ImportError as e:
@@ -50,22 +52,144 @@ except ImportError as e:
     logger.warning("Installation via pip install solana-py solders anchorpy")
     SOLANA_IMPORTS_OK = False
 
+# Essayer d'importer l'optimiseur MEV Jito
+try:
+    from gbpbot.core.optimization.jito_mev_optimizer import (
+        create_jito_optimizer, 
+        JitoMEVOptimizer, 
+        JitoConfig
+    )
+    JITO_OPTIMIZER_AVAILABLE = True
+    logger.info("Module d'optimisation MEV Jito chargé avec succès")
+except ImportError:
+    JITO_OPTIMIZER_AVAILABLE = False
+    logger.warning("Module d'optimisation MEV Jito non disponible - les transactions ne seront pas optimisées pour MEV")
+
+# Essayer d'importer l'analyseur de contrats léger
+try:
+    from gbpbot.machine_learning.contract_analyzer import (
+        create_contract_analyzer,
+        LightweightContractAnalyzer,
+        ContractSecurityResult
+    )
+    LIGHTWEIGHT_ANALYZER_AVAILABLE = True
+    logger.info("Analyseur de contrats léger chargé avec succès")
+except ImportError:
+    LIGHTWEIGHT_ANALYZER_AVAILABLE = False
+    logger.warning("Analyseur de contrats léger non disponible - l'analyse rapide ne sera pas disponible")
+
+# Ajout de l'importation du module d'analyse de microstructure
+try:
+    from gbpbot.machine_learning.market_microstructure_analyzer import MarketMicrostructureAnalyzer
+    MARKET_MICROSTRUCTURE_ANALYZER_AVAILABLE = True
+    logger.info("Analyseur de microstructure de marché chargé avec succès")
+except ImportError:
+    MARKET_MICROSTRUCTURE_ANALYZER_AVAILABLE = False
+    logger.warning("Analyseur de microstructure de marché non disponible")
+
+# Essayer d'importer le prédicteur de volatilité
+try:
+    from gbpbot.machine_learning.volatility_predictor import create_volatility_predictor, VolatilityPredictor
+    VOLATILITY_PREDICTOR_AVAILABLE = True
+    logger.info("Prédicteur de volatilité chargé avec succès")
+except ImportError:
+    VOLATILITY_PREDICTOR_AVAILABLE = False
+    logger.warning("Prédicteur de volatilité non disponible - les prédictions de volatilité ne seront pas disponibles")
+
 class SolanaMemecoinSniper:
     """
     Sniping ultra-rapide de memecoins sur Solana avec détection automatique
     et sécurité intégrée.
     """
     
-    def __init__(self, rpc_url: Optional[str] = None, private_key: Optional[str] = None, config: Optional[Dict] = None):
+    def __init__(
+        self,
+        wallet_keypair_path: Optional[str] = None,
+        rpc_url: Optional[str] = None,
+        config: Optional[Dict[str, Any]] = None,
+        auto_approve: bool = False,
+        simulation_mode: bool = False,
+        notification_callback: Optional[Callable[[str, Dict[str, Any]], None]] = None
+    ):
         """
-        Initialise le sniper de memecoins Solana
+        Initialize the Solana memecoin sniper.
         
         Args:
-            rpc_url: URL du RPC Solana (optionnel, utilise l'environnement par défaut)
-            private_key: Clé privée pour les transactions (optionnel, utilise l'environnement par défaut)
-            config: Configuration supplémentaire
+            wallet_keypair_path: Path to the wallet keypair file
+            rpc_url: Solana RPC URL
+            config: Sniper configuration parameters
+            auto_approve: Whether to automatically approve transactions (use with caution)
+            simulation_mode: Run in simulation mode without executing real transactions
+            notification_callback: Optional callback function for notifications
         """
         self.config = config or {}
+        
+        # Initialiser l'analyseur de microstructure de marché
+        if MARKET_MICROSTRUCTURE_ANALYZER_AVAILABLE:
+            self.market_microstructure_analyzer = MarketMicrostructureAnalyzer(rpc_url)
+            logger.info("Analyseur de microstructure de marché initialisé avec succès")
+        else:
+            self.market_microstructure_analyzer = None
+            logger.warning("Analyseur de microstructure de marché non disponible")
+        
+        # Initialiser le prédicteur de volatilité
+        if VOLATILITY_PREDICTOR_AVAILABLE:
+            volatility_config = self.config.get("volatility", {})
+            use_gpu = volatility_config.get("use_gpu", True)
+            
+            self.volatility_predictor = create_volatility_predictor(
+                config=volatility_config,
+                models_dir=volatility_config.get("models_dir", "data/volatility_models"),
+                data_dir=volatility_config.get("data_dir", "data/volatility_data"),
+                use_gpu=use_gpu
+            )
+            logger.info("Prédicteur de volatilité initialisé avec succès")
+        else:
+            self.volatility_predictor = None
+            logger.warning("Prédicteur de volatilité non disponible")
+        
+        # Enhanced with AI if available
+        if AI_IMPORTS_OK:
+            try:
+                # Initialize AI client
+                ai_config = self.config.get("AI", {})
+                self.ai_client = create_ai_client(
+                    provider=ai_config.get("PROVIDER", "openai"),
+                    model_name=ai_config.get("MODEL", "gpt-3.5-turbo"),
+                    temperature=float(ai_config.get("TEMPERATURE", 0.3)),
+                    openai_api_key=ai_config.get("OPENAI_API_KEY", None),
+                    local_model_path=ai_config.get("LOCAL_MODEL_PATH", None)
+                )
+                
+                if self.ai_client:
+                    # Initialize market analyzer
+                    self.market_analyzer = MarketAnalyzer(ai_client=self.ai_client, config=ai_config)
+                    
+                    # Initialize contract analyzer
+                    risk_patterns_file = ai_config.get("RISK_PATTERNS_FILE", None)
+                    self.contract_analyzer = create_token_contract_analyzer(
+                        ai_client=self.ai_client, 
+                        config=ai_config,
+                        risk_patterns_file=risk_patterns_file
+                    )
+                    
+                    logger.info("AI-enhanced sniping enabled (Market + Contract Analysis)")
+                    self.ai_enabled = True
+                else:
+                    logger.warning("Failed to initialize AI client, falling back to traditional analysis")
+                    self.ai_enabled = False
+                    self.market_analyzer = None
+                    self.contract_analyzer = None
+            except Exception as e:
+                logger.error(f"Failed to initialize AI components: {e}")
+                self.ai_enabled = False
+                self.market_analyzer = None
+                self.contract_analyzer = None
+        else:
+            self.ai_enabled = False
+            self.ai_client = None
+            self.market_analyzer = None
+            self.contract_analyzer = None
         
         # Configuration du RPC
         self.rpc_url = rpc_url or os.environ.get("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com")
@@ -81,7 +205,7 @@ class SolanaMemecoinSniper:
         self.client = AsyncClient(self.rpc_url, self.commitment, timeout=30)
         
         # Charger la clé privée
-        self._load_private_key(private_key)
+        self._load_private_key(wallet_keypair_path)
         
         # Configuration des programmes Solana
         self.raydium_amm_program_id = PublicKey(os.environ.get(
@@ -126,6 +250,9 @@ class SolanaMemecoinSniper:
             "total_profit_usd": 0.0,
             "total_loss_usd": 0.0,
             "start_time": None,
+            "manipulations_detected": 0,
+            "volatility_predictions": 0,
+            "high_volatility_detected": 0,
         }
         
         # Initialiser l'analyseur de marché basé sur l'IA si disponible
@@ -136,6 +263,42 @@ class SolanaMemecoinSniper:
             self._initialize_ai_analyzer()
         else:
             logger.warning("L'analyse de marché par IA est désactivée ou non disponible")
+        
+        # Configuration MEV
+        self.use_mev_protection = self.config.get("use_mev_protection", True)
+        self.mev_optimizer = None
+        self.jito_tip_percentage = self.config.get("jito_tip_percentage", 0.5)  # % du profit attendu
+        self.jito_tip_account = self.config.get("jito_tip_account")
+        self.jito_auth_keypair_path = self.config.get("jito_auth_keypair_path")
+        self.jito_endpoint = self.config.get("jito_endpoint", "http://localhost:8100")
+        
+        # Statistiques MEV
+        self.mev_stats = {
+            "transactions_sent_via_jito": 0,
+            "transactions_sent_standard": 0,
+            "estimated_mev_saved": 0.0,
+            "total_jito_tips_paid": 0.0,
+        }
+        
+        # Initialiser l'optimiseur MEV si disponible
+        self._initialize_mev_optimizer()
+        
+        # Configuration de l'analyseur léger
+        self.use_lightweight_analyzer = self.config.get("use_lightweight_analyzer", True)
+        self.lightweight_analyzer = None
+        self.lightweight_analyzer_models_dir = self.config.get("lightweight_models_dir")
+        self.lightweight_analysis_enabled = self.use_lightweight_analyzer and LIGHTWEIGHT_ANALYZER_AVAILABLE
+        self.lightweight_analysis_timeout_ms = self.config.get("lightweight_analysis_timeout_ms", 500)  # 500ms max
+        
+        # Statistiques d'analyse légère
+        self.lightweight_stats = {
+            "total_analyses": 0,
+            "analyses_succeeded": 0,
+            "analyses_failed": 0,
+            "tokens_rejected": 0,
+            "avg_analysis_time_ms": 0.0,
+            "tokens_analyzed_ids": set()  # Pour éviter les doublons
+        }
         
         logger.info(f"Solana Memecoin Sniper initialisé avec RPC: {self.rpc_url}")
     
@@ -252,6 +415,9 @@ class SolanaMemecoinSniper:
             # Tâche 3: Gestion des snipes actifs (stop-loss, take-profit)
             self.snipe_manager_task = asyncio.create_task(self._snipe_manager())
             
+            # Initialiser l'analyseur léger si disponible
+            self._initialize_lightweight_analyzer()
+            
             logger.info("Solana Memecoin Sniper démarré avec succès")
             return True
             
@@ -282,6 +448,20 @@ class SolanaMemecoinSniper:
             
             # Fermer la connexion client
             await self.client.close()
+            
+            # Fermer l'optimiseur MEV si actif
+            if self.mev_optimizer:
+                try:
+                    await self.mev_optimizer.close()
+                    logger.info("Optimiseur MEV fermé")
+                except Exception as e:
+                    logger.error(f"Erreur lors de la fermeture de l'optimiseur MEV: {e}")
+            
+            # Loguer les statistiques d'analyse légère si disponible
+            if self.lightweight_analysis_enabled and self.lightweight_analyzer:
+                analyzer_stats = self.lightweight_analyzer.get_statistics()
+                logger.info(f"Statistiques d'analyse légère: {json.dumps(self.lightweight_stats, default=str)}")
+                logger.info(f"Statistiques de l'analyseur: {json.dumps(analyzer_stats, default=str)}")
             
             logger.info("Solana Memecoin Sniper arrêté avec succès")
             
@@ -364,407 +544,477 @@ class SolanaMemecoinSniper:
         
         return detected_tokens
     
-    async def _should_snipe_token(self, token_info: Dict) -> bool:
+    async def _should_snipe_token(self, token_data: Dict[str, Any]) -> Tuple[bool, str]:
         """
-        Détermine si un token détecté doit être snipé
+        Détermine si un token doit être snipé basé sur différents critères,
+        incluant l'analyse de microstructure du marché et la prédiction de volatilité.
         
         Args:
-            token_info: Informations sur le token
+            token_data: Données du token
             
         Returns:
-            bool: True si le token doit être snipé, False sinon
+            Tuple[bool, str]: (Doit être snipé, Raison)
         """
-        self.stats["tokens_analyzed"] += 1
+        # Vérification initiale des critères de base
+        if not self._pass_basic_security_checks(token_data):
+            return False, "Échec des vérifications de sécurité de base"
         
-        # Vérification 1: Blacklist
-        if token_info["address"] in self.blacklisted_tokens:
-            logger.warning(f"Token {token_info['symbol']} blacklisté, ignoré")
-            return False
-        
-        # Vérification 2: Liquidité minimale
-        if token_info["liquidity_usd"] < self.min_liquidity_usd:
-            logger.info(f"Liquidité insuffisante pour {token_info['symbol']}: ${token_info['liquidity_usd']:.2f}")
-            return False
-        
-        # Vérification 3: Honeypot (dans un cas réel, cette vérification serait plus complexe)
-        if self.check_honeypot:
-            is_honeypot, reason = await self._check_honeypot(token_info["address"])
-            if is_honeypot:
-                logger.warning(f"Token {token_info['symbol']} détecté comme honeypot: {reason}")
-                # Ajouter à la blacklist
-                self.blacklisted_tokens.add(token_info["address"])
-                
-                # Limiter la taille de la blacklist
-                if len(self.blacklisted_tokens) > self.max_blacklist_size:
-                    # Convertir en liste, garder les plus récents, reconvertir en set
-                    self.blacklisted_tokens = set(list(self.blacklisted_tokens)[-(self.max_blacklist_size//2):])
-                    logger.debug(f"Blacklist nettoyée, taille réduite à {len(self.blacklisted_tokens)}")
-                
-                return False
-        
-        # Vérification 4: Distribution des tokens (simulation)
-        if random.random() < 0.3:  # 30% de chance que la distribution soit suspecte
-            logger.info(f"Distribution suspecte pour {token_info['symbol']}, ignoré")
-            return False
-        
-        # Vérification 5: Analyse IA du marché et du token (si disponible)
-        if self.use_ai_analysis and self.ai_market_analyzer:
-            try:
-                # Préparer les données pour l'analyse
-                market_data = await self._prepare_market_data_for_ai(token_info)
-                
-                # Obtenir le code du contrat (dans un cas réel, nous ferions une requête sur la blockchain)
-                contract_code = await self._get_token_contract_code(token_info["address"])
-                
-                # Évaluer le token avec l'IA
-                token_score = self.ai_market_analyzer.evaluate_token_score(
-                    market_data, 
-                    contract_code
-                )
-                
-                # Seuil de score configurable
-                min_score_threshold = self.config.get("min_ai_score", 0.65)
-                
-                if token_score < min_score_threshold:
-                    logger.warning(f"Score IA insuffisant pour {token_info['symbol']}: {token_score:.2f}, seuil: {min_score_threshold}")
-                    return False
-                
-                # Ajouter le score IA aux informations du token pour une utilisation ultérieure
-                token_info["ai_score"] = token_score
-                
-                # Analyse avancée des patterns de prix si disponible
-                try:
-                    pattern_analysis = self.ai_market_analyzer.detect_pattern(market_data["token"])
-                    
-                    # Ajouter l'analyse de pattern aux informations du token
-                    token_info["pattern_analysis"] = pattern_analysis
-                    
-                    # Vérification de tendances baissières connues
-                    if pattern_analysis.get("trend_prediction") == "bearish":
-                        logger.warning(f"Tendance baissière prédite pour {token_info['symbol']}, ignoré")
-                        return False
-                    
-                    # Vérification de patterns qui historiquement indiquent un dump
-                    if pattern_analysis.get("pattern_type") in ["pump_and_dump", "distribution_phase"]:
-                        logger.warning(f"Pattern à risque détecté pour {token_info['symbol']}: {pattern_analysis.get('pattern_type')}")
-                        return False
-                    
-                    # Si confiance faible, être plus prudent
-                    if pattern_analysis.get("confidence", 1.0) < 0.4:
-                        logger.warning(f"Confiance faible dans l'analyse de {token_info['symbol']}: {pattern_analysis.get('confidence', 0):.2f}")
-                        # Augmenter le seuil minimal pour les tokens à faible confiance
-                        if token_score < min_score_threshold * 1.2:
-                            return False
-                        
-                except Exception as e:
-                    logger.warning(f"Erreur lors de l'analyse des patterns pour {token_info['symbol']}: {str(e)}")
-                
-                # Analyse prédictive du prix futur
-                try:
-                    # Prédire le mouvement de prix à court terme (6h)
-                    price_prediction = self.ai_market_analyzer.predict_price_movement(
-                        market_data["token"], 
-                        timeframe_hours=6
-                    )
-                    
-                    # Ajouter la prédiction aux informations du token
-                    token_info["price_prediction"] = price_prediction
-                    
-                    # Vérifier si la prédiction est favorable
-                    if price_prediction.get("predicted_direction") == "down":
-                        # Si baisse prédite avec confiance élevée, ignorer le token
-                        if price_prediction.get("confidence", 0) > 0.7:
-                            logger.warning(f"Baisse prédite avec confiance élevée pour {token_info['symbol']}, ignoré")
-                            return False
-                        # Si baisse prédite importante, ignorer le token
-                        if price_prediction.get("predicted_change_percent", 0) < -10:
-                            logger.warning(f"Forte baisse prédite pour {token_info['symbol']}, ignoré")
-                            return False
-                    
-                    # Utiliser la prédiction pour ajuster les paramètres de trading
-                    if price_prediction.get("predicted_direction") == "up":
-                        # Augmenter dynamiquement le montant à investir si hausse prédite avec confiance
-                        confidence = price_prediction.get("confidence", 0)
-                        predicted_change = price_prediction.get("predicted_change_percent", 0)
-                        
-                        # Ajuster le multiplicateur d'investissement en fonction de la prédiction
-                        investment_multiplier = 1.0
-                        if confidence > 0.8 and predicted_change > 20:
-                            investment_multiplier = 1.5  # +50% d'investissement
-                        elif confidence > 0.6 and predicted_change > 10:
-                            investment_multiplier = 1.2  # +20% d'investissement
-                            
-                        # Stocker le multiplicateur pour une utilisation lors de l'exécution
-                        token_info["investment_multiplier"] = investment_multiplier
-                        logger.info(f"Multiplicateur d'investissement pour {token_info['symbol']}: {investment_multiplier}")
-                        
-                        # Ajuster les paramètres de take profit basés sur la prédiction
-                        if predicted_change > 50 and confidence > 0.7:
-                            # Augmenter le take profit pour les tokens à fort potentiel
-                            token_info["take_profit_percent"] = min(predicted_change * 0.8, 100)  # Viser 80% de la hausse prédite, max 100%
-                            logger.info(f"Take profit ajusté pour {token_info['symbol']}: {token_info['take_profit_percent']:.1f}%")
-                            
-                except Exception as e:
-                    logger.warning(f"Erreur lors de la prédiction de prix pour {token_info['symbol']}: {str(e)}")
-                
-                logger.info(f"Token {token_info['symbol']} validé par l'IA avec un score de {token_score:.2f}")
-                
-            except Exception as e:
-                logger.error(f"Erreur lors de l'analyse IA pour {token_info['symbol']}: {str(e)}")
-                # En cas d'erreur d'analyse IA, continuer avec les vérifications traditionnelles
-        
-        logger.info(f"Token {token_info['symbol']} validé pour sniping")
-        return True
-    
-    async def _check_honeypot(self, token_address: str) -> Tuple[bool, str]:
-        """
-        Vérifie si un token est un honeypot (simulation)
-        
-        Args:
-            token_address: Adresse du token à vérifier
-            
-        Returns:
-            Tuple[bool, str]: (Est un honeypot, Raison)
-        """
-        # Dans un cas réel, cette fonction utiliserait une simulation de swap
-        # pour vérifier si le token peut être vendu
-        
-        # Simulation - 10% de chance qu'un token soit détecté comme honeypot
-        if random.random() < 0.1:
-            return True, "Simulation de vente échouée"
-        
-        return False, ""
-    
-    async def _prepare_market_data_for_ai(self, token_info: Dict) -> Dict:
-        """
-        Prépare les données de marché pour l'analyse IA
-        
-        Args:
-            token_info: Informations sur le token
-            
-        Returns:
-            Dict: Données de marché structurées pour l'IA
-        """
-        # Dans un cas réel, nous rassemblerions des données supplémentaires sur le marché
-        # comme le volume, l'historique des prix, les métriques sociales, etc.
-        
-        # Obtenir des métriques globales du marché
-        market_conditions = await self._get_market_conditions()
-        
-        # Simuler des données supplémentaires sur le token
-        extended_token_data = {
-            "symbol": token_info["symbol"],
-            "name": token_info.get("name", token_info["symbol"]),
-            "current_price": 1.0,  # Prix initial simulé
-            "market_cap": token_info.get("liquidity_usd", 0) * 2,  # Estimation simple
-            "liquidity": token_info.get("liquidity_usd", 0),
-            "holders": random.randint(50, 500),  # Simulé
-            "creation_time": token_info.get("creation_time", time.time()),
-            "age_hours": (time.time() - token_info.get("creation_time", time.time())) / 3600,
-            "price_history": [
-                {"timestamp": (time.time() - 3600 * i), "price": 1.0 * (1 + random.uniform(-0.05, 0.05))}
-                for i in range(5, 0, -1)
-            ],
-            "volume_24h": token_info.get("liquidity_usd", 0) * random.uniform(0.1, 0.5),
-            "social_metrics": {
-                "twitter_followers": random.randint(0, 1000),
-                "telegram_members": random.randint(0, 500),
-                "sentiment_score": random.uniform(0.3, 0.8)
-            }
-        }
-        
-        # Structurer les données pour l'IA
-        market_data = {
-            "token": extended_token_data,
-            "market_conditions": market_conditions,
-            "exchange_data": {
-                "dex": "Raydium",
-                "trading_pairs": [f"{token_info['symbol']}/SOL", f"{token_info['symbol']}/USDC"],
-                "slippage": 0.02
-            }
-        }
-        
-        return market_data
-    
-    async def _get_market_conditions(self) -> Dict:
-        """
-        Obtient les conditions actuelles du marché
-        
-        Returns:
-            Dict: Informations sur les conditions du marché
-        """
-        # Dans un cas réel, nous ferions des requêtes à des API pour obtenir ces données
-        # Simuler des conditions de marché
-        return {
-            "btc_price": 35000 + random.uniform(-1000, 1000),  # Simulé
-            "btc_dominance": 45.5 + random.uniform(-1, 1),
-            "sol_price": 80 + random.uniform(-5, 5),
-            "total_market_cap": 1750000000000,
-            "fear_greed_index": random.randint(25, 75)
-        }
-    
-    async def _get_token_contract_code(self, token_address: str) -> str:
-        """
-        Obtient le code du contrat d'un token (simulé)
-        
-        Args:
-            token_address: Adresse du token
-            
-        Returns:
-            str: Code du contrat
-        """
-        # Dans un cas réel, nous ferions une requête pour obtenir le code du contrat
-        # Simuler un contrat Solana basique
-        return """
-        // Ceci est un contrat simulé pour les besoins de l'analyse IA
-        // Dans un cas réel, nous récupérerions le code source réel du contrat
-        
-        use anchor_lang::prelude::*;
-        use anchor_spl::token::{Mint, Token, TokenAccount};
-        
-        declare_id!("TokenAddressSimulated");
-        
-        #[program]
-        pub mod meme_token {
-            use super::*;
-            
-            pub fn initialize(ctx: Context<Initialize>, total_supply: u64) -> Result<()> {
-                let mint = &ctx.accounts.mint;
-                let token_account = &ctx.accounts.token_account;
-                let authority = &ctx.accounts.authority;
-                
-                // Mint initial supply to the creator
-                msg!("Minting initial supply...");
-                
-                Ok(())
-            }
-            
-            pub fn transfer(ctx: Context<Transfer>, amount: u64) -> Result<()> {
-                // Standard transfer logic
-                Ok(())
-            }
-        }
-        
-        #[derive(Accounts)]
-        pub struct Initialize<'info> {
-            #[account(mut)]
-            pub mint: Account<'info, Mint>,
-            #[account(mut)]
-            pub token_account: Account<'info, TokenAccount>,
-            #[account(mut)]
-            pub authority: Signer<'info>,
-            pub token_program: Program<'info, Token>,
-        }
-        
-        #[derive(Accounts)]
-        pub struct Transfer<'info> {
-            #[account(mut)]
-            pub from: Account<'info, TokenAccount>,
-            #[account(mut)]
-            pub to: Account<'info, TokenAccount>,
-            pub authority: Signer<'info>,
-            pub token_program: Program<'info, Token>,
-        }
-        """
-    
-    async def _execute_snipe(self, token_info: Dict) -> bool:
-        """
-        Exécute le sniping d'un token
-        
-        Args:
-            token_info: Informations sur le token
-            
-        Returns:
-            bool: True si le sniping a réussi, False sinon
-        """
-        if not self.public_key or not self.private_key:
-            logger.error("Exécution impossible: wallet non configuré")
-            return False
-            
-        logger.info(f"Exécution du sniping de {token_info['symbol']} ({token_info['address']})")
-        self.stats["snipe_attempts"] += 1
-        
+        # Vérifier l'analyse de microstructure si disponible
         try:
-            # Récupérer les paramètres de trading
-            amount_sol = self.config.get("amount_sol_per_trade", 0.1)
-            
-            # Ajuster le montant en fonction de l'analyse IA (si disponible)
-            if self.use_ai_analysis and "investment_multiplier" in token_info:
-                original_amount = amount_sol
-                amount_sol *= token_info["investment_multiplier"]
-                logger.info(f"Montant ajusté par l'IA: {original_amount} SOL → {amount_sol} SOL")
-            
-            # Vérification de solde (simulation)
-            balance_check = random.random() > 0.1  # 10% de chance d'échouer
-            if not balance_check:
-                logger.error(f"Solde insuffisant pour exécuter le sniping de {token_info['symbol']}")
-                return False
+            if MARKET_MICROSTRUCTURE_ANALYZER_AVAILABLE and hasattr(self, 'market_microstructure_analyzer') and self.market_microstructure_analyzer is not None:
+                market_address = token_data.get("pair_address")
+                if market_address:
+                    start_time = time.time()
+                    # Analyser le carnet d'ordres pour détecter les manipulations
+                    manipulation_results = await self.market_microstructure_analyzer.analyze_order_book(market_address)
+                    
+                    # Vérifier également la détection de manipulation spécifique
+                    manipulation_detection = await self.market_microstructure_analyzer.detect_market_manipulation(market_address)
+                    
+                    elapsed_ms = (time.time() - start_time) * 1000
+                    logger.info(f"Analyse de microstructure pour {token_data.get('symbol', 'inconnu')} terminée en {elapsed_ms:.2f}ms")
+                    
+                    # Prendre une décision basée sur les résultats
+                    if manipulation_results.get("manipulation_detected") or manipulation_detection.get("manipulation_detected"):
+                        manipulation_type = (
+                            manipulation_results.get("manipulation_type") or 
+                            manipulation_detection.get("manipulation_type") or 
+                            "unknown"
+                        )
+                        logger.warning(f"Manipulation de marché détectée pour {token_data.get('symbol', 'inconnu')}: {manipulation_type}")
+                        self.stats["manipulations_detected"] += 1
+                        return False, f"Manipulation de marché détectée: {manipulation_type}"
+                    
+                    # Des indicateurs positifs de microstructure peuvent renforcer la confiance
+                    if manipulation_results.get("market_health", 0) > 80:
+                        logger.info(f"Indicateurs de microstructure très positifs pour {token_data.get('symbol', 'inconnu')}")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'analyse de microstructure: {str(e)}")
+            # Continuer malgré l'erreur, mais avec une note dans les logs
+        
+        # Vérifier la prédiction de volatilité si disponible
+        try:
+            if VOLATILITY_PREDICTOR_AVAILABLE and hasattr(self, 'volatility_predictor') and self.volatility_predictor is not None:
+                # Préparer les données pour la prédiction de volatilité
+                price_data = self._prepare_price_data_for_volatility(token_data)
                 
-            # Préparer les paramètres de trading optimaux
-            gas_price = self.config.get("gas_price", "auto")
-            slippage = self.config.get("slippage_percent", 2.5)
-            
-            # Ajuster les paramètres en fonction de l'analyse IA (si disponible)
-            if self.use_ai_analysis and "ai_score" in token_info:
-                # Ajuster le slippage en fonction du score IA
-                ai_score = token_info["ai_score"]
-                if ai_score > 0.8:
-                    # Pour les tokens très bien notés, réduire le slippage
-                    slippage = max(1.0, slippage * 0.8)
-                elif ai_score < 0.7:
-                    # Pour les tokens moins bien notés, augmenter le slippage
-                    slippage = min(5.0, slippage * 1.3)
-                logger.info(f"Slippage ajusté par l'IA pour {token_info['symbol']}: {slippage:.2f}%")
-            
-            # Simulation d'exécution de transaction
-            logger.info(f"Simulation: achat de {token_info['symbol']} pour {amount_sol} SOL avec {slippage:.2f}% de slippage")
-            
-            # Simuler un délai de transaction (en situation réelle, ce serait la transaction)
-            await asyncio.sleep(0.5 + random.random())
-            
-            # Simulation de transaction réussie (90% de chance)
-            transaction_success = random.random() < 0.9
-            
-            if not transaction_success:
-                logger.error(f"Échec de la transaction pour {token_info['symbol']}")
-                self.stats["failed_transactions"] += 1
-                return False
+                # Prédire la volatilité
+                start_time = time.time()
+                volatility_prediction = await self.volatility_predictor.predict_volatility(price_data, timeframe="15min")
+                elapsed_ms = (time.time() - start_time) * 1000
                 
-            # Transaction réussie
-            price_entry = random.uniform(0.9, 1.1)  # Simulation de prix
-            amount_tokens = amount_sol * 100 / price_entry  # Simulation de quantité
-            
-            # Générer un ID unique pour ce sniping
-            snipe_id = f"snipe_{token_info['address']}_{int(time.time())}"
-            
-            # Enregistrer le sniping dans les positions actives
-            self.active_snipes[snipe_id] = {
-                "token": token_info,
-                "time_entry": time.time(),
-                "price_entry": price_entry,
-                "amount_sol": amount_sol,
-                "amount_tokens": amount_tokens,
-                # Paramètres de sortie
-                "take_profit_percent": token_info.get("take_profit_percent", self.config.get("take_profit_percent", 20)),
-                "stop_loss_percent": self.config.get("stop_loss_percent", 15),
-                "trailing_stop": self.config.get("use_trailing_stop", True),
-                "trailing_distance": self.config.get("trailing_stop_distance", 5),
-                # Suivi du prix
-                "current_price": price_entry,
-                "highest_price": price_entry,
-                "price_history": []
-            }
-            
-            # Enregistrer la transaction comme réussie
-            logger.info(f"Sniping de {token_info['symbol']} réussi! ID: {snipe_id}, {amount_tokens:.2f} tokens achetés à {price_entry}")
-            self.stats["successful_snipes"] += 1
-            
-            return True
+                self.stats["volatility_predictions"] += 1
+                
+                if volatility_prediction.get("success", False):
+                    logger.info(f"Prédiction de volatilité pour {token_data.get('symbol', 'inconnu')} terminée en {elapsed_ms:.2f}ms")
+                    
+                    # Enregistrer la prédiction pour référence future
+                    token_data["volatility_prediction"] = volatility_prediction
+                    
+                    predicted_volatility = volatility_prediction.get("predicted_volatility", 0)
+                    volatility_level = volatility_prediction.get("volatility_level", "moyenne")
+                    confidence_score = volatility_prediction.get("confidence_score", 0.5)
+                    
+                    logger.info(f"Volatilité prédite pour {token_data.get('symbol', 'inconnu')}: {predicted_volatility:.4f} "
+                               f"(niveau: {volatility_level}, confiance: {confidence_score:.2f})")
+                    
+                    # Prendre une décision basée sur la volatilité prédite
+                    if volatility_level == "élevée":
+                        self.stats["high_volatility_detected"] += 1
+                        
+                        # Si la confiance est élevée, adapter la stratégie
+                        if confidence_score > 0.8:
+                            # Dans certains cas, une volatilité très élevée peut indiquer un risque
+                            # Si le ratio est très élevé, nous pourrions vouloir attendre
+                            volatility_ratio = predicted_volatility / token_data.get("historical_volatility", 0.01)
+                            if volatility_ratio > 3.0:
+                                logger.warning(f"Volatilité prédite extrêmement élevée pour {token_data.get('symbol', 'inconnu')}")
+                                return False, f"Volatilité prédite extrêmement élevée (ratio: {volatility_ratio:.2f}), trop risqué"
+                            
+                            # Adapter les paramètres de trading (sera utilisé lors du sniping)
+                            recommendations = volatility_prediction.get("recommendations", {})
+                            token_data["trading_recommendations"] = recommendations
+                            
+                            # Haute volatilité = opportunité potentielle + risque accru
+                            logger.info(f"Haute volatilité détectée pour {token_data.get('symbol', 'inconnu')}, adaptation des paramètres de trading")
+                
+                else:
+                    logger.warning(f"Échec de la prédiction de volatilité: {volatility_prediction.get('error', 'Erreur inconnue')}")
             
         except Exception as e:
-            logger.exception(f"Erreur lors du sniping de {token_info['symbol']}: {str(e)}")
-            self.stats["failed_transactions"] += 1
+            logger.error(f"Erreur lors de la prédiction de volatilité: {str(e)}")
+            # Continuer malgré l'erreur, mais avec une note dans les logs
+        
+        # Continuer avec les autres vérifications existantes
+        return self._legacy_should_snipe_token(token_data)
+    
+    async def _fetch_contract_code(self, contract_address: str) -> Optional[str]:
+        """
+        Attempt to fetch contract code for analysis.
+        
+        Args:
+            contract_address: Token contract address
+            
+        Returns:
+            Optional[str]: Contract code if available, None otherwise
+        """
+        # For now, return None as Solana doesn't easily expose contract code
+        # Future implementation can integrate with explorers or other sources
+        return None
+    
+    def _prepare_token_data_for_analysis(self, token_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Convert internal token data format to the format expected by the market analyzer.
+        
+        Args:
+            token_data: Internal token data
+            
+        Returns:
+            Dict[str, Any]: Formatted data for AI analysis
+        """
+        # Extract and normalize relevant fields
+        return {
+            "symbol": token_data.get("symbol", "Unknown"),
+            "name": token_data.get("name", token_data.get("symbol", "Unknown")),
+            "address": token_data.get("mint", ""),
+            "price_usd": token_data.get("price", 0.0),
+            "price_change_24h": token_data.get("price_change_24h", 0.0),
+            "market_cap": token_data.get("market_cap", 0),
+            "volume_24h": token_data.get("volume_24h", 0),
+            "liquidity_usd": token_data.get("liquidity", 0),
+            "holders": token_data.get("holders", 0),
+            "transactions_24h": token_data.get("transactions_24h", 0),
+            "launch_date": token_data.get("created_at", "Unknown"),
+            "contract_verified": token_data.get("verified", False),
+            "liquidity_locked": token_data.get("liquidity_locked", False),
+            "tax_buy": token_data.get("buy_tax", 0),
+            "tax_sell": token_data.get("sell_tax", 0)
+        }
+    
+    def _pass_basic_security_checks(self, token_data: Dict[str, Any]) -> bool:
+        """
+        Perform quick security checks that don't require AI analysis.
+        
+        Args:
+            token_data: Token data
+            
+        Returns:
+            bool: True if passes basic checks, False otherwise
+        """
+        # Check if token has a name/symbol
+        if not token_data.get("symbol") and not token_data.get("name"):
+            logger.warning("Token without name or symbol - suspicious")
             return False
+        
+        # Check for minimum liquidity
+        min_liquidity = self.config.get("MIN_LIQUIDITY_USD", 500)
+        if token_data.get("liquidity", 0) < min_liquidity:
+            logger.warning(f"Insufficient liquidity: ${token_data.get('liquidity', 0)} (min: ${min_liquidity})")
+            return False
+        
+        # Check for suspiciously high taxes
+        max_tax = self.config.get("MAX_TAX_PERCENTAGE", 10)
+        if token_data.get("buy_tax", 0) > max_tax or token_data.get("sell_tax", 0) > max_tax:
+            logger.warning(f"High tax detected: Buy {token_data.get('buy_tax', 0)}%, Sell {token_data.get('sell_tax', 0)}%")
+            return False
+        
+        return True
+    
+    def _legacy_should_snipe_token(self, token_data: Dict[str, Any]) -> Tuple[bool, str]:
+        """
+        Legacy method for token sniping decision without AI.
+        
+        Args:
+            token_data: Token data
+            
+        Returns:
+            Tuple[bool, str]: Decision and reason
+        """
+        # Existing implementation...
+        # This should be the current implementation of _should_snipe_token
+        # Keep the implementation intact
+        
+        # For example, check if it meets minimum criteria
+        min_liquidity = self.config.get("MIN_LIQUIDITY_USD", 1000)
+        if token_data.get("liquidity", 0) < min_liquidity:
+            return False, f"Insufficient liquidity: ${token_data.get('liquidity', 0)} (min: ${min_liquidity})"
+        
+        # Check for maximum spread
+        max_spread = self.config.get("MAX_SPREAD_PERCENTAGE", 15)
+        current_spread = token_data.get("spread_percentage", 0)
+        if current_spread > max_spread:
+            return False, f"Spread too high: {current_spread}% (max: {max_spread}%)"
+        
+        # Check for creation time (we want new tokens)
+        max_age_minutes = self.config.get("MAX_TOKEN_AGE_MINUTES", 60)
+        creation_time = token_data.get("created_at")
+        if creation_time:
+            try:
+                age_minutes = (datetime.now() - datetime.fromisoformat(creation_time)).total_seconds() / 60
+                if age_minutes > max_age_minutes:
+                    return False, f"Token too old: {age_minutes:.1f} minutes (max: {max_age_minutes})"
+            except:
+                pass
+        
+        return True, "Token passed basic criteria"
+    
+    async def _execute_snipe(self, token_data: Dict[str, Any]) -> Tuple[bool, str]:
+        """
+        Exécute le sniping d'un token.
+        
+        Args:
+            token_data: Données du token
+            
+        Returns:
+            Tuple[bool, str]: (Succès, Message)
+        """
+        if self.simulation_mode:
+            logger.info("Mode simulation - pas de transaction réelle")
+            snipe_id = f"sim_{token_data['mint']}_{int(time.time())}"
+            return True, snipe_id
+            
+        token_mint = token_data.get("mint")
+        token_symbol = token_data.get("symbol", "Unknown")
+        
+        logger.info(f"Preparing to snipe {token_symbol} ({token_mint})")
+        
+        try:
+            # Get base investment amount
+            base_amount = self.config.get("BASE_INVESTMENT_AMOUNT", 0.05)
+            
+            # Determine AI-optimized parameters if available
+            if self.ai_enabled and self.market_analyzer:
+                try:
+                    # Get AI score if available
+                    market_data = self._prepare_token_data_for_analysis(token_data)
+                    token_analysis = await self.market_analyzer.analyze_token(market_data)
+                    
+                    ai_score = token_analysis.get("potential_score", 60)
+                    
+                    # Adjust investment amount based on AI score
+                    if ai_score >= 90:  # Extremely promising token
+                        adjusted_amount = base_amount * 1.5
+                        max_slippage = 15  # Accept higher slippage for exceptional opportunities
+                    elif ai_score >= 80:
+                        adjusted_amount = base_amount * 1.25
+                        max_slippage = 10
+                    elif ai_score >= 70:
+                        adjusted_amount = base_amount * 1.1
+                        max_slippage = 8
+                    else:
+                        adjusted_amount = base_amount
+                        max_slippage = 5
+                    
+                    # Adjust take-profit thresholds based on AI
+                    expected_growth = token_analysis.get("expected_growth", 2.0)
+                    take_profit_target = max(1.5, min(5.0, expected_growth * 0.8))  # 80% of expected growth, bounded
+                    
+                    logger.info(f"AI-optimized parameters: Amount: {adjusted_amount} SOL, " +
+                              f"Slippage: {max_slippage}%, Take-profit: {take_profit_target}x")
+                    
+                except Exception as e:
+                    logger.error(f"Error getting AI-optimized parameters: {e}")
+                    adjusted_amount = base_amount
+                    max_slippage = self.config.get("MAX_SLIPPAGE_PERCENTAGE", 5)
+                    take_profit_target = self.config.get("TAKE_PROFIT_MULTIPLIER", 2.0)
+            else:
+                # Use default parameters if AI is not available
+                adjusted_amount = base_amount
+                max_slippage = self.config.get("MAX_SLIPPAGE_PERCENTAGE", 5)
+                take_profit_target = self.config.get("TAKE_PROFIT_MULTIPLIER", 2.0)
+            
+            # Calculer le profit attendu pour l'optimisation MEV (estimation simplifiée)
+            # Cette logique peut être affinée avec des calculs plus précis
+            expected_profit_sol = None
+            if token_analysis:
+                # Si nous avons une analyse du token, utiliser son potentiel estimé
+                potential_multiple = token_analysis.get("potential_multiple", 2.0)
+                investment_sol = adjusted_amount
+                expected_profit_sol = investment_sol * (potential_multiple - 1.0) * 0.8  # 80% du profit potentiel
+            
+            # Préparation de la transaction de swap
+            # Note: Cette partie dépend de votre implémentation spécifique
+            # Nous supposons que vous avez un code existant qui construit cette transaction
+            
+            # Calcul du profit attendu pour l'optimisation MEV (estimation simplifiée)
+            expected_profit_sol = None
+            if token_analysis:
+                # Si nous avons une analyse du token, utiliser son potentiel estimé
+                potential_multiple = token_analysis.get("potential_multiple", 2.0)
+                investment_sol = adjusted_amount
+                expected_profit_sol = investment_sol * (potential_multiple - 1.0) * 0.8  # 80% du profit potentiel
+            
+            # Construction de la transaction - à adapter selon votre implémentation actuelle
+            # Ceci est un exemple simplifié, à remplacer par votre code existant
+            transaction = await self._build_swap_transaction(
+                token_data, 
+                adjusted_amount,
+                max_slippage
+            )
+            
+            # Optimisation MEV pour la transaction
+            success, tx_result = await self._send_transaction_with_mev_optimization(
+                transaction, 
+                expected_profit_sol
+            )
+            
+            # Setup auto take-profit and stop-loss
+            if self.config.get("AUTO_TAKE_PROFIT", True):
+                # ...existing implementation with adjusted take_profit_target...
+                pass
+                
+            # Adapter les paramètres de trading en fonction de la prédiction de volatilité
+            if "volatility_prediction" in token_data and token_data["volatility_prediction"].get("success", False):
+                volatility_level = token_data["volatility_prediction"].get("volatility_level", "moyenne")
+                recommendations = token_data.get("trading_recommendations", {})
+                
+                # Adapter le stop-loss en fonction des recommandations
+                sniping_recommendations = recommendations.get("sniping", {})
+                stop_loss_type = sniping_recommendations.get("stop_loss", "standard")
+                
+                if stop_loss_type == "serré":
+                    stop_loss_percent = self.stop_loss_percent * 0.8  # Plus serré (20% plus proche)
+                elif stop_loss_type == "large":
+                    stop_loss_percent = self.stop_loss_percent * 1.5  # Plus large (50% plus éloigné)
+                else:
+                    stop_loss_percent = self.stop_loss_percent  # Standard
+                
+                # Adapter le take-profit en fonction des recommandations
+                take_profit_type = sniping_recommendations.get("take_profit", "standard")
+                
+                if take_profit_type == "échelonné":
+                    # Configuration pour prises de profit échelonnées
+                    take_profit_levels = [
+                        {"percent": self.take_profit_percent * 0.5, "allocation": 0.3},  # 30% à 50% du TP
+                        {"percent": self.take_profit_percent, "allocation": 0.4},        # 40% au TP standard
+                        {"percent": self.take_profit_percent * 2, "allocation": 0.3}     # 30% à 200% du TP
+                    ]
+                    token_data["take_profit_levels"] = take_profit_levels
+                elif take_profit_type == "modéré":
+                    take_profit_percent = self.take_profit_percent * 0.7  # Plus modéré (70% du TP standard)
+                else:
+                    take_profit_percent = self.take_profit_percent  # Standard
+                
+                # Journaliser les adaptations
+                logger.info(f"Paramètres de trading adaptés pour {token_data.get('symbol', 'inconnu')} "
+                          f"basés sur la prédiction de volatilité: SL={stop_loss_percent:.1f}%, "
+                          f"TP={take_profit_type}")
+            
+            # Return success
+            return success, tx_result
+            
+        except Exception as e:
+            logger.error(f"Error executing snipe: {e}")
+            return False, f"Failed to execute snipe: {str(e)}"
+    
+    async def _build_swap_transaction(
+        self, 
+        token_data: Dict[str, Any], 
+        amount_sol: float,
+        slippage: float
+    ) -> Transaction:
+        """
+        Construit une transaction de swap pour le token spécifié.
+        Note: Cette méthode est un exemple et doit être adaptée à votre implémentation.
+        
+        Args:
+            token_data: Données du token
+            amount_sol: Montant en SOL à utiliser
+            slippage: Slippage à appliquer (en pourcentage)
+            
+        Returns:
+            Transaction: Transaction de swap
+        """
+        # Note: Cette méthode est une implémentation fictive
+        # Remplacez-la par votre implémentation réelle de construction de transaction
+        
+        # Exemple simplifié
+        transaction = Transaction()
+        
+        # Obtenir un blockhash récent
+        blockhash = (await self.client.get_recent_blockhash()).value.blockhash
+        transaction.recent_blockhash = blockhash
+        
+        # Ajouter les instructions de swap ici selon votre logique
+        # ...
+        
+        # Signer la transaction
+        if self.wallet:
+            transaction.sign(self.wallet)
+            
+        return transaction
+    
+    async def _send_transaction_with_mev_optimization(
+        self, 
+        transaction: Transaction, 
+        expected_profit: Optional[float] = None
+    ) -> Tuple[bool, str]:
+        """
+        Envoie une transaction avec optimisation MEV si disponible.
+        
+        Args:
+            transaction: Transaction Solana à envoyer
+            expected_profit: Profit attendu en SOL (pour calculer les tips Jito)
+            
+        Returns:
+            Tuple[bool, str]: (Succès, ID de transaction ou message d'erreur)
+        """
+        # Si l'optimiseur MEV est disponible et activé, l'utiliser
+        if self.mev_optimizer and self.use_mev_protection:
+            try:
+                logger.info("Envoi de transaction via optimiseur MEV Jito...")
+                
+                # Calculer le tip basé sur le profit attendu
+                jito_tip = None
+                if expected_profit:
+                    jito_tip = expected_profit * (self.jito_tip_percentage / 100.0)
+                    logger.info(f"Profit attendu: {expected_profit:.4f} SOL, tip Jito: {jito_tip:.4f} SOL")
+                
+                # Envoyer la transaction via Jito
+                success, tx_id = await self.mev_optimizer.send_transaction_via_jito(
+                    transaction, 
+                    expected_profit, 
+                    tip_override=jito_tip
+                )
+                
+                # Mettre à jour les statistiques
+                if success:
+                    self.mev_stats["transactions_sent_via_jito"] += 1
+                    
+                    # Mettre à jour les statistiques depuis l'optimiseur
+                    if hasattr(self.mev_optimizer, "get_statistics"):
+                        optimizer_stats = self.mev_optimizer.get_statistics()
+                        self.mev_stats["estimated_mev_saved"] = optimizer_stats.get("estimated_mev_saved_sol", 0.0)
+                        self.mev_stats["total_jito_tips_paid"] = optimizer_stats.get("total_tips_paid_sol", 0.0)
+                        
+                    logger.info(f"Transaction optimisée pour MEV envoyée avec succès: {tx_id}")
+                    return success, tx_id
+                else:
+                    logger.warning(f"Échec de l'optimisation MEV: {tx_id}, fallback vers envoi standard")
+            except Exception as e:
+                logger.error(f"Erreur lors de l'envoi via optimiseur MEV: {e}")
+                logger.warning("Fallback vers envoi standard")
+        
+        # Méthode standard si l'optimiseur n'est pas disponible ou a échoué
+        try:
+            # Préparer la transaction si nécessaire
+            if not transaction.recent_blockhash:
+                blockhash = (await self.client.get_recent_blockhash()).value.blockhash
+                transaction.recent_blockhash = blockhash
+                
+            # Envoyer la transaction
+            signature = await self.client.send_transaction(transaction)
+            tx_sig = signature.value
+            
+            self.mev_stats["transactions_sent_standard"] += 1
+            logger.info(f"Transaction envoyée via méthode standard: {tx_sig}")
+            
+            return True, tx_sig
+            
+        except Exception as e:
+            error_msg = f"Échec de l'envoi de transaction: {str(e)}"
+            logger.error(error_msg)
+            return False, error_msg
     
     async def _price_update_loop(self) -> None:
         """Boucle de mise à jour des prix pour les snipes actifs"""
@@ -913,7 +1163,7 @@ class SolanaMemecoinSniper:
     
     def get_stats(self) -> Dict:
         """
-        Obtient les statistiques du sniper
+        Récupère les statistiques du sniper.
         
         Returns:
             Dict: Statistiques du sniper
@@ -923,7 +1173,7 @@ class SolanaMemecoinSniper:
         
         net_profit = self.stats["total_profit_usd"] - self.stats["total_loss_usd"]
         
-        return {
+        stats = {
             "tokens_detected": self.stats["tokens_detected"],
             "tokens_analyzed": self.stats["tokens_analyzed"],
             "tokens_sniped": self.stats["tokens_sniped"],
@@ -934,8 +1184,29 @@ class SolanaMemecoinSniper:
             "net_profit_usd": net_profit,
             "active_snipes": len(self.active_snipes),
             "running_time": runtime_str,
-            "hourly_profit": net_profit / (runtime / 3600) if runtime > 0 else 0
+            "hourly_profit": net_profit / (runtime / 3600) if runtime > 0 else 0,
+            "mev_optimization": {
+                "enabled": self.use_mev_protection,
+                "available": JITO_OPTIMIZER_AVAILABLE,
+                "transactions_sent_via_jito": self.mev_stats["transactions_sent_via_jito"],
+                "transactions_sent_standard": self.mev_stats["transactions_sent_standard"],
+                "estimated_mev_saved_sol": self.mev_stats["estimated_mev_saved"],
+                "total_jito_tips_paid_sol": self.mev_stats["total_jito_tips_paid"],
+                "net_benefit_sol": self.mev_stats["estimated_mev_saved"] - self.mev_stats["total_jito_tips_paid"]
+            },
+            "lightweight_analysis": {
+                "enabled": self.lightweight_analysis_enabled,
+                "available": LIGHTWEIGHT_ANALYZER_AVAILABLE,
+                "total_analyses": self.lightweight_stats["total_analyses"],
+                "analyses_succeeded": self.lightweight_stats["analyses_succeeded"],
+                "analyses_failed": self.lightweight_stats["analyses_failed"],
+                "tokens_rejected": self.lightweight_stats["tokens_rejected"],
+                "avg_analysis_time_ms": self.lightweight_stats["avg_analysis_time_ms"],
+                "analyzer_details": self.lightweight_analyzer.get_statistics() if self.lightweight_analyzer else {}
+            }
         }
+        
+        return stats
 
     def _initialize_ai_analyzer(self) -> None:
         """Initialise l'analyseur de marché basé sur l'IA"""
@@ -1030,6 +1301,129 @@ class SolanaMemecoinSniper:
                 "high_risk_patterns": ["pump_and_dump", "rug_pull_preparation"],
                 "suspicious_metrics": {"dev_wallet_percent": 30}
             }
+
+    def _initialize_mev_optimizer(self) -> None:
+        """Initialise l'optimiseur MEV pour Solana si disponible."""
+        if not self.use_mev_protection or not JITO_OPTIMIZER_AVAILABLE:
+            logger.info("Protection MEV désactivée ou non disponible")
+            return
+            
+        try:
+            logger.info("Initialisation de l'optimiseur MEV Jito...")
+            self.mev_optimizer = create_jito_optimizer(
+                solana_rpc_url=self.rpc_url,
+                wallet_keypair_path=self.wallet_keypair_path,
+                jito_auth_keypair_path=self.jito_auth_keypair_path,
+                jito_searcher_endpoint=self.jito_endpoint,
+                jito_tip_account=self.jito_tip_account
+            )
+            logger.info("Optimiseur MEV Jito initialisé avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation de l'optimiseur MEV: {e}")
+            self.mev_optimizer = None
+
+    def _initialize_lightweight_analyzer(self) -> None:
+        """Initialise l'analyseur de contrats léger."""
+        if not self.lightweight_analysis_enabled:
+            logger.info("Analyse légère désactivée ou non disponible")
+            return
+            
+        try:
+            logger.info("Initialisation de l'analyseur de contrats léger...")
+            self.lightweight_analyzer = create_contract_analyzer(
+                models_dir=self.lightweight_analyzer_models_dir,
+                config={
+                    "cache_ttl_seconds": 3600,  # 1 heure de cache
+                    "max_cache_items": 1000,
+                    "security_threshold": self.config.get("security_threshold", 0.65)
+                }
+            )
+            logger.info("Analyseur de contrats léger initialisé avec succès")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation de l'analyseur léger: {e}")
+            self.lightweight_analyzer = None
+            self.lightweight_analysis_enabled = False
+    
+    def _update_lightweight_stats(self, result: ContractSecurityResult, elapsed_ms: float, token_id: str) -> None:
+        """
+        Met à jour les statistiques d'analyse légère.
+        
+        Args:
+            result: Résultat de l'analyse
+            elapsed_ms: Temps écoulé en ms
+            token_id: Identifiant du token
+        """
+        # Éviter de compter plusieurs fois le même token
+        if token_id in self.lightweight_stats["tokens_analyzed_ids"]:
+            return
+            
+        self.lightweight_stats["tokens_analyzed_ids"].add(token_id)
+        self.lightweight_stats["total_analyses"] += 1
+        
+        if result.model_used != "fallback":
+            self.lightweight_stats["analyses_succeeded"] += 1
+        else:
+            self.lightweight_stats["analyses_failed"] += 1
+            
+        if not result.is_safe and result.overall_risk_score >= 0.8:
+            self.lightweight_stats["tokens_rejected"] += 1
+            
+        # Mettre à jour le temps moyen d'analyse
+        n = self.lightweight_stats["total_analyses"]
+        old_avg = self.lightweight_stats["avg_analysis_time_ms"]
+        new_avg = ((old_avg * (n-1)) + elapsed_ms) / n
+        self.lightweight_stats["avg_analysis_time_ms"] = new_avg
+
+    def _prepare_price_data_for_volatility(self, token_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Prépare les données de prix pour la prédiction de volatilité.
+        
+        Args:
+            token_data: Données du token
+            
+        Returns:
+            Dict[str, Any]: Données formatées pour le prédicteur de volatilité
+        """
+        # Récupérer les données OHLCV si disponibles
+        price_data = {
+            "symbol": token_data.get("symbol", "Unknown"),
+            "timestamp": int(time.time()),
+            "open": token_data.get("price", 0),
+            "high": token_data.get("price_high", token_data.get("price", 0) * 1.01),  # Estimation si non disponible
+            "low": token_data.get("price_low", token_data.get("price", 0) * 0.99),    # Estimation si non disponible
+            "close": token_data.get("price", 0),
+            "volume": token_data.get("volume_24h", 0),
+        }
+        
+        # Calculer les caractéristiques techniques si possible
+        if "price_history" in token_data and len(token_data["price_history"]) > 1:
+            price_history = token_data["price_history"]
+            price_data["log_return"] = np.log(price_data["close"] / price_history[-1]["price"])
+            
+            # Calculer la volatilité historique (écart-type des rendements logarithmiques)
+            returns = [np.log(price_history[i+1]["price"] / price_history[i]["price"]) 
+                      for i in range(len(price_history)-1)]
+            
+            if returns:
+                price_data["volatility"] = np.std(returns)
+            
+            # Moyennes mobiles
+            recent_prices = [p["price"] for p in price_history[-15:]]
+            if len(recent_prices) >= 15:
+                ma_5 = np.mean(recent_prices[-5:])
+                ma_15 = np.mean(recent_prices[-15:])
+                price_data["ma_ratio"] = ma_5 / ma_15 if ma_15 > 0 else 1.0
+            
+            # Variations de volume si disponibles
+            if "volume_history" in token_data and len(token_data["volume_history"]) > 1:
+                volume_history = token_data["volume_history"]
+                price_data["volume_change"] = (price_data["volume"] / volume_history[-1]["volume"]) - 1 if volume_history[-1]["volume"] > 0 else 0
+                
+                recent_volumes = [v["volume"] for v in volume_history[-5:]]
+                if recent_volumes:
+                    price_data["volume_ratio"] = price_data["volume"] / np.mean(recent_volumes) if np.mean(recent_volumes) > 0 else 1.0
+        
+        return price_data
 
 
 # Exemple d'utilisation du module

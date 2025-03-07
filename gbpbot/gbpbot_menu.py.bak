@@ -1,0 +1,1585 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Menu principal du GBPBot - Interface utilisateur améliorée
+==========================================================
+
+Ce module fournit une interface en ligne de commande intuitive pour GBPBot,
+permettant d'accéder rapidement aux différentes fonctionnalités du bot.
+"""
+
+import os
+import sys
+import time
+import logging
+import json
+import asyncio
+from typing import Dict, List, Optional, Any, Union, Callable
+from datetime import datetime
+import subprocess
+import platform
+
+# Création du dossier logs s'il n'existe pas
+os.makedirs("logs", exist_ok=True)
+
+# Configuration du logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(f"logs/gbpbot_{datetime.now().strftime('%Y-%m-%d')}.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger("gbpbot.menu")
+
+# Constantes pour les couleurs
+class Colors:
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BLUE = '\033[94m'
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+
+# État global du bot
+class BotState:
+    def __init__(self):
+        self.running = False
+        self.active_modules = {
+            "arbitrage": False,
+            "sniping": False,
+            "auto_mode": False,
+            "solana_sniping": False,
+            "solana_frontrun": False,
+            "cross_dex_arbitrage": False,
+            "ai_assistant": False
+        }
+        self.start_time = None
+        self.blockchain_clients = {}
+        self.strategies = {}
+        self.config: Dict[str, Any] = {}  # Initialiser comme un dictionnaire vide au lieu de None
+        self.module_instances = {}
+    
+    def start(self):
+        """Démarre le bot et initialise le timer."""
+        self.running = True
+        self.start_time = time.time()
+        logger.info("Bot démarré")
+    
+    def stop(self):
+        """Arrête le bot et réinitialise le timer."""
+        self.running = False
+        self.start_time = None
+        logger.info("Bot arrêté")
+
+# Instanciation de l'état global
+bot_state = BotState()
+
+# Import des modules GBPBot
+try:
+    from gbpbot.utils.config import load_config, save_config, Config
+    from gbpbot.clients import create_blockchain_client
+    from gbpbot.strategies.arbitrage import create_arbitrage_strategy
+    from gbpbot.strategies.sniping import create_sniping_strategy
+    from gbpbot.strategies.auto_mode import create_auto_strategy
+    from gbpbot.utils.helpers import format_duration, print_environment_report
+    from gbpbot.telegram import create_telegram_bot
+    from gbpbot.sniping.solana_memecoin_sniper import create_solana_sniper, SolanaMemecoinSniper
+    from gbpbot.strategies.solana_frontrunning import create_solana_frontrun_strategy
+    from gbpbot.strategies.cross_dex_arbitrage import create_cross_dex_arbitrage_strategy
+    from gbpbot.machine_learning import create_contract_analyzer, create_prediction_model, create_volatility_predictor
+    try:
+        from gbpbot.machine_learning.ml_integrator import create_ml_integrator
+        ML_INTEGRATOR_AVAILABLE = True
+    except ImportError:
+        ML_INTEGRATOR_AVAILABLE = False
+        logger.warning("Module ML Integrator non disponible")
+    try:
+        from gbpbot.ai import create_ai_client, get_prompt_manager
+        AI_AVAILABLE = True
+    except ImportError:
+        AI_AVAILABLE = False
+        logger.warning("Module IA non disponible")
+except Exception as e:
+    logger.error(f"Erreur lors de l'importation des modules GBPBot: {str(e)}")
+    logger.error("Assurez-vous que GBPBot est correctement installé")
+    sys.exit(1)
+
+def get_config(config_path: str = "config.json") -> Dict[str, Any]:
+    """
+    Charge la configuration depuis le fichier de configuration.
+    
+    Args:
+        config_path: Chemin vers le fichier de configuration
+        
+    Returns:
+        Dict[str, Any]: Configuration chargée ou configuration par défaut si échec
+    """
+    try:
+        config = load_config(config_path)
+        if config is None:
+            logger.warning(f"Impossible de charger la configuration depuis {config_path}")
+            logger.info("Utilisation de la configuration par défaut")
+            config = Config()
+        return config
+    except Exception as e:
+        logger.error(f"Erreur lors du chargement de la configuration: {str(e)}")
+        return {}
+
+def initialize_bot(config_path: str = "config.json") -> bool:
+    """
+    Initialise le GBPBot.
+    
+    Args:
+        config_path: Chemin vers le fichier de configuration
+        
+    Returns:
+        bool: True si l'initialisation a réussi, False sinon
+    """
+    try:
+        logger.info("Initialisation du GBPBot en cours...")
+        
+        # Charger la configuration avec la fonction appropriée
+        config = get_config(config_path)
+        bot_state.config = config
+
+        # S'assurer que la configuration n'est pas vide
+        if not bot_state.config:
+            logger.error("Impossible de charger la configuration")
+            return False
+
+        # Initialiser les clients blockchain
+        blockchains = bot_state.config.get("blockchains", {})
+        for blockchain_name, blockchain_config in blockchains.items():
+            if blockchain_config.get("enabled", False):
+                try:
+                    logger.info(f"Initialisation du client blockchain pour {blockchain_name}")
+                    client = create_blockchain_client(blockchain_name, blockchain_config)
+                    bot_state.blockchain_clients[blockchain_name] = client
+                except Exception as e:
+                    logger.error(f"Erreur lors de l'initialisation du client {blockchain_name}: {str(e)}")
+        
+        if not bot_state.blockchain_clients:
+            logger.warning("Aucun client blockchain initialisé")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Erreur lors de l'initialisation du bot: {str(e)}")
+        return False
+
+def clear_screen():
+    """Efface l'écran selon le système d'exploitation"""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def print_header(text: str):
+    """Affiche un texte formaté comme titre"""
+    print(f"\n{Colors.PURPLE}{Colors.BOLD}{text}{Colors.ENDC}")
+
+def print_menu_option(number: int, text: str):
+    """Affiche une option de menu formatée"""
+    print(f"{Colors.BLUE}{number}.{Colors.ENDC} {text}")
+
+def print_status(label: str, status: bool):
+    """Affiche un statut avec couleur selon l'état"""
+    status_text = f"{Colors.GREEN}ACTIF{Colors.ENDC}" if status else f"{Colors.RED}INACTIF{Colors.ENDC}"
+    print(f"{label}: {status_text}")
+
+async def start_arbitrage_module():
+    """Démarre le module d'arbitrage"""
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré avant d'activer un module.{Colors.ENDC}")
+        return
+    
+    try:
+        print(f"{Colors.YELLOW}Démarrage du module d'arbitrage...{Colors.ENDC}")
+        
+        # Vérifier que la configuration existe
+        if bot_state.config is None:
+            print(f"{Colors.RED}Configuration non disponible{Colors.ENDC}")
+            return
+        
+        # Obtenir la configuration pour l'arbitrage
+        arbitrage_config = bot_state.config.get("strategies", {}).get("arbitrage", {})
+        
+        # Sélectionner la blockchain (par défaut Avalanche si disponible)
+        blockchain_name = arbitrage_config.get("blockchain", "avalanche")
+        blockchain_client = bot_state.blockchain_clients.get(
+            blockchain_name, 
+            next(iter(bot_state.blockchain_clients.values()), None)
+        )
+        
+        if not blockchain_client:
+            print(f"{Colors.RED}Aucun client blockchain disponible pour le module d'arbitrage{Colors.ENDC}")
+            return
+        
+        # Créer et initialiser la stratégie d'arbitrage
+        arbitrage_strategy = create_arbitrage_strategy(blockchain_client, arbitrage_config)
+        await arbitrage_strategy.initialize()
+        
+        # Stocker la stratégie et marquer le module comme actif
+        bot_state.strategies["arbitrage"] = arbitrage_strategy
+        bot_state.active_modules["arbitrage"] = True
+        
+        # Démarrer la recherche d'opportunités en arrière-plan
+        # Note: Dans une implémentation réelle, cela devrait être une tâche asyncio
+        # token_pairs = arbitrage_config.get("token_pairs", [])
+        # asyncio.create_task(arbitrage_strategy.run(token_pairs))
+        
+        print(f"{Colors.GREEN}Module d'arbitrage démarré avec succès{Colors.ENDC}")
+    
+    except Exception as e:
+        logger.exception(f"Erreur lors du démarrage du module d'arbitrage: {e}")
+        print(f"{Colors.RED}Erreur lors du démarrage du module d'arbitrage: {str(e)}{Colors.ENDC}")
+
+async def start_sniping_module():
+    """Démarre le module de sniping"""
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré avant d'activer un module.{Colors.ENDC}")
+        return
+    
+    try:
+        print(f"{Colors.YELLOW}Démarrage du module de sniping...{Colors.ENDC}")
+        
+        # Vérifier que la configuration existe
+        if bot_state.config is None:
+            print(f"{Colors.RED}Configuration non disponible{Colors.ENDC}")
+            return
+        
+        # Obtenir la configuration pour le sniping
+        sniping_config = bot_state.config.get("strategies", {}).get("sniping", {})
+        
+        # Sélectionner la blockchain (priorité à Solana selon les spécifications)
+        blockchain_name = sniping_config.get("blockchain", "solana")
+        blockchain_client = bot_state.blockchain_clients.get(
+            blockchain_name, 
+            next(iter(bot_state.blockchain_clients.values()), None)
+        )
+        
+        if not blockchain_client:
+            print(f"{Colors.RED}Aucun client blockchain disponible pour le module de sniping{Colors.ENDC}")
+            return
+        
+        # Créer et initialiser la stratégie de sniping
+        sniping_strategy = create_sniping_strategy(blockchain_client)
+        
+        # Stocker la stratégie et marquer le module comme actif
+        bot_state.strategies["sniping"] = sniping_strategy
+        bot_state.active_modules["sniping"] = True
+        
+        # Démarrer la surveillance en arrière-plan
+        # Note: Dans une implémentation réelle, cela devrait être une tâche asyncio
+        # asyncio.create_task(sniping_strategy.start_monitoring())
+        
+        print(f"{Colors.GREEN}Module de sniping démarré avec succès{Colors.ENDC}")
+    
+    except Exception as e:
+        logger.exception(f"Erreur lors du démarrage du module de sniping: {e}")
+        print(f"{Colors.RED}Erreur lors du démarrage du module de sniping: {str(e)}{Colors.ENDC}")
+
+async def start_auto_module():
+    """Démarre le mode automatique intelligent"""
+    try:
+        print(f"{Colors.BLUE}Initialisation du mode automatique...{Colors.ENDC}")
+        
+        if not bot_state.running:
+            print(f"{Colors.RED}Erreur: Le bot doit être démarré avant d'activer le mode automatique.{Colors.ENDC}")
+            input("Appuyez sur Entrée pour continuer...")
+            return
+        
+        # Vérifier que les autres modules ne sont pas déjà actifs
+        if bot_state.active_modules["arbitrage"] or bot_state.active_modules["sniping"]:
+            print(f"{Colors.YELLOW}Attention: Les autres modules doivent être désactivés pour utiliser le mode automatique.{Colors.ENDC}")
+            choice = input("Voulez-vous désactiver les autres modules et continuer? (o/n): ")
+            if choice.lower() != "o":
+                return
+                
+            # Désactiver les autres modules
+            if bot_state.active_modules["arbitrage"]:
+                await stop_module("arbitrage")
+            if bot_state.active_modules["sniping"]:
+                await stop_module("sniping")
+        
+        # Configurer et lancer le mode automatique
+        auto_strategy = create_auto_strategy()
+        
+        # Récupérer le client blockchain depuis l'initialisation du bot
+        blockchain_client = None
+        try:
+            from gbpbot.core import app_context
+            blockchain_client = app_context.get_blockchain_client()
+        except (ImportError, AttributeError) as e:
+            logger.error(f"Impossible de récupérer le client blockchain: {e}")
+            
+        if blockchain_client is None:
+            # Créer un client blockchain si on ne peut pas le récupérer du contexte
+            try:
+                from gbpbot.core.blockchain.base import BlockchainClient
+                from gbpbot.utils.config import get_config
+                
+                config = get_config()
+                blockchain_config = config.get("blockchain", {})
+                blockchain_type = blockchain_config.get("default", "avalanche")
+                
+                # Créer une instance sans passer par la factory
+                blockchain_client = BlockchainClient(blockchain_type, blockchain_config)
+                await blockchain_client.initialize()
+            except Exception as e:
+                logger.error(f"Impossible de créer un client blockchain: {e}")
+                print(f"{Colors.RED}Erreur: Impossible de créer un client blockchain.{Colors.ENDC}")
+                input("Appuyez sur Entrée pour continuer...")
+                return
+        
+        # Créer et initialiser la stratégie
+        auto_strategy = auto_strategy(blockchain_client)
+        initialized = await auto_strategy.initialize()
+        
+        if not initialized:
+            print(f"{Colors.RED}Erreur: Impossible d'initialiser le mode automatique.{Colors.ENDC}")
+            input("Appuyez sur Entrée pour continuer...")
+            return
+            
+        # Démarrer la stratégie
+        success = await auto_strategy.start()
+        
+        if success:
+            print(f"{Colors.GREEN}Mode automatique démarré avec succès!{Colors.ENDC}")
+            bot_state.active_modules["auto_mode"] = True
+            bot_state.module_instances["auto_mode"] = auto_strategy
+        else:
+            print(f"{Colors.RED}Erreur: Impossible de démarrer le mode automatique.{Colors.ENDC}")
+            
+        input("Appuyez sur Entrée pour continuer...")
+    
+    except Exception as e:
+        print(f"{Colors.RED}Erreur lors du démarrage du mode automatique: {str(e)}{Colors.ENDC}")
+        logger.exception("Erreur lors du démarrage du mode automatique")
+        input("Appuyez sur Entrée pour continuer...")
+
+async def stop_module(module_name: str):
+    """Arrête un module spécifique"""
+    if not bot_state.active_modules.get(module_name, False):
+        print(f"{Colors.YELLOW}Le module {module_name} n'est pas actif.{Colors.ENDC}")
+        return
+    
+    try:
+        print(f"{Colors.YELLOW}Arrêt du module {module_name}...{Colors.ENDC}")
+        
+        # Récupérer la stratégie associée
+        strategy = bot_state.strategies.get(module_name)
+        
+        if strategy and hasattr(strategy, "stop"):
+            await strategy.stop()
+        
+        # Marquer le module comme inactif
+        bot_state.active_modules[module_name] = False
+        
+        # Si on arrête le mode auto, on ne désactive pas les autres modules
+        if module_name != "auto_mode":
+            # Si on arrête un module et que le mode auto est actif, on désactive aussi le mode auto
+            if bot_state.active_modules["auto_mode"]:
+                bot_state.active_modules["auto_mode"] = False
+                print(f"{Colors.YELLOW}Le mode automatique a été désactivé.{Colors.ENDC}")
+        
+        print(f"{Colors.GREEN}Module {module_name} arrêté avec succès{Colors.ENDC}")
+    
+    except Exception as e:
+        logger.exception(f"Erreur lors de l'arrêt du module {module_name}: {e}")
+        print(f"{Colors.RED}Erreur lors de l'arrêt du module {module_name}: {str(e)}{Colors.ENDC}")
+
+async def display_main_menu():
+    """Affiche le menu principal et traite les entrées utilisateur"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}                 GBPBot - Menu Principal                    {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    if bot_state.running:
+        uptime = format_duration(time.time() - bot_state.start_time) if bot_state.start_time is not None else "N/A"
+        modules_actifs = sum(1 for active in bot_state.active_modules.values() if active)
+        print(f"\n{Colors.GREEN}Bot en cours d'exécution (Actif depuis: {uptime}){Colors.ENDC}")
+        print(f"{Colors.GREEN}Modules actifs: {modules_actifs}/{len(bot_state.active_modules)}{Colors.ENDC}")
+        
+        # Afficher l'état du bot Telegram s'il existe
+        if "telegram_bot" in bot_state.strategies:
+            telegram_bot = bot_state.strategies["telegram_bot"]
+            if telegram_bot.running:
+                print(f"{Colors.GREEN}Interface Telegram active{Colors.ENDC}")
+        else:
+            print(f"{Colors.YELLOW}Interface Telegram configurée mais inactive{Colors.ENDC}")
+    else:
+        print(f"\n{Colors.RED}Bot arrêté{Colors.ENDC}")
+        
+        print("\nVeuillez choisir une option:")
+        print_menu_option(1, "Démarrer le Bot")
+        print_menu_option(2, "Configurer les paramètres")
+        print_menu_option(3, "Afficher la configuration actuelle")
+        print_menu_option(4, "Statistiques et Logs")
+        print_menu_option(5, "Afficher les Modules Disponibles")
+    print_menu_option(6, "Machine Learning et Optimisation")
+    print_menu_option(7, "Interface Telegram")
+    print_menu_option(8, "Quitter")
+        
+    choice = input("\nVotre choix: ")
+    
+    if choice == "1":
+        # Démarrer le bot
+        if not bot_state.running:
+            await initialize_bot()
+            bot_state.start()
+            print(f"{Colors.GREEN}Le bot a été démarré avec succès !{Colors.ENDC}")
+            time.sleep(1)
+        else:
+            print(f"{Colors.YELLOW}Le bot est déjà en cours d'exécution.{Colors.ENDC}")
+            time.sleep(1)
+    
+    elif choice == "2":
+        # Configurer les paramètres
+        print(f"{Colors.YELLOW}Cette fonctionnalité sera disponible dans une prochaine version.{Colors.ENDC}")
+        input("Appuyez sur Entrée pour continuer...")
+    
+    elif choice == "3":
+        # Afficher la configuration actuelle
+        print(f"{Colors.YELLOW}Cette fonctionnalité sera disponible dans une prochaine version.{Colors.ENDC}")
+        input("Appuyez sur Entrée pour continuer...")
+    
+    elif choice == "4":
+        # Statistiques et Logs
+        print(f"{Colors.YELLOW}Cette fonctionnalité sera disponible dans une prochaine version.{Colors.ENDC}")
+        input("Appuyez sur Entrée pour continuer...")
+    
+    elif choice == "5":
+        # Afficher les modules disponibles
+        if not bot_state.running:
+            print(f"{Colors.YELLOW}Veuillez démarrer le bot avant d'accéder aux modules.{Colors.ENDC}")
+            input("Appuyez sur Entrée pour continuer...")
+            return
+            
+        await display_modules_menu()
+    
+    elif choice == "6":
+        # Machine Learning et Optimisation
+        await display_ml_menu()
+    
+    elif choice == "7":
+        # Interface Telegram
+        await display_telegram_menu()
+    
+    elif choice == "8":
+        # Quitter
+        if bot_state.running:
+            confirm = input(f"{Colors.YELLOW}Le bot est en cours d'exécution. Voulez-vous vraiment quitter? (o/n): {Colors.ENDC}")
+            if confirm.lower() != "o":
+                await display_main_menu()
+                return
+            print(f"{Colors.BLUE}Merci d'avoir utilisé GBPBot. À bientôt!{Colors.ENDC}")
+        return
+    
+    else:
+        print(f"{Colors.RED}Choix invalide. Veuillez réessayer.{Colors.ENDC}")
+        time.sleep(1)
+    
+    # Afficher à nouveau le menu principal (récursion)
+    await display_main_menu()
+
+async def display_modules_menu():
+    """Affiche le menu des modules"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}                 GBPBot - Sélection de Module               {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    print_menu_option(1, "Arbitrage entre les DEX")
+    print_menu_option(2, "Sniping de Token")
+    print_menu_option(3, "Lancer automatiquement le bot")
+    print_menu_option(4, "Assistant IA (Analyses et Recommandations)")
+    print_menu_option(5, "Sniping de Memecoins Solana (Spécialisé)")
+    print_menu_option(6, "Frontrunning Solana (MEV)")
+    print_menu_option(7, "Arbitrage Cross-DEX (Solana/Avalanche)")
+    print_menu_option(8, "Retour au menu principal")
+    
+    print()
+    print(f"{Colors.BOLD}Statut des modules:{Colors.ENDC}")
+    print_status("Arbitrage", bot_state.active_modules["arbitrage"])
+    print_status("Sniping", bot_state.active_modules["sniping"])
+    print_status("Mode Auto", bot_state.active_modules["auto_mode"])
+    print_status("Assistant IA", bot_state.active_modules.get("ai_assistant", False))
+    print_status("Sniping Solana", bot_state.active_modules["solana_sniping"])
+    print_status("Frontrunning Solana", bot_state.active_modules["solana_frontrun"])
+    print_status("Arbitrage Cross-DEX", bot_state.active_modules["cross_dex_arbitrage"])
+    
+    choice = input("\nChoisissez une option (1-8): ")
+    
+    if choice == "1":
+        await start_arbitrage_module()
+    elif choice == "2":
+        await start_sniping_module()
+    elif choice == "3":
+        await start_auto_module()
+    elif choice == "4":
+        await start_ai_assistant_module()
+    elif choice == "5":
+        await start_solana_sniping_module()
+    elif choice == "6":
+        await start_solana_frontrun_module()
+    elif choice == "7":
+        await start_cross_dex_arbitrage_module()
+    elif choice == "8":
+        return  # Retour au menu principal
+    else:
+        print(f"{Colors.RED}Option invalide. Veuillez réessayer.{Colors.ENDC}")
+        time.sleep(1)
+    
+    # Afficher à nouveau le menu des modules
+    await display_modules_menu()
+
+async def start_solana_sniping_module():
+    """Démarre le module de sniping spécialisé pour les memecoins Solana"""
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré avant d'activer un module.{Colors.ENDC}")
+        return
+    
+    try:
+        print(f"{Colors.YELLOW}Démarrage du module de sniping Solana...{Colors.ENDC}")
+        
+        # Vérifier que la configuration existe
+        if bot_state.config is None:
+            print(f"{Colors.RED}Configuration non disponible{Colors.ENDC}")
+            return
+        
+        # Obtenir la configuration pour le sniping Solana
+        solana_config = bot_state.config.get("solana", {})
+        
+        # Créer et initialiser l'intégration du sniper Solana
+        solana_sniper = create_solana_sniper(config=solana_config)
+        
+        # Démarrer le sniper
+        success = await solana_sniper.start()
+        
+        if success:
+            # Stocker l'intégration et marquer le module comme actif
+            bot_state.strategies["solana_sniping"] = solana_sniper
+            bot_state.active_modules["solana_sniping"] = True
+            
+            print(f"{Colors.GREEN}Module de sniping Solana démarré avec succès{Colors.ENDC}")
+            print(f"{Colors.BLUE}Surveillance active des nouveaux memecoins sur Solana...{Colors.ENDC}")
+        else:
+            print(f"{Colors.RED}Échec du démarrage du module de sniping Solana{Colors.ENDC}")
+    
+    except Exception as e:
+        logger.exception(f"Erreur lors du démarrage du module de sniping Solana: {e}")
+        print(f"{Colors.RED}Erreur lors du démarrage du module de sniping Solana: {str(e)}{Colors.ENDC}")
+
+async def start_solana_frontrun_module():
+    """Démarre le module de frontrunning Solana (MEV)"""
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré avant d'activer un module.{Colors.ENDC}")
+        return
+    
+    try:
+        print(f"{Colors.YELLOW}Démarrage du module de frontrunning Solana...{Colors.ENDC}")
+        
+        # Vérifier que la configuration existe
+        if bot_state.config is None:
+            print(f"{Colors.RED}Configuration non disponible{Colors.ENDC}")
+            return
+        
+        # Obtenir la configuration pour Solana
+        solana_config = bot_state.config.get("solana", {})
+        
+        # Importer la stratégie de frontrunning
+        try:
+            from gbpbot.strategies.solana_frontrun import create_solana_frontrun_strategy
+        except ImportError as e:
+            print(f"{Colors.RED}Erreur lors de l'importation du module de frontrunning: {str(e)}{Colors.ENDC}")
+            return
+        
+        # Créer et initialiser la stratégie de frontrunning
+        frontrun_strategy = create_solana_frontrun_strategy(config=solana_config)
+        
+        # Démarrer la stratégie
+        success = await frontrun_strategy.start()
+        
+        if success:
+            # Stocker la stratégie et marquer le module comme actif
+            bot_state.strategies["solana_frontrun"] = frontrun_strategy
+            bot_state.active_modules["solana_frontrun"] = True
+            
+            print(f"{Colors.GREEN}Module de frontrunning Solana démarré avec succès{Colors.ENDC}")
+            print(f"{Colors.BLUE}Surveillance active du mempool Solana pour les opportunités MEV...{Colors.ENDC}")
+        else:
+            print(f"{Colors.RED}Échec du démarrage du module de frontrunning Solana{Colors.ENDC}")
+    
+    except Exception as e:
+        logger.exception(f"Erreur lors du démarrage du module de frontrunning Solana: {e}")
+        print(f"{Colors.RED}Erreur lors du démarrage du module de frontrunning Solana: {str(e)}{Colors.ENDC}")
+
+async def start_cross_dex_arbitrage_module():
+    """Démarre le module d'arbitrage cross-DEX"""
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré avant d'activer un module.{Colors.ENDC}")
+        return
+    
+    try:
+        print(f"{Colors.YELLOW}Démarrage du module d'arbitrage Cross-DEX...{Colors.ENDC}")
+        
+        # Vérifier que la configuration existe
+        if bot_state.config is None:
+            print(f"{Colors.RED}Configuration non disponible{Colors.ENDC}")
+            return
+        
+        # Obtenir la configuration pour l'arbitrage
+        arbitrage_config = bot_state.config.get("arbitrage", {})
+        
+        # Importer la stratégie d'arbitrage cross-DEX
+        try:
+            from gbpbot.strategies.cross_dex_arbitrage import create_cross_dex_arbitrage_strategy
+        except ImportError as e:
+            print(f"{Colors.RED}Erreur lors de l'importation du module d'arbitrage Cross-DEX: {str(e)}{Colors.ENDC}")
+            return
+        
+        # Créer et initialiser la stratégie d'arbitrage
+        arbitrage_strategy = create_cross_dex_arbitrage_strategy(
+            blockchain_clients=bot_state.blockchain_clients,
+            config=arbitrage_config
+        )
+        
+        # Démarrer la stratégie
+        success = await arbitrage_strategy.start()
+        
+        if success:
+            # Stocker la stratégie et marquer le module comme actif
+            bot_state.strategies["cross_dex_arbitrage"] = arbitrage_strategy
+            bot_state.active_modules["cross_dex_arbitrage"] = True
+            
+            print(f"{Colors.GREEN}Module d'arbitrage Cross-DEX démarré avec succès{Colors.ENDC}")
+            print(f"{Colors.BLUE}Surveillance active des opportunités d'arbitrage entre DEX...{Colors.ENDC}")
+        else:
+            print(f"{Colors.RED}Échec du démarrage du module d'arbitrage Cross-DEX{Colors.ENDC}")
+    
+    except Exception as e:
+        logger.exception(f"Erreur lors du démarrage du module d'arbitrage Cross-DEX: {e}")
+        print(f"{Colors.RED}Erreur lors du démarrage du module d'arbitrage Cross-DEX: {str(e)}{Colors.ENDC}")
+
+async def display_ml_menu():
+    """Affiche le menu de Machine Learning et Optimisation"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}           GBPBot - Machine Learning et Optimisation        {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    # Vérifier que le bot est démarré
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré pour utiliser ces fonctionnalités.{Colors.ENDC}")
+        input("\nAppuyez sur Entrée pour revenir au menu principal...")
+        return
+    
+    # Essayer d'importer le module ML
+    try:
+        from gbpbot.machine_learning import MLIntegrator, create_ml_integrator
+        ml_available = True
+    except ImportError:
+        ml_available = False
+    
+    if not ml_available:
+        print(f"{Colors.RED}Les modules de Machine Learning ne sont pas disponibles.{Colors.ENDC}")
+        print(f"{Colors.RED}Vérifiez que scikit-learn, numpy et pandas sont installés.{Colors.ENDC}")
+        input("\nAppuyez sur Entrée pour revenir au menu principal...")
+        return
+    
+    # Vérifier si un intégrateur ML existe déjà dans le bot
+    if "ml_integrator" not in bot_state.strategies:
+        # Créer un nouvel intégrateur ML
+        try:
+            ml_integrator = create_ml_integrator(config=bot_state.config)
+            bot_state.strategies["ml_integrator"] = ml_integrator
+        except Exception as e:
+            print(f"{Colors.RED}Erreur lors de l'initialisation du ML: {str(e)}{Colors.ENDC}")
+            input("\nAppuyez sur Entrée pour revenir au menu principal...")
+            return
+    else:
+        ml_integrator = bot_state.strategies["ml_integrator"]
+    
+    # Afficher le statut actuel du ML
+    ml_enabled = ml_integrator.is_enabled() if ml_integrator else False
+    ml_status = "Activé" if ml_enabled else "Désactivé"
+    print(f"\nStatut du Machine Learning: {Colors.GREEN if ml_enabled else Colors.RED}{ml_status}{Colors.ENDC}")
+    
+    # Afficher les options du menu
+    print("\nOptions de Machine Learning:")
+    print_menu_option(1, f"{'Désactiver' if ml_enabled else 'Activer'} le Machine Learning")
+    print_menu_option(2, "Afficher les statistiques du modèle")
+    print_menu_option(3, "Forcer l'entraînement des modèles")
+    print_menu_option(4, "Configurer les paramètres ML")
+    print_menu_option(5, "Retour au menu principal")
+        
+    choice = input("\nVotre choix: ")
+    
+    if choice == "1":
+        # Activer/désactiver le ML
+        if ml_enabled:
+            # Désactiver le ML
+            if "ML_ENABLED" in bot_state.config:
+                bot_state.config["ML_ENABLED"] = "false"
+            else:
+                bot_state.config["ML_ENABLED"] = "false"
+            
+            # Recréer l'intégrateur
+            ml_integrator = create_ml_integrator(config=bot_state.config)
+            bot_state.strategies["ml_integrator"] = ml_integrator
+            
+            print(f"{Colors.YELLOW}Machine Learning désactivé.{Colors.ENDC}")
+        else:
+            # Activer le ML
+            if "ML_ENABLED" in bot_state.config:
+                bot_state.config["ML_ENABLED"] = "true"
+            else:
+                bot_state.config["ML_ENABLED"] = "true"
+            
+            # Recréer l'intégrateur
+            ml_integrator = create_ml_integrator(config=bot_state.config)
+            bot_state.strategies["ml_integrator"] = ml_integrator
+            
+            print(f"{Colors.GREEN}Machine Learning activé.{Colors.ENDC}")
+        
+        time.sleep(1)
+    
+    elif choice == "2":
+        # Afficher les statistiques
+        if not ml_integrator or not ml_integrator.is_enabled():
+            print(f"{Colors.YELLOW}Machine Learning désactivé. Aucune statistique disponible.{Colors.ENDC}")
+        else:
+            stats = ml_integrator.get_ml_stats()
+            
+            print(f"\n{Colors.BOLD}Statistiques des modèles de Machine Learning:{Colors.ENDC}")
+            
+            # Afficher les modèles disponibles
+            print("\nModèles disponibles:")
+            for strategy, available in stats.get("models_available", {}).items():
+                status = f"{Colors.GREEN}Disponible{Colors.ENDC}" if available else f"{Colors.RED}Non disponible{Colors.ENDC}"
+                print(f"  - {strategy.capitalize()}: {status}")
+            
+            # Afficher les compteurs de données
+            print("\nDonnées d'entraînement:")
+            for strategy, count in stats.get("data_counts", {}).items():
+                print(f"  - {strategy.capitalize()}: {count} échantillons")
+            
+            # Afficher les dates de dernier entraînement
+            print("\nDernier entraînement:")
+            for strategy, date in stats.get("last_training", {}).items():
+                print(f"  - {strategy.capitalize()}: {date}")
+            
+            # Afficher les performances récentes
+            if "recent_performance" in stats:
+                print("\nPerformances récentes:")
+                for strategy, perf in stats.get("recent_performance", {}).items():
+                    if perf["count"] > 0:
+                        success_rate = perf["success_rate"]
+                        success_color = Colors.GREEN if success_rate > 60 else Colors.YELLOW if success_rate > 40 else Colors.RED
+                        print(f"  - {strategy.capitalize()} ({perf['count']} transactions):")
+                        print(f"      Taux de succès: {success_color}{success_rate}%{Colors.ENDC}")
+                        print(f"      Profit moyen: ${perf['avg_profit']:.2f}")
+                        print(f"      Profit total: ${perf['total_profit']:.2f}")
+            
+            # Afficher la configuration
+            if "config" in stats:
+                print("\nConfiguration ML:")
+                for key, value in stats.get("config", {}).items():
+                    print(f"  - {key}: {value}")
+        
+        input("\nAppuyez sur Entrée pour continuer...")
+        
+    elif choice == "3":
+        # Forcer l'entraînement des modèles
+        if not ml_integrator or not ml_integrator.is_enabled():
+            print(f"{Colors.YELLOW}Machine Learning désactivé. Impossible d'entraîner les modèles.{Colors.ENDC}")
+            time.sleep(1)
+        else:
+            print(f"{Colors.YELLOW}Entraînement des modèles en cours... (cela peut prendre un moment){Colors.ENDC}")
+            
+            # Essayer d'accéder directement au modèle de prédiction
+            success = False
+            try:
+                if ml_integrator.prediction_model:
+                    for strategy in ["sniping", "frontrun", "arbitrage"]:
+                        print(f"Entraînement du modèle {strategy}...")
+                        # On pourrait exécuter ici l'entraînement dans un thread ou une tâche asyncio
+                        # Pour la simplicité, on le fait de manière synchrone
+                        success = ml_integrator.prediction_model.train_model(strategy)
+                        if success:
+                            print(f"{Colors.GREEN}Modèle {strategy} entraîné avec succès !{Colors.ENDC}")
+                    success = True
+            except Exception as e:
+                print(f"{Colors.RED}Erreur lors de l'entraînement des modèles: {str(e)}{Colors.ENDC}")
+            
+            if success:
+                print(f"{Colors.GREEN}Entraînement terminé !{Colors.ENDC}")
+            
+            time.sleep(2)
+        
+    elif choice == "4":
+        # Configurer les paramètres ML
+        print("\nParamètres de Machine Learning:")
+        
+        # Afficher les paramètres actuels
+        ml_params = {k: v for k, v in bot_state.config.items() if k.startswith("ML_")}
+        if not ml_params:
+            ml_params = {
+                "ML_ENABLED": "true",
+                "ML_MODEL_PATH": "models/gbpbot_ml.pkl",
+                "PREDICTION_CONFIDENCE_THRESHOLD": "0.7",
+                "MIN_TRAINING_SAMPLES": "100",
+                "RETRAINING_INTERVAL_HOURS": "24"
+            }
+        
+        for i, (key, value) in enumerate(ml_params.items(), 1):
+            print(f"{i}. {key} = {value}")
+        
+        print(f"{len(ml_params) + 1}. Retour")
+        
+        # Demander quel paramètre modifier
+        param_choice = input("\nQuel paramètre souhaitez-vous modifier? (1-" + str(len(ml_params) + 1) + "): ")
+        
+        try:
+            param_index = int(param_choice) - 1
+            if param_index < 0 or param_index >= len(ml_params) + 1:
+                raise ValueError("Choix hors limites")
+                
+            if param_index == len(ml_params):
+                # Option "Retour"
+                pass
+            else:
+                # Modifier le paramètre sélectionné
+                param_key = list(ml_params.keys())[param_index]
+                new_value = input(f"Nouvelle valeur pour {param_key} (actuelle: {ml_params[param_key]}): ")
+                
+                # Mettre à jour la configuration
+                bot_state.config[param_key] = new_value
+                
+                # Recréer l'intégrateur ML si nécessaire
+                if param_key == "ML_ENABLED" or param_key == "ML_MODEL_PATH":
+                    ml_integrator = create_ml_integrator(config=bot_state.config)
+                    bot_state.strategies["ml_integrator"] = ml_integrator
+                
+                print(f"{Colors.GREEN}Paramètre {param_key} mis à jour avec succès !{Colors.ENDC}")
+                time.sleep(1)
+        except (ValueError, IndexError):
+            print(f"{Colors.RED}Choix invalide.{Colors.ENDC}")
+            time.sleep(1)
+    
+    elif choice == "5":
+        # Retour au menu principal
+        return
+    
+    else:
+        print(f"{Colors.RED}Choix invalide. Veuillez réessayer.{Colors.ENDC}")
+        time.sleep(1)
+    
+    # Afficher à nouveau le menu ML (récursion)
+    await display_ml_menu()
+
+async def display_telegram_menu():
+    """Affiche le menu de configuration et gestion du bot Telegram"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}           GBPBot - Interface Telegram                      {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    # Vérifier que le bot est démarré
+    if not bot_state.running:
+        print(f"{Colors.RED}Le bot doit être démarré pour utiliser l'interface Telegram.{Colors.ENDC}")
+        input("\nAppuyez sur Entrée pour revenir au menu principal...")
+        return
+    
+    # Essayer d'importer le module Telegram
+    try:
+        from gbpbot.telegram import create_telegram_bot
+        telegram_available = True
+    except ImportError:
+        telegram_available = False
+    
+    if not telegram_available:
+        print(f"{Colors.RED}Le module Telegram n'est pas disponible.{Colors.ENDC}")
+        print(f"{Colors.RED}Installez python-telegram-bot avec: pip install python-telegram-bot{Colors.ENDC}")
+        input("\nAppuyez sur Entrée pour revenir au menu principal...")
+        return
+    
+    # Vérifier si un bot Telegram existe déjà
+    telegram_bot = None
+    if "telegram_bot" in bot_state.strategies:
+        telegram_bot = bot_state.strategies["telegram_bot"]
+        is_running = telegram_bot.running
+    else:
+        is_running = False
+    
+    # Afficher le statut actuel
+    status = "Actif" if is_running else "Inactif"
+    print(f"\nStatut de l'interface Telegram: {Colors.GREEN if is_running else Colors.RED}{status}{Colors.ENDC}")
+    
+    # Récupérer la configuration Telegram
+    telegram_token = bot_state.config.get("TELEGRAM_BOT_TOKEN", "")
+    authorized_users = bot_state.config.get("TELEGRAM_AUTHORIZED_USERS", "")
+    
+    # Afficher la configuration
+    print("\nConfiguration actuelle:")
+    print(f"Token: {telegram_token[:6] + '...' if telegram_token else 'Non configuré'}")
+    print(f"Utilisateurs autorisés: {authorized_users or 'Aucun (tout le monde pourra utiliser le bot)'}")
+    
+    # Afficher les options
+    print("\nOptions:")
+    print_menu_option(1, f"{'Arrêter' if is_running else 'Démarrer'} l'interface Telegram")
+    print_menu_option(2, "Configurer le token Telegram")
+    print_menu_option(3, "Configurer les utilisateurs autorisés")
+    print_menu_option(4, "Tester l'envoi d'un message")
+    print_menu_option(5, "Configurer les notifications")
+    print_menu_option(6, "Retour au menu principal")
+    
+    choice = input("\nVotre choix: ")
+    
+    if choice == "1":
+        # Démarrer/arrêter l'interface Telegram
+        if is_running:
+            print(f"{Colors.YELLOW}Arrêt de l'interface Telegram...{Colors.ENDC}")
+            try:
+                # Créer une tâche asyncio pour arrêter le bot
+                await telegram_bot.stop()
+                print(f"{Colors.GREEN}Interface Telegram arrêtée avec succès!{Colors.ENDC}")
+            except Exception as e:
+                print(f"{Colors.RED}Erreur lors de l'arrêt de l'interface Telegram: {str(e)}{Colors.ENDC}")
+        else:
+            # Vérifier que le token est configuré
+            if not telegram_token:
+                print(f"{Colors.RED}Le token Telegram n'est pas configuré.{Colors.ENDC}")
+                print(f"{Colors.RED}Utilisez l'option 2 pour configurer le token.{Colors.ENDC}")
+                time.sleep(2)
+                await display_telegram_menu()
+                return
+                
+            print(f"{Colors.YELLOW}Démarrage de l'interface Telegram...{Colors.ENDC}")
+            try:
+                # Créer une nouvelle instance du bot Telegram
+                telegram_bot = create_telegram_bot(token=telegram_token, config=bot_state.config, bot_state=bot_state)
+                
+                # Démarrer le bot
+                success = await telegram_bot.start()
+                
+                if success:
+                    # Stocker le bot dans l'état du bot
+                    bot_state.strategies["telegram_bot"] = telegram_bot
+                    print(f"{Colors.GREEN}Interface Telegram démarrée avec succès!{Colors.ENDC}")
+                    print(f"{Colors.GREEN}Vous pouvez maintenant contrôler le bot via Telegram.{Colors.ENDC}")
+                else:
+                    print(f"{Colors.RED}Échec du démarrage de l'interface Telegram.{Colors.ENDC}")
+            except Exception as e:
+                print(f"{Colors.RED}Erreur lors du démarrage de l'interface Telegram: {str(e)}{Colors.ENDC}")
+        
+        time.sleep(2)
+    
+    elif choice == "2":
+        # Configurer le token
+        print("\nPour obtenir un token Telegram, vous devez créer un bot avec @BotFather sur Telegram.")
+        print("Envoyez /newbot à @BotFather et suivez les instructions.")
+        
+        new_token = input("\nEntrez votre token Telegram (laissez vide pour conserver la valeur actuelle): ")
+        
+        if new_token:
+            # Mettre à jour la configuration
+            bot_state.config["TELEGRAM_BOT_TOKEN"] = new_token
+            print(f"{Colors.GREEN}Token Telegram mis à jour avec succès!{Colors.ENDC}")
+            
+            # Si le bot est en cours d'exécution, le redémarrer
+            if is_running and telegram_bot:
+                print(f"{Colors.YELLOW}Redémarrage de l'interface Telegram...{Colors.ENDC}")
+                await telegram_bot.stop()
+                
+                # Créer une nouvelle instance du bot
+                telegram_bot = create_telegram_bot(token=new_token, config=bot_state.config, bot_state=bot_state)
+                
+                # Démarrer le bot
+                success = await telegram_bot.start()
+                
+                if success:
+                    bot_state.strategies["telegram_bot"] = telegram_bot
+                    print(f"{Colors.GREEN}Interface Telegram redémarrée avec succès!{Colors.ENDC}")
+                else:
+                    print(f"{Colors.RED}Échec du redémarrage de l'interface Telegram.{Colors.ENDC}")
+        
+        time.sleep(2)
+    
+    elif choice == "3":
+        # Configurer les utilisateurs autorisés
+        print("\nEntrez les IDs des utilisateurs autorisés, séparés par des virgules.")
+        print("Vous pouvez obtenir votre ID en envoyant un message à @userinfobot sur Telegram.")
+        print("Laissez vide pour autoriser tout le monde.")
+        
+        new_users = input("\nUtilisateurs autorisés: ")
+        
+        # Mettre à jour la configuration
+        bot_state.config["TELEGRAM_AUTHORIZED_USERS"] = new_users
+        print(f"{Colors.GREEN}Utilisateurs autorisés mis à jour avec succès!{Colors.ENDC}")
+        
+        # Si le bot est en cours d'exécution, recharger la configuration
+        if is_running and telegram_bot:
+            telegram_bot._load_authorized_users()
+            print(f"{Colors.GREEN}Configuration rechargée avec succès!{Colors.ENDC}")
+        
+        time.sleep(2)
+    
+    elif choice == "4":
+        # Tester l'envoi d'un message
+        if not is_running or not telegram_bot:
+            print(f"{Colors.RED}L'interface Telegram n'est pas active.{Colors.ENDC}")
+            print(f"{Colors.RED}Démarrez-la d'abord avec l'option 1.{Colors.ENDC}")
+            time.sleep(2)
+            await display_telegram_menu()
+            return
+            
+        test_message = input("\nEntrez le message de test à envoyer: ")
+        
+        if test_message:
+            print(f"{Colors.YELLOW}Envoi du message de test...{Colors.ENDC}")
+            
+            success = await telegram_bot.send_message(test_message)
+            
+            if success:
+                print(f"{Colors.GREEN}Message envoyé avec succès!{Colors.ENDC}")
+            else:
+                print(f"{Colors.RED}Échec de l'envoi du message.{Colors.ENDC}")
+                print(f"{Colors.RED}Vérifiez que vous avez configuré les utilisateurs autorisés et que vous avez démarré une conversation avec le bot.{Colors.ENDC}")
+        
+        time.sleep(2)
+    
+    elif choice == "5":
+        # Configurer les notifications
+        print("\nConfiguration des notifications Telegram:")
+        print("1. Alertes de profit")
+        print("2. Alertes d'erreur")
+        print("3. Alertes de sécurité")
+        print("4. Toutes les notifications")
+        print("5. Aucune notification")
+        
+        notif_choice = input("\nChoisissez une option (1-5): ")
+        
+        # Configuration des notifications
+        if notif_choice in ["1", "2", "3", "4", "5"]:
+            notifications = {
+                "profit": notif_choice in ["1", "4"],
+                "error": notif_choice in ["2", "4"],
+                "security": notif_choice in ["3", "4"],
+                "all": notif_choice == "4",
+                "none": notif_choice == "5"
+            }
+            
+            # Mettre à jour la configuration
+            bot_state.config["TELEGRAM_NOTIFICATIONS"] = json.dumps(notifications)
+            print(f"{Colors.GREEN}Configuration des notifications mise à jour avec succès!{Colors.ENDC}")
+        else:
+            print(f"{Colors.RED}Option invalide.{Colors.ENDC}")
+        
+        time.sleep(2)
+    
+    elif choice == "6":
+        # Retour au menu principal
+        return
+    
+    else:
+        print(f"{Colors.RED}Option invalide. Veuillez réessayer.{Colors.ENDC}")
+        time.sleep(1)
+    
+    # Afficher à nouveau le menu Telegram
+    await display_telegram_menu()
+
+async def start_ai_assistant_module():
+    """Lance le module d'Assistant IA"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}                   GBPBot - Assistant IA                    {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    # Vérifier si l'IA est disponible
+    try:
+        from gbpbot.ai import create_ai_client, get_prompt_manager
+        ai_imports_ok = True
+    except ImportError:
+        ai_imports_ok = False
+    
+    if not ai_imports_ok:
+        print(f"{Colors.RED}Les modules d'IA ne sont pas disponibles.{Colors.ENDC}")
+        print(f"{Colors.YELLOW}Veuillez installer les dépendances requises avec 'pip install langchain openai vllm'.{Colors.ENDC}")
+        print("\nAppuyez sur Entrée pour revenir au menu des modules...")
+        input()
+        return
+    
+    # Vérifier si le module est déjà actif
+    if bot_state.active_modules.get("ai_assistant", False):
+        print(f"{Colors.YELLOW}Le module Assistant IA est déjà actif.{Colors.ENDC}")
+        
+        choice = input("\nQue souhaitez-vous faire?\n"
+                      "1. Désactiver le module\n"
+                      "2. Utiliser l'assistant\n"
+                      "3. Configurer le module\n"
+                      "4. Retour au menu des modules\n"
+                      "\nChoisissez une option (1-4): ")
+        
+        if choice == "1":
+            # Désactiver le module
+            await stop_module("ai_assistant")
+            print(f"{Colors.GREEN}Module Assistant IA désactivé avec succès.{Colors.ENDC}")
+            time.sleep(1)
+            return
+        elif choice == "2":
+            # Utiliser l'assistant (afficher sous-menu)
+            await display_ai_assistant_menu()
+            return
+        elif choice == "3":
+            # Configurer le module
+            await configure_ai_assistant()
+            return
+        elif choice == "4":
+            return  # Retour au menu des modules
+        else:
+            print(f"{Colors.RED}Option invalide. Retour au menu des modules.{Colors.ENDC}")
+            time.sleep(1)
+            return
+    
+    print(f"{Colors.BOLD}Activation du module Assistant IA...{Colors.ENDC}")
+    print("Ce module vous permet d'interagir avec l'IA pour analyser le marché,")
+    print("évaluer des tokens, et obtenir des recommandations personnalisées.")
+    
+    # Créer une instance du client IA
+    try:
+        ai_client = create_ai_client()
+        if not ai_client:
+            raise Exception("Impossible de créer le client IA")
+        
+        # Initialiser le module
+        from gbpbot.ai.market_analyzer import MarketAnalyzer
+        market_analyzer = MarketAnalyzer(ai_client)
+        
+        # Stocker les instances dans bot_state
+        bot_state.strategies["ai_client"] = ai_client
+        bot_state.strategies["market_analyzer"] = market_analyzer
+        
+        # Marquer le module comme actif
+        bot_state.active_modules["ai_assistant"] = True
+        
+        print(f"{Colors.GREEN}Module Assistant IA activé avec succès!{Colors.ENDC}")
+        print(f"{Colors.BLUE}Type d'IA utilisée: {ai_client.__class__.__name__}{Colors.ENDC}")
+        
+        # Afficher le sous-menu
+        await display_ai_assistant_menu()
+        
+    except Exception as e:
+        print(f"{Colors.RED}Erreur lors de l'activation du module: {str(e)}{Colors.ENDC}")
+        print("\nAppuyez sur Entrée pour revenir au menu des modules...")
+        input()
+
+async def display_ai_assistant_menu():
+    """Affiche le menu de l'Assistant IA"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}               GBPBot - Menu Assistant IA                   {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    print_menu_option(1, "Analyser les conditions du marché")
+    print_menu_option(2, "Analyser un token spécifique")
+    print_menu_option(3, "Prédire le mouvement de prix")
+    print_menu_option(4, "Analyser un contrat intelligent")
+    print_menu_option(5, "Générer un rapport de marché")
+    print_menu_option(6, "Configurer l'Assistant IA")
+    print_menu_option(7, "Retour au menu des modules")
+    
+    choice = input("\nChoisissez une option (1-7): ")
+    
+    if choice == "1":
+        await analyze_market_conditions()
+    elif choice == "2":
+        await analyze_specific_token()
+    elif choice == "3":
+        await predict_price_movement()
+    elif choice == "4":
+        await analyze_smart_contract()
+    elif choice == "5":
+        await generate_market_report()
+    elif choice == "6":
+        await configure_ai_assistant()
+    elif choice == "7":
+        return  # Retour au menu des modules
+    else:
+        print(f"{Colors.RED}Option invalide. Veuillez réessayer.{Colors.ENDC}")
+        time.sleep(1)
+    
+    # Réafficher le menu Assistant IA
+    await display_ai_assistant_menu()
+
+async def analyze_market_conditions():
+    """Analyse les conditions actuelles du marché avec l'IA"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}              GBPBot - Analyse du Marché                    {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    # Vérifier si le module est actif
+    if not bot_state.active_modules.get("ai_assistant", False):
+        print(f"{Colors.RED}Le module Assistant IA n'est pas actif.{Colors.ENDC}")
+        print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+        input()
+        return
+    
+    print(f"{Colors.BOLD}Analyse des conditions actuelles du marché...{Colors.ENDC}")
+    print("Cette fonctionnalité permet d'obtenir une analyse complète du marché,")
+    print("incluant les tendances, les prévisions et les opportunités.")
+    print()
+    
+    try:
+        # Récupérer l'analyseur de marché
+        market_analyzer = bot_state.strategies.get("market_analyzer")
+        if not market_analyzer:
+            raise Exception("Analyseur de marché non disponible")
+        
+        # Obtenir les données du marché (à implémenter selon les besoins)
+        print(f"{Colors.YELLOW}Récupération des données du marché...{Colors.ENDC}")
+        market_data = await get_market_data()
+        
+        # Analyser le marché
+        print(f"{Colors.YELLOW}Analyse en cours avec l'IA...{Colors.ENDC}")
+        analysis = await market_analyzer.analyze_market_conditions(market_data)
+        
+        # Afficher les résultats
+        print(f"\n{Colors.GREEN}Analyse terminée:{Colors.ENDC}")
+        print(f"\n{Colors.BOLD}Tendance globale:{Colors.ENDC} {analysis.get('trend', 'N/A')}")
+        print(f"{Colors.BOLD}Niveau de confiance:{Colors.ENDC} {analysis.get('confidence_level', 'N/A')}%")
+        
+        print(f"\n{Colors.BOLD}Indicateurs clés:{Colors.ENDC}")
+        for indicator in analysis.get("key_indicators", []):
+            print(f"- {indicator}")
+        
+        print(f"\n{Colors.BOLD}Prévision à court terme:{Colors.ENDC}")
+        print(analysis.get("short_term_prediction", "Aucune prévision disponible"))
+        
+        print(f"\n{Colors.BOLD}Recommandations:{Colors.ENDC}")
+        for recommendation in analysis.get("recommendations", []):
+            print(f"- {recommendation}")
+        
+        print(f"\n{Colors.BOLD}Niveau de risque:{Colors.ENDC} {analysis.get('risk_level', 'N/A')}")
+        
+    except Exception as e:
+        print(f"{Colors.RED}Erreur lors de l'analyse du marché: {str(e)}{Colors.ENDC}")
+    
+    print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+    input()
+
+async def get_market_data():
+    """Récupère les données actuelles du marché (fonction temporaire/simulée)"""
+    # Cette fonction devrait être implémentée pour récupérer des données réelles
+    # Pour l'instant, retournons des données simulées pour démonstration
+    return {
+        "timestamp": datetime.now().isoformat(),
+        "global_market_cap": 1.23e12,  # 1.23 trillion
+        "bitcoin_dominance": 48.5,
+        "ethereum_dominance": 18.2,
+        "fear_greed_index": 65,  # 0-100
+        "trending_tokens": [
+            {"symbol": "SOL", "change_24h": 5.2},
+            {"symbol": "AVAX", "change_24h": 3.7},
+            {"symbol": "BONK", "change_24h": 12.5},
+        ],
+        "trading_volume_24h": 78.5e9,  # 78.5 billion
+        "defi_tvl": 45.2e9,  # 45.2 billion
+        "market_sentiment": "bullish",
+    }
+
+async def analyze_specific_token():
+    """Analyse un token spécifique avec l'IA"""
+    clear_screen()
+    
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}                GBPBot - Analyse de Token                   {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    # Vérifier si le module est actif
+    if not bot_state.active_modules.get("ai_assistant", False):
+        print(f"{Colors.RED}Le module Assistant IA n'est pas actif.{Colors.ENDC}")
+        print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+        input()
+        return
+    
+    # Demander le symbole du token
+    symbol = input("Entrez le symbole du token à analyser: ").upper()
+    
+    if not symbol:
+        print(f"{Colors.RED}Aucun symbole fourni. Opération annulée.{Colors.ENDC}")
+        print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+        input()
+        return
+    
+    print(f"{Colors.BOLD}Analyse du token {symbol}...{Colors.ENDC}")
+    print()
+    
+    try:
+        # Récupérer l'analyseur de marché
+        market_analyzer = bot_state.strategies.get("market_analyzer")
+        if not market_analyzer:
+            raise Exception("Analyseur de marché non disponible")
+        
+        # Simuler la récupération des données du token
+        print(f"{Colors.YELLOW}Récupération des données pour {symbol}...{Colors.ENDC}")
+        token_data = await get_token_data(symbol)
+        
+        if not token_data:
+            print(f"{Colors.RED}Token {symbol} non trouvé.{Colors.ENDC}")
+            print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+            input()
+            return
+        
+        # Analyser le token
+        print(f"{Colors.YELLOW}Analyse en cours avec l'IA...{Colors.ENDC}")
+        analysis = await market_analyzer.analyze_token(token_data)
+        
+        # Afficher les résultats
+        print(f"\n{Colors.GREEN}Analyse terminée:{Colors.ENDC}")
+        print(f"\n{Colors.BOLD}Token:{Colors.ENDC} {token_data.get('name')} ({token_data.get('symbol')})")
+        print(f"{Colors.BOLD}Prix actuel:{Colors.ENDC} ${token_data.get('price'):,.6f}")
+        print(f"{Colors.BOLD}Tendance:{Colors.ENDC} {analysis.get('trend', 'N/A')}")
+        
+        print(f"\n{Colors.BOLD}Points forts:{Colors.ENDC}")
+        for strength in analysis.get("strengths", []):
+            print(f"- {strength}")
+        
+        print(f"\n{Colors.BOLD}Points faibles:{Colors.ENDC}")
+        for weakness in analysis.get("weaknesses", []):
+            print(f"- {weakness}")
+        
+        print(f"\n{Colors.BOLD}Opportunité:{Colors.ENDC} {analysis.get('opportunity_rating', 'N/A')}/10")
+        print(f"{Colors.BOLD}Risque:{Colors.ENDC} {analysis.get('risk_rating', 'N/A')}/10")
+        
+        print(f"\n{Colors.BOLD}Recommandation:{Colors.ENDC}")
+        print(analysis.get("recommendation", "Aucune recommandation disponible"))
+        
+    except Exception as e:
+        print(f"{Colors.RED}Erreur lors de l'analyse du token: {str(e)}{Colors.ENDC}")
+    
+    print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+    input()
+
+async def get_token_data(symbol):
+    """Récupère les données d'un token spécifique (fonction temporaire/simulée)"""
+    # Cette fonction devrait être implémentée pour récupérer des données réelles
+    # Pour l'instant, retournons des données simulées pour démonstration
+    tokens = {
+        "SOL": {
+            "name": "Solana",
+            "symbol": "SOL",
+            "price": 124.53,
+            "market_cap": 56e9,
+            "volume_24h": 2.7e9,
+            "change_24h": 4.2,
+            "change_7d": 12.5,
+            "chain": "Solana",
+            "contract": "native",
+            "liquidity": 145e6,
+            "holders": 780000,
+            "launch_date": "2020-03-16",
+        },
+        "AVAX": {
+            "name": "Avalanche",
+            "symbol": "AVAX",
+            "price": 32.78,
+            "market_cap": 12.5e9,
+            "volume_24h": 780e6,
+            "change_24h": 3.7,
+            "change_7d": 8.2,
+            "chain": "Avalanche",
+            "contract": "native",
+            "liquidity": 85e6,
+            "holders": 520000,
+            "launch_date": "2020-09-21",
+        },
+        "BONK": {
+            "name": "Bonk",
+            "symbol": "BONK",
+            "price": 0.00002345,
+            "market_cap": 1.4e9,
+            "volume_24h": 320e6,
+            "change_24h": 12.5,
+            "change_7d": 28.7,
+            "chain": "Solana",
+            "contract": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+            "liquidity": 35e6,
+            "holders": 265000,
+            "launch_date": "2022-12-25",
+        }
+    }
+    
+    return tokens.get(symbol, None)
+
+async def predict_price_movement():
+    """Prédit le mouvement de prix d'un token"""
+    # Implémentation similaire à analyze_specific_token
+    clear_screen()
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}            GBPBot - Prédiction de Prix                     {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    print(f"{Colors.YELLOW}Fonctionnalité en cours d'implémentation.{Colors.ENDC}")
+    print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+    input()
+
+async def analyze_smart_contract():
+    """Analyse un contrat intelligent"""
+    # Implémentation similaire à analyze_specific_token
+    clear_screen()
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}         GBPBot - Analyse de Contrat Intelligent            {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    print(f"{Colors.YELLOW}Fonctionnalité en cours d'implémentation.{Colors.ENDC}")
+    print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+    input()
+
+async def generate_market_report():
+    """Génère un rapport de marché complet"""
+    # Implémentation similaire à analyze_market_conditions
+    clear_screen()
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}            GBPBot - Rapport de Marché                      {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    print(f"{Colors.YELLOW}Fonctionnalité en cours d'implémentation.{Colors.ENDC}")
+    print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+    input()
+
+async def configure_ai_assistant():
+    """Configure les paramètres de l'Assistant IA"""
+    clear_screen()
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    print(f"{Colors.HEADER}         GBPBot - Configuration Assistant IA                {Colors.ENDC}")
+    print(f"{Colors.HEADER}============================================================{Colors.ENDC}")
+    
+    # Vérifier si la configuration est disponible
+    if not hasattr(bot_state, "config") or bot_state.config is None:
+        print(f"{Colors.RED}La configuration du bot n'est pas disponible.{Colors.ENDC}")
+        print("\nAppuyez sur Entrée pour revenir au menu Assistant IA...")
+        input()
+        return
+    
+    # Afficher les paramètres actuels
+    ai_config = {k: v for k, v in bot_state.config.items() if k.startswith("AI_")}
+    if not ai_config:
+        ai_config = {
+            "AI_PROVIDER": "openai",
+            "AI_MODEL": "gpt-3.5-turbo",
+            "AI_TEMPERATURE": "0.7",
+            "AI_MAX_TOKENS": "1024",
+            "AI_LOCAL_MODEL_PATH": "",
+        }
+    
+    print(f"{Colors.BOLD}Paramètres actuels:{Colors.ENDC}")
+    for key, value in ai_config.items():
+        print(f"{key}: {value}")
+    
+    print("\nOptions:")
+    print_menu_option(1, "Changer le fournisseur d'IA (openai/llama)")
+    print_menu_option(2, "Changer le modèle")
+    print_menu_option(3, "Ajuster la température")
+    print_menu_option(4, "Configurer le chemin du modèle local")
+    print_menu_option(5, "Retour au menu Assistant IA")
+    
+    choice = input("\nChoisissez une option (1-5): ")
+    
+    if choice == "1":
+        new_provider = input("Entrez le fournisseur d'IA (openai/llama): ").lower()
+        if new_provider in ["openai", "llama"]:
+            bot_state.config["AI_PROVIDER"] = new_provider
+            print(f"{Colors.GREEN}Fournisseur d'IA mis à jour avec succès!{Colors.ENDC}")
+        else:
+            print(f"{Colors.RED}Fournisseur non valide. Utilisez 'openai' ou 'llama'.{Colors.ENDC}")
+    
+    elif choice == "2":
+        new_model = input("Entrez le nom du modèle: ")
+        if new_model:
+            bot_state.config["AI_MODEL"] = new_model
+            print(f"{Colors.GREEN}Modèle mis à jour avec succès!{Colors.ENDC}")
+        else:
+            print(f"{Colors.RED}Nom de modèle non valide.{Colors.ENDC}")
+    
+    elif choice == "3":
+        try:
+            new_temp = float(input("Entrez la température (0.0-1.0): "))
+            if 0.0 <= new_temp <= 1.0:
+                bot_state.config["AI_TEMPERATURE"] = str(new_temp)
+                print(f"{Colors.GREEN}Température mise à jour avec succès!{Colors.ENDC}")
+            else:
+                print(f"{Colors.RED}La température doit être entre 0.0 et 1.0.{Colors.ENDC}")
+        except ValueError:
+            print(f"{Colors.RED}Valeur non valide. Entrez un nombre entre 0.0 et 1.0.{Colors.ENDC}")
+    
+    elif choice == "4":
+        new_path = input("Entrez le chemin vers le modèle local: ")
+        bot_state.config["AI_LOCAL_MODEL_PATH"] = new_path
+        print(f"{Colors.GREEN}Chemin du modèle local mis à jour avec succès!{Colors.ENDC}")
+    
+    elif choice == "5":
+        return  # Retour au menu Assistant IA
+    
+    else:
+        print(f"{Colors.RED}Option invalide.{Colors.ENDC}")
+    
+    # Réinitialiser le client AI si le module est actif
+    if bot_state.active_modules.get("ai_assistant", False):
+        try:
+            print(f"{Colors.YELLOW}Réinitialisation du client IA avec les nouveaux paramètres...{Colors.ENDC}")
+            from gbpbot.ai import create_ai_client
+            
+            # Créer un nouveau client avec les paramètres mis à jour
+            provider = bot_state.config.get("AI_PROVIDER", "auto")
+            ai_config = {k: v for k, v in bot_state.config.items() if k.startswith("AI_")}
+            
+            new_client = create_ai_client(provider=provider, config=ai_config)
+            if new_client:
+                bot_state.strategies["ai_client"] = new_client
+                
+                # Mettre à jour l'analyseur de marché
+                from gbpbot.ai.market_analyzer import MarketAnalyzer
+                bot_state.strategies["market_analyzer"] = MarketAnalyzer(new_client)
+                
+                print(f"{Colors.GREEN}Client IA réinitialisé avec succès!{Colors.ENDC}")
+            else:
+                print(f"{Colors.RED}Erreur lors de la réinitialisation du client IA.{Colors.ENDC}")
+        except Exception as e:
+            print(f"{Colors.RED}Erreur lors de la réinitialisation du client IA: {str(e)}{Colors.ENDC}")
+    
+    time.sleep(1)
+    # Réafficher le menu de configuration
+    await configure_ai_assistant()
+
+async def main():
+    """Fonction principale"""
+    # Créer le répertoire de logs si nécessaire
+    os.makedirs("logs", exist_ok=True)
+    
+    # Afficher le menu principal
+    await display_main_menu()
+
+if __name__ == "__main__":
+    try:
+        # Exécuter la fonction principale de manière asynchrone
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nProgramme interrompu. Arrêt du GBPBot...")
+        sys.exit(0)
+    except Exception as e:
+        logger.exception(f"Erreur inattendue: {e}")
+        print(f"\nUne erreur inattendue s'est produite: {str(e)}")
+        sys.exit(1) 

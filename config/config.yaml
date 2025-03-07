@@ -1,193 +1,181 @@
-anomaly_detection:
-  check_interval: 1
+# Configuration du GBPBot
+# ===================
+
+# Configuration générale
+general:
+  log_level: "INFO"
+  data_dir: "data"
+  cache_dir: "cache"
+  max_cache_size_mb: 100
+  debug_mode: false
+
+# Configuration des blockchains
+blockchains:
+  solana:
+    enabled: true
+    rpc_url: "https://api.mainnet-beta.solana.com"
+    ws_url: "wss://api.mainnet-beta.solana.com"
+    commitment: "confirmed"
+  avalanche:
+    enabled: true
+    rpc_url: "https://api.avax.network/ext/bc/C/rpc"
+    ws_url: "wss://api.avax.network/ext/bc/C/ws"
+  sonic:
+    enabled: false
+    rpc_url: "https://rpc.sonic.fantom.network/"
+
+# Configuration des wallets
+wallets:
+  solana:
+    enabled: false
+    keypair_path: ""
+    public_key: ""
+  avalanche:
+    enabled: false
+    private_key: ""
+    address: ""
+  sonic:
+    enabled: false
+    private_key: ""
+    address: ""
+
+# Configuration des modules
+modules:
+  arbitrage:
+    enabled: true
+    min_profit_percentage: 0.5
+    max_slippage: 1.0
+    gas_priority: "medium"
+    max_concurrent_trades: 3
+    dexes:
+      - "traderjoe"
+      - "pangolin"
+      - "sushiswap"
+  sniping:
+    enabled: true
+    max_buy_amount: 0.1
+    min_liquidity: 10000
+    max_tax_percentage: 5.0
+    auto_sell: true
+    take_profit_percentage: 50.0
+    stop_loss_percentage: 10.0
+    blockchains:
+      - "solana"
+      - "avalanche"
+  auto_trader:
+    enabled: false
+    risk_level: "medium"
+    allocation:
+      arbitrage: 0.5
+      sniping: 0.3
+      hold: 0.2
+
+# Configuration de l'IA
+ai:
   enabled: true
-  min_data_points: 10
-  window_size: 20
-  z_score_threshold: 3.0
-  max_price_change_percent: 20
-  alert_cooldown: 60
-cache:
-  enabled: true
-  max_price_items: 100
-  max_rpc_items: 1000
-  price_ttl: 10
-  rpc_ttl: 30
-contracts:
-  mainnet:
-    factory: '0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10'
-    router: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4'
-    tokens:
-      JOE: '0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd'
-      USDC: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E'
-      USDT: '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7'
-      WAVAX: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
-  testnet:
-    factory: '0x6E557F3dd43210E8bD7C54de1E3c6AE5a4fe6431'
-    router: '0x7E2f4A0e85A8A248E5Bc5B3Ee5f3dD214C5bC935'
-    tokens:
-      JOE: '0x477Fd10Db0D80eAFb773cF623B258313C3739413'
-      USDC: '0x5425890298aed601595a70AB815c96711a31Bc65'
-      USDT: '0x02823f9B469960Bb3b1de0B3746D4b95B7E35543'
-      WAVAX: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c'
+  provider: "auto"
+  openai:
+    api_key: ""
+    model: "gpt-3.5-turbo"
+  llama:
+    model_path: "models/llama-7b-q4"
+    quantization: "4bit"
+  local_models:
+    enabled: true
+    models_dir: "models"
+    max_memory_usage_mb: 2000
+
+# Configuration des notifications
+notifications:
+  console:
+    enabled: true
+    verbose: true
+    colors: true
+  telegram:
+    enabled: false
+    token: ""
+    chat_id: ""
+    include_data: true
+    notify_on:
+      - trade
+      - error
+      - warning
+  file:
+    enabled: true
+    path: "logs/notifications.log"
+    max_size_mb: 10
+    rotate: true
+    backups: 5
+
+# Configuration des plateformes d'échange centralisées (CEX)
 exchanges:
   binance:
-    api_key: ''
-    api_secret: ''
     enabled: true
+    api_key: ""
+    api_secret: ""
+    testnet: false
+    rate_limits:
+      requests_per_second: 10
+      requests_per_minute: 1200
   kucoin:
-    api_key: ''
-    api_secret: ''
     enabled: false
-    passphrase: ''
-general:
-  environment: development
-  log_level: INFO
-  log_file: logs/gbpbot.log
-  debug_mode: true
-  data_dir: ./data
-  simulation_mode: false
-  testnet: false
-price_feed:
-  cache_timeout: 5
-  dex_update_interval: 1
-  cex_update_interval: 1
-  update_interval: 10
-  outlier_threshold: 2.0
-  min_sources: 2
-  max_deviation: 0.05
-  price_normalizer:
-    weight_dex: 1.0
-    weight_cex: 1.0
-    min_liquidity: 1000
-  arbitrage:
-    min_spread: 0.01
-    min_liquidity: 1000
-    max_slippage: 0.5
-  stop_loss:
+    api_key: ""
+    api_secret: ""
+    passphrase: ""
+    testnet: false
+    rate_limits:
+      requests_per_second: 5
+      requests_per_minute: 300
+  gate:
+    enabled: false
+    api_key: ""
+    api_secret: ""
+    testnet: false
+    rate_limits:
+      requests_per_second: 5
+      requests_per_minute: 300
+
+# Configuration de l'arbitrage
+arbitrage:
+  cex_dex:
     enabled: true
-    percentage: 2.0
-    trailing: true
-  take_profit:
-    enabled: true
-    percentage: 1.0
-    trailing: true
-rpc:
-  providers:
-    avalanche:
-      mainnet:
-        - https://api.avax.network/ext/bc/C/rpc
-        - https://avalanche-c-chain.publicnode.com
-        - https://rpc.ankr.com/avalanche
-  timeout: 10
-  max_retries: 3
-  retry_delay: 1
-  max_retry_delay: 30
-  jitter: true
-  batch_size: 10
-  batch_interval: 0.5
-strategies:
-  arbitrage:
-    enabled: true
-    gas_price_multiplier: 1.1
-    max_gas: 1000000
-    max_slippage: 0.5
-    min_profit_threshold: 0.5
+    auto_execute: false
+    min_profit_percentage: 0.5
+    max_trade_amount: 100.0
+    check_interval: 5
+    cex:
+      - "binance"
+    dex:
+      - "solana"
+      - "avalanche"
+      - "sonic"
     pairs:
-    - - WAVAX
-      - USDC
-    - - WAVAX
-      - USDT
-    - - USDC
-      - USDT
-websocket:
-  heartbeat_interval: 30
-  reconnect_interval: 5
-  max_reconnect_attempts: 10
-  max_backoff: 60
-  ping_interval: 30
-  ping_timeout: 10
-  close_timeout: 5
-  reconnect_delay: 1
-  max_reconnect_delay: 60
-  jitter: true
-  max_message_size: 10485760
-  connection_timeout: 10
-  pairs:
-  - avaxusdt
-  - avaxusdc
-security:
-  max_slippage: 1.0
-  min_block_confirmations: 1
-  max_gas_price: 100
-  max_price_change: 0.01
-  max_confirmation_attempts: 5
-  emergency_shutdown:
-    max_consecutive_errors: 3
-    max_loss_percentage: 2.0
-gas:
-  eip1559:
-    enabled: true
-    priority_fee_multiplier: 1.2
-    max_priority_fee: 3
-    base_fee_multiplier: 1.1
-  optimizer:
-    enabled: true
-    gas_price_strategy: medium
-    max_wait_time: 60
-    min_gas_price: 25
-    max_gas_price: 100
-monitoring:
-  metrics_enabled: true
-  metrics_port: 9090
-  alert_threshold:
-    profit: 0.1
-    gas: 100
-    error_rate: 0.05
-    balance: 0.1
-    trade_delay: 300
-  dashboard:
-    enabled: true
-    update_interval: 5
-    max_points: 1000
-  notifications:
-    trade_summary: true
-    daily_report: true
-    error_notification: true
-    performance_alert: true
-transaction:
-  timeout: 180
-  max_pending_transactions: 5
-  retry:
-    enabled: true
-    max_attempts: 3
-    delay: 5
-    backoff_factor: 2
-    max_delay: 60
-  confirmation:
-    blocks: 1
-    timeout: 300
-  mempool:
-    monitoring_interval: 10
-    max_pending_time: 600
-  history:
-    max_items: 1000
-    persist: true
-    file_path: ./data/transactions.json
-  nonce:
-    auto_increment: true
-    reset_on_start: false
-  gas_boost:
-    enabled: true
-    trigger_time: 60
-    boost_percentage: 20
-wallet:
-  private_key: ''
-  min_balance: 0.1
-  auto_refill:
-    enabled: false
-    threshold: 0.05
-    amount: 0.5
-  address_book:
-    owner: ''
-    treasury: ''
-    fee_collector: ''
+      - "BTC/USDT"
+      - "ETH/USDT"
+      - "SOL/USDT"
+      - "AVAX/USDT"
+    pair_configs:
+      - pair: "BTC/USDT"
+        amount: 0.01
+      - pair: "ETH/USDT"
+        amount: 0.1
+      - pair: "SOL/USDT"
+        amount: 1.0
+      - pair: "AVAX/USDT"
+        amount: 1.0
+    token_addresses:
+      solana:
+        BTC: "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E"  # BTC (Solana)
+        ETH: "2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk"  # ETH (Solana)
+        SOL: "So11111111111111111111111111111111111111112"   # SOL (Solana)
+        USDT: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB" # USDT (Solana)
+      avalanche:
+        BTC: "0x152b9d0FdC40C096757F570A51E494bd4b943E50"    # BTC.b (Avalanche)
+        ETH: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"    # WETH.e (Avalanche)
+        AVAX: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"   # WAVAX (Avalanche)
+        USDT: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"   # USDT (Avalanche)
+      sonic:
+        BTC: "0x321162Cd933E2Be498Cd2267a90534A804051b11"    # BTC (Fantom)
+        ETH: "0x74b23882a30290451A17c44f4F05243b6b58C76d"    # ETH (Fantom)
+        FTM: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83"    # WFTM (Fantom)
+        USDT: "0x049d68029688eAbF473097a2fC38ef61633A3C7A"   # USDT (Fantom)

@@ -1,0 +1,4 @@
+2025-03-07 20:41:08,074 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package solana-py: No module named 'solana.keypair'
+2025-03-07 20:41:08,085 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-07 20:41:08,086 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-07 20:41:08,094 - setup - ERROR - Erreur lors de la configuration du gestionnaire de secrets: no running event loop

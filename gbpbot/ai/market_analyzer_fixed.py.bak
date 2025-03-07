@@ -1,0 +1,451 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Analyseur de marché basé sur l'IA
+=================================
+
+Ce module fournit des fonctionnalités d'analyse de marché basées sur l'IA
+pour aider à la prise de décision dans le trading.
+"""
+
+import json
+import logging
+from typing import Dict, List, Any, Optional, Tuple, Union
+from datetime import datetime, timedelta
+
+from gbpbot.ai.llm_provider import LLMProvider
+
+# Configurer le logger
+logger = logging.getLogger("gbpbot.ai.market_analyzer")
+
+class MarketAnalyzer:
+    """
+    Analyseur de marché utilisant l'IA pour détecter les patterns et prédire les mouvements.
+    
+    Cette classe utilise des modèles de langage pour analyser les données de marché
+    et fournir des insights sur les tendances, les opportunités et les risques.
+    """
+    
+    def __init__(self, ai_client: LLMProvider):
+        """
+        Initialise l'analyseur de marché.
+        
+        Args:
+            ai_client: Client IA à utiliser pour l'analyse
+        """
+        logger.info("Initialisation de l'analyseur de marché")
+        self.ai_client = ai_client
+        
+        # Initialiser les caches pour les performances
+        self.market_analysis_cache: Dict[str, Tuple[Dict[str, Any], datetime]] = {}
+        self.token_analysis_cache: Dict[str, Tuple[Dict[str, Any], datetime]] = {}
+        self.pattern_detection_cache: Dict[str, Tuple[List[Dict[str, Any]], datetime]] = {}
+        
+        # Templates pour les prompts
+        self.market_analysis_template = """
+        Analyser les conditions actuelles du marché à partir des données suivantes:
+        {market_data}
+        
+        Format de réponse:
+        {{
+            "market_sentiment": "bullish/bearish/neutral",
+            "key_indicators": ["indicateur 1", "indicateur 2", ...],
+            "opportunities": ["opportunité 1", "opportunité 2", ...],
+            "risks": ["risque 1", "risque 2", ...],
+            "recommendation": "description détaillée de la recommandation"
+        }}
+        """
+        
+        self.token_analysis_template = """
+        Analyser le token suivant en examinant les données fournies:
+        {token_data}
+        
+        Format de réponse:
+        {{
+            "trend": "haussier/baissier/neutre",
+            "strengths": ["point fort 1", "point fort 2", ...],
+            "weaknesses": ["faiblesse 1", "faiblesse 2", ...],
+            "opportunity_rating": 0-10,
+            "risk_rating": 0-10,
+            "recommendation": "description détaillée de la recommandation"
+        }}
+        """
+        
+        self.code_analysis_template = """
+        Analyser le contrat intelligent suivant:
+        {contract_code}
+        
+        Format de réponse:
+        {{
+            "security_issues": [
+                {{"severity": "critique/élevée/moyenne/faible", "description": "description du problème", "location": "fonction ou ligne"}}
+            ],
+            "risk_assessment": "description de l'évaluation des risques",
+            "recommendation": "faire confiance/prudence/éviter"
+        }}
+        """
+    
+    async def analyze_market_conditions(self, market_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Analyse les conditions actuelles du marché en utilisant l'IA
+        
+        Args:
+            market_data: Données du marché à analyser
+            
+        Returns:
+            Résultat de l'analyse sous forme de dictionnaire
+        """
+        logger.info("Analyse des conditions du marché")
+        
+        # Vérifier le cache (max 15 minutes)
+        cache_key = str(market_data.get("timestamp", ""))
+        if cache_key in self.market_analysis_cache:
+            cached_result, timestamp = self.market_analysis_cache[cache_key]
+            if datetime.now() - timestamp < timedelta(minutes=15):
+                logger.info("Utilisation du cache pour l'analyse du marché")
+                return cached_result
+        
+        try:
+            # Préparer le prompt
+            prompt = self.market_analysis_template.format(
+                market_data=json.dumps(market_data, indent=2)
+            )
+            
+            # Analyser avec l'IA
+            response = await self.ai_client.generate_text(prompt)
+            
+            # Extraire et parser le JSON
+            try:
+                result = self._extract_json_from_response(response)
+            except Exception as e:
+                logger.error(f"Erreur lors du parsing du JSON: {e}")
+                # Faire une analyse simplifiée en fallback
+                result = self._fallback_market_analysis(market_data)
+            
+            # Mettre en cache
+            self.market_analysis_cache[cache_key] = (result, datetime.now())
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'analyse du marché: {e}")
+            return self._fallback_market_analysis(market_data)
+    
+    async def analyze_token(self, token_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Analyse un token spécifique en utilisant l'IA
+        
+        Args:
+            token_data: Données du token à analyser
+            
+        Returns:
+            Résultat de l'analyse sous forme de dictionnaire
+        """
+        logger.info(f"Analyse du token {token_data.get('symbol', 'inconnu')}")
+        
+        # Vérifier le cache (max 30 minutes)
+        cache_key = f"{token_data.get('symbol', '')}-{token_data.get('timestamp', '')}"
+        if cache_key in self.token_analysis_cache:
+            cached_result, timestamp = self.token_analysis_cache[cache_key]
+            if datetime.now() - timestamp < timedelta(minutes=30):
+                logger.info("Utilisation du cache pour l'analyse du token")
+                return cached_result
+        
+        try:
+            # Préparer le prompt
+            prompt = self.token_analysis_template.format(
+                token_data=json.dumps(token_data, indent=2)
+            )
+            
+            # Analyser avec l'IA
+            response = await self.ai_client.generate_text(prompt)
+            
+            # Extraire et parser le JSON
+            try:
+                result = self._extract_json_from_response(response)
+            except Exception as e:
+                logger.error(f"Erreur lors du parsing du JSON: {e}")
+                # Faire une analyse simplifiée en fallback
+                result = self._fallback_token_analysis(token_data)
+            
+            # Mettre en cache
+            self.token_analysis_cache[cache_key] = (result, datetime.now())
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'analyse du token: {e}")
+            return self._fallback_token_analysis(token_data)
+    
+    async def analyze_contract(self, contract_code: str, contract_address: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Analyse un contrat intelligent en utilisant l'IA
+        
+        Args:
+            contract_code: Code source du contrat à analyser
+            contract_address: Adresse du contrat (optionnel)
+            
+        Returns:
+            Résultat de l'analyse sous forme de dictionnaire
+        """
+        logger.info(f"Analyse du contrat {contract_address or 'inconnu'}")
+        
+        try:
+            # Préparer le prompt
+            prompt = self.code_analysis_template.format(
+                contract_code=contract_code
+            )
+            
+            # Analyser avec l'IA
+            response = await self.ai_client.generate_text(
+                prompt=prompt,
+                max_tokens=1000,  # Augmenter pour les analyses complexes
+                temperature=0.2,  # Réduire pour des réponses plus déterministes
+                system_message="Vous êtes un expert en sécurité des contrats intelligents. Analysez ce contrat de manière approfondie."
+            )
+            
+            # Extraire et parser le JSON
+            try:
+                result = self._extract_json_from_response(response)
+            except Exception as e:
+                logger.error(f"Erreur lors du parsing du JSON: {e}")
+                # Faire une analyse simplifiée en fallback
+                result = {
+                    "security_issues": [
+                        {"severity": "inconnue", "description": "Impossible d'analyser le contrat", "location": "N/A"}
+                    ],
+                    "risk_assessment": "Impossible d'évaluer les risques en raison d'une erreur d'analyse",
+                    "recommendation": "Éviter - impossible de confirmer la sécurité"
+                }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'analyse du contrat: {e}")
+            return {
+                "security_issues": [
+                    {"severity": "inconnue", "description": f"Erreur lors de l'analyse: {str(e)}", "location": "N/A"}
+                ],
+                "risk_assessment": "Impossible d'évaluer les risques en raison d'une erreur",
+                "recommendation": "Éviter - impossible de confirmer la sécurité"
+            }
+    
+    async def detect_price_patterns(self, price_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Détecte les patterns de prix dans les données historiques
+        
+        Args:
+            price_data: Liste de données de prix historiques
+            
+        Returns:
+            Liste des patterns détectés avec leurs caractéristiques
+        """
+        logger.info("Détection des patterns de prix")
+        
+        # Vérifier le cache (max 1 heure)
+        cache_key = f"patterns-{len(price_data)}-{price_data[0].get('timestamp', '')}-{price_data[-1].get('timestamp', '')}"
+        if cache_key in self.pattern_detection_cache:
+            cached_result, timestamp = self.pattern_detection_cache[cache_key]
+            if datetime.now() - timestamp < timedelta(hours=1):
+                logger.info("Utilisation du cache pour la détection de patterns")
+                return cached_result
+        
+        try:
+            # Préparer les données pour l'analyse
+            data_for_analysis = {
+                "price_data": price_data,
+                "timeframe": "1h",  # À adapter selon les données
+                "patterns_to_detect": [
+                    "double_top", "double_bottom", "head_and_shoulders",
+                    "inverse_head_and_shoulders", "triangle", "wedge", "flag"
+                ]
+            }
+            
+            # Préparer le prompt
+            prompt = f"""
+            Analyser les données de prix suivantes pour détecter des patterns techniques:
+            {json.dumps(data_for_analysis, indent=2)}
+            
+            Format de réponse:
+            {{
+                "detected_patterns": [
+                    {{
+                        "pattern": "nom_du_pattern",
+                        "start_index": index_début,
+                        "end_index": index_fin,
+                        "confidence": 0.0-1.0,
+                        "expected_outcome": "haussier/baissier",
+                        "description": "description du pattern"
+                    }}
+                ]
+            }}
+            """
+            
+            # Analyser avec l'IA
+            response = await self.ai_client.generate_text(prompt, max_tokens=800)
+            
+            # Extraire et parser le JSON
+            try:
+                result_json = self._extract_json_from_response(response)
+                patterns = result_json.get("detected_patterns", [])
+            except Exception as e:
+                logger.error(f"Erreur lors du parsing du JSON: {e}")
+                patterns = []
+            
+            # Mettre en cache
+            self.pattern_detection_cache[cache_key] = (patterns, datetime.now())
+            
+            return patterns
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la détection des patterns: {e}")
+            return []
+    
+    async def predict_price_movement(self, market_data: Dict[str, Any], timeframe: str = "24h") -> Dict[str, Any]:
+        """
+        Prédit le mouvement de prix probable pour un token
+        
+        Args:
+            market_data: Données du marché et du token
+            timeframe: Horizon temporel pour la prédiction
+            
+        Returns:
+            Prédiction du mouvement de prix
+        """
+        logger.info(f"Prédiction du mouvement de prix pour {timeframe}")
+        
+        try:
+            # Préparer le prompt
+            prompt = f"""
+            Prédire le mouvement de prix probable pour le token suivant dans les {timeframe}:
+            {json.dumps(market_data, indent=2)}
+            
+            Format de réponse:
+            {{
+                "direction": "up/down/sideways",
+                "confidence": 0.0-1.0,
+                "expected_change_percent": nombre,
+                "key_factors": ["facteur 1", "facteur 2", ...],
+                "reasoning": "explication détaillée du raisonnement"
+            }}
+            """
+            
+            # Analyser avec l'IA
+            response = await self.ai_client.generate_text(prompt, max_tokens=600)
+            
+            # Extraire et parser le JSON
+            try:
+                result = self._extract_json_from_response(response)
+            except Exception as e:
+                logger.error(f"Erreur lors du parsing du JSON: {e}")
+                result = {
+                    "direction": "sideways",
+                    "confidence": 0.3,
+                    "expected_change_percent": 0,
+                    "key_factors": ["Données insuffisantes"],
+                    "reasoning": "Impossible de faire une prédiction fiable en raison d'une erreur d'analyse"
+                }
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la prédiction du mouvement de prix: {e}")
+            return {
+                "direction": "sideways",
+                "confidence": 0.3,
+                "expected_change_percent": 0,
+                "key_factors": ["Erreur d'analyse"],
+                "reasoning": f"Impossible de faire une prédiction fiable: {str(e)}"
+            }
+    
+    def _extract_json_from_response(self, response: str) -> Dict[str, Any]:
+        """
+        Extrait et parse le JSON d'une réponse de l'IA
+        
+        Args:
+            response: Réponse textuelle de l'IA
+            
+        Returns:
+            Dictionnaire parsé à partir du JSON
+        """
+        # Chercher le JSON dans la réponse
+        try:
+            # Essayer de parser directement
+            return json.loads(response)
+        except json.JSONDecodeError:
+            # Chercher le JSON entre accolades
+            start_idx = response.find('{')
+            end_idx = response.rfind('}')
+            
+            if start_idx != -1 and end_idx != -1:
+                json_str = response[start_idx:end_idx+1]
+                return json.loads(json_str)
+            else:
+                raise ValueError("Aucun JSON valide trouvé dans la réponse")
+    
+    def _fallback_market_analysis(self, market_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Fournit une analyse de marché simplifiée en cas d'échec de l'IA
+        
+        Args:
+            market_data: Données du marché à analyser
+            
+        Returns:
+            Analyse simplifiée
+        """
+        logger.info("Utilisation de l'analyse de marché de fallback")
+        
+        # Analyse simplifiée basée sur des règles
+        sentiment = "neutral"
+        if market_data.get("price_change_24h", 0) > 5:
+            sentiment = "bullish"
+        elif market_data.get("price_change_24h", 0) < -5:
+            sentiment = "bearish"
+        
+        return {
+            "market_sentiment": sentiment,
+            "key_indicators": ["Analyse de fallback - données limitées"],
+            "opportunities": [],
+            "risks": ["Analyse basée sur des règles simples, non fiable"],
+            "recommendation": "Attendre une analyse plus complète avant de prendre des décisions"
+        }
+    
+    def _fallback_token_analysis(self, token_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Fournit une analyse de token simplifiée en cas d'échec de l'IA
+        
+        Args:
+            token_data: Données du token à analyser
+            
+        Returns:
+            Analyse simplifiée
+        """
+        logger.info("Utilisation de l'analyse de token de fallback")
+        
+        # Analyse simplifiée basée sur des règles
+        trend = "neutre"
+        if token_data.get("price_change_24h", 0) > 10:
+            trend = "haussier"
+        elif token_data.get("price_change_24h", 0) < -10:
+            trend = "baissier"
+        
+        return {
+            "trend": trend,
+            "strengths": [],
+            "weaknesses": ["Analyse de fallback - données limitées"],
+            "opportunity_rating": 5,
+            "risk_rating": 7,
+            "recommendation": "Attendre une analyse plus complète avant de prendre des décisions"
+        }
+
+def create_market_analyzer(ai_client: LLMProvider) -> MarketAnalyzer:
+    """
+    Crée un analyseur de marché avec la configuration par défaut.
+    
+    Args:
+        ai_client: Client IA à utiliser pour l'analyse
+        
+    Returns:
+        Instance de MarketAnalyzer configurée
+    """
+    return MarketAnalyzer(ai_client) 

@@ -11,231 +11,390 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, Optional, Union, List
+from dotenv import load_dotenv
 
 # Configurer le logging
 logger = logging.getLogger(__name__)
 
 # Chemins de configuration par défaut
-DEFAULT_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_CONFIG_FILE = "optimized_config.json"
-DEFAULT_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_DIR, DEFAULT_CONFIG_FILE)
+CONFIG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "config")
+DEFAULT_CONFIG_FILE = "config.json"
+DEFAULT_CONFIG_PATH = os.path.join(CONFIG_DIR, DEFAULT_CONFIG_FILE)
 
 # Configuration par défaut
 DEFAULT_CONFIG = {
     "version": "1.0.0",
-    "system_specs": {},
+    "system": {
+        "log_level": "INFO",
+        "log_file": "logs/gbpbot.log",
+        "debug_mode": False
+    },
     "blockchain": {
         "solana": {
-            "rpc_endpoints": [
-                {
-                    "name": "mainnet",
-                    "url": "https://api.mainnet-beta.solana.com",
-                    "priority": 1
-                }
-            ]
+            "enabled": True,
+            "rpc_url": "https://api.mainnet-beta.solana.com",
+            "websocket_url": "wss://api.mainnet-beta.solana.com",
+            "commitment": "processed"
+        },
+        "avalanche": {
+            "enabled": True,
+            "rpc_url": "https://api.avax.network/ext/bc/C/rpc",
+            "websocket_url": "wss://api.avax.network/ext/bc/C/ws",
+            "chain_id": 43114
+        },
+        "sonic": {
+            "enabled": False,
+            "rpc_url": "https://mainnet.sonic.ooo/rpc",
+            "websocket_url": "wss://mainnet.sonic.ooo/ws",
+            "chain_id": 1
         }
     },
-    "dex": {
-        "preferred_dex": [
-            {
-                "name": "jupiter",
-                "priority": 1
-            },
-            {
-                "name": "raydium",
-                "priority": 2
-            }
-        ]
+    "wallets": {
+        "main_private_key": "",
+        "main_address": "",
+        "backup_private_key": "",
+        "backup_address": ""
     },
-    "resource_limits": {
-        "max_threads": 4,
-        "max_ram_usage_percent": 75,
-        "cache_size_mb": 200,
-        "log_level": "INFO"
+    "trading": {
+        "max_slippage": 2.0,
+        "gas_price_multiplier": 1.2,
+        "max_trade_amount_usd": 500,
+        "transaction_timeout": 60,
+        "min_profit_threshold": 0.5
     },
-    "performance_mode": "balanced"
+    "sniping": {
+        "enabled": True,
+        "check_honeypot": True,
+        "min_liquidity_usd": 10000,
+        "default_take_profit": 20.0,
+        "default_stop_loss": 10.0,
+        "trailing_take_profit": True,
+        "trailing_percent": 5.0,
+        "max_tokens_per_day": 5,
+        "blacklisted_tokens": []
+    },
+    "arbitrage": {
+        "enabled": True,
+        "min_profit_threshold": 0.5,
+        "max_arbitrage_amount_usd": 1000,
+        "check_interval": 5.0,
+        "use_flash_loans": False
+    },
+    "mev": {
+        "enabled": True,
+        "mempool_scan_interval": 0.1,
+        "gas_boost_multiplier": 1.5,
+        "priority_gas": 2.0
+    },
+    "security": {
+        "stealth_mode": True,
+        "tx_delay_random": True,
+        "tx_delay_min": 1,
+        "tx_delay_max": 3,
+        "wallet_rotation": True,
+        "transaction_variance": 0.15
+    },
+    "ai": {
+        "enabled": True,
+        "provider": "auto",
+        "openai_api_key": "",
+        "llama_model_path": "",
+        "risk_threshold": 0.7,
+        "confidence_threshold": 0.8
+    },
+    "backtesting": {
+        "enabled": True,
+        "default_timeframe": "1h",
+        "default_data_source": "binance",
+        "default_initial_balance": {"USDT": 1000}
+    },
+    "dashboard": {
+        "enabled": True,
+        "host": "0.0.0.0",
+        "port": 8000,
+        "debug": False
+    },
+    "telegram": {
+        "enabled": False,
+        "bot_token": "",
+        "allowed_user_ids": []
+    }
 }
 
+def ensure_config_dir():
+    """Crée le répertoire de configuration s'il n'existe pas"""
+    os.makedirs(CONFIG_DIR, exist_ok=True)
 
-class ConfigManager:
-    """Gestionnaire de configuration pour GBPBot"""
+def load_env_vars() -> Dict[str, Any]:
+    """
+    Charge les variables d'environnement depuis le fichier .env
     
-    def __init__(self, config_path: Optional[str] = None):
-        """
-        Initialise le gestionnaire de configuration
+    Returns:
+        Dict[str, Any]: Variables d'environnement chargées
+    """
+    # Charger les variables d'environnement depuis .env
+    load_dotenv()
+    
+    # Extraire les variables pertinentes
+    env_vars = {}
+    for key, value in os.environ.items():
+        if key.startswith(("GBPBOT_", "BOT_", "SOLANA_", "AVALANCHE_", "SONIC_", "OPENAI_")):
+            env_vars[key] = value
+    
+    return env_vars
+
+def env_to_config(env_vars: Dict[str, str]) -> Dict[str, Any]:
+    """
+    Convertit les variables d'environnement en configuration structurée
+    
+    Args:
+        env_vars: Variables d'environnement
         
-        Args:
-            config_path: Chemin vers le fichier de configuration (optionnel)
-        """
-        self.config_path = config_path or DEFAULT_CONFIG_PATH
-        self.config = DEFAULT_CONFIG.copy()
-        self.load_config()
+    Returns:
+        Dict[str, Any]: Configuration structurée
+    """
+    config = {}
+    
+    # Mapping des variables d'environnement vers la configuration
+    mappings = {
+        # Système
+        "BOT_MODE": ("system", "mode"),
+        "LOG_LEVEL": ("system", "log_level"),
+        "DEBUG_MODE": ("system", "debug_mode"),
         
-    def load_config(self) -> bool:
-        """
-        Charge la configuration depuis le fichier
+        # Blockchain - Solana
+        "SOLANA_ENABLED": ("blockchain", "solana", "enabled"),
+        "SOLANA_RPC_URL": ("blockchain", "solana", "rpc_url"),
+        "SOLANA_WEBSOCKET_URL": ("blockchain", "solana", "websocket_url"),
         
-        Returns:
-            bool: True si la configuration a été chargée avec succès, False sinon
-        """
+        # Blockchain - Avalanche
+        "AVALANCHE_ENABLED": ("blockchain", "avalanche", "enabled"),
+        "AVAX_RPC_URL": ("blockchain", "avalanche", "rpc_url"),
+        "AVALANCHE_CHAIN_ID": ("blockchain", "avalanche", "chain_id"),
+        
+        # Blockchain - Sonic
+        "SONIC_ENABLED": ("blockchain", "sonic", "enabled"),
+        "SONIC_RPC_URL": ("blockchain", "sonic", "rpc_url"),
+        
+        # Wallets
+        "PRIVATE_KEY": ("wallets", "main_private_key"),
+        "WALLET_ADDRESS": ("wallets", "main_address"),
+        
+        # Trading
+        "MAX_SLIPPAGE": ("trading", "max_slippage"),
+        "GAS_PRICE_MULTIPLIER": ("trading", "gas_price_multiplier"),
+        "MAX_TRADE_AMOUNT_USD": ("trading", "max_trade_amount_usd"),
+        "TRANSACTION_TIMEOUT": ("trading", "transaction_timeout"),
+        
+        # Sniping
+        "SNIPING_ENABLED": ("sniping", "enabled"),
+        "CHECK_HONEYPOT": ("sniping", "check_honeypot"),
+        "MIN_LIQUIDITY_USD": ("sniping", "min_liquidity_usd"),
+        "DEFAULT_TAKE_PROFIT": ("sniping", "default_take_profit"),
+        "DEFAULT_STOP_LOSS": ("sniping", "default_stop_loss"),
+        
+        # Arbitrage
+        "ARBITRAGE_ENABLED": ("arbitrage", "enabled"),
+        "MIN_PROFIT_THRESHOLD": ("arbitrage", "min_profit_threshold"),
+        "MAX_ARBITRAGE_AMOUNT_USD": ("arbitrage", "max_arbitrage_amount_usd"),
+        
+        # MEV
+        "MEV_ENABLED": ("mev", "enabled"),
+        "MEMPOOL_SCAN_INTERVAL": ("mev", "mempool_scan_interval"),
+        "GAS_BOOST_MULTIPLIER": ("mev", "gas_boost_multiplier"),
+        
+        # Security
+        "STEALTH_MODE": ("security", "stealth_mode"),
+        "TX_DELAY_RANDOM": ("security", "tx_delay_random"),
+        
+        # AI
+        "AI_ENABLED": ("ai", "enabled"),
+        "OPENAI_API_KEY": ("ai", "openai_api_key"),
+        
+        # Dashboard
+        "DASHBOARD_ENABLED": ("dashboard", "enabled"),
+        "DASHBOARD_PORT": ("dashboard", "port"),
+        
+        # Telegram
+        "TELEGRAM_ENABLED": ("telegram", "enabled"),
+        "TELEGRAM_BOT_TOKEN": ("telegram", "bot_token")
+    }
+    
+    # Appliquer les mappings
+    for env_key, value in env_vars.items():
+        if env_key in mappings:
+            path = mappings[env_key]
+            
+            # Convertir les valeurs
+            if value.lower() in ("true", "yes", "1"):
+                value = True
+            elif value.lower() in ("false", "no", "0"):
+                value = False
+            elif value.isdigit():
+                value = int(value)
+            elif value.replace(".", "", 1).isdigit():
+                value = float(value)
+            
+            # Créer la structure imbriquée
+            current = config
+            for i, key in enumerate(path):
+                if i == len(path) - 1:
+                    current[key] = value
+                else:
+                    if key not in current:
+                        current[key] = {}
+                    current = current[key]
+    
+    return config
+
+def load(config_path: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Charge la configuration du GBPBot
+    
+    Args:
+        config_path: Chemin vers le fichier de configuration (optionnel)
+        
+    Returns:
+        Dict[str, Any]: Configuration chargée
+    """
+    config = DEFAULT_CONFIG.copy()
+    
+    # Assurer que le répertoire de configuration existe
+    ensure_config_dir()
+    
+    # Charger depuis le fichier de configuration
+    if config_path is None:
+        config_path = DEFAULT_CONFIG_PATH
+    
+    if os.path.exists(config_path):
         try:
-            if os.path.exists(self.config_path):
-                with open(self.config_path, 'r') as f:
-                    loaded_config = json.load(f)
-                    
-                # Mettre à jour la configuration avec les valeurs chargées
-                self._update_nested_dict(self.config, loaded_config)
-                logger.info(f"Configuration chargée depuis {self.config_path}")
-                return True
-            else:
-                logger.warning(f"Fichier de configuration {self.config_path} introuvable, utilisation des valeurs par défaut")
-                return False
+            with open(config_path, 'r', encoding='utf-8') as f:
+                file_config = json.load(f)
+                # Mise à jour récursive de la configuration
+                deep_update(config, file_config)
+            logger.info(f"Configuration chargée depuis {config_path}")
         except Exception as e:
-            logger.error(f"Erreur lors du chargement de la configuration: {str(e)}")
-            return False
-            
-    def save_config(self, config_path: Optional[str] = None) -> bool:
-        """
-        Sauvegarde la configuration dans un fichier
-        
-        Args:
-            config_path: Chemin où sauvegarder la configuration (optionnel)
-            
-        Returns:
-            bool: True si la configuration a été sauvegardée avec succès, False sinon
-        """
-        path = config_path or self.config_path
-        
+            logger.error(f"Erreur lors du chargement de la configuration depuis {config_path}: {e}")
+    else:
+        logger.warning(f"Fichier de configuration {config_path} non trouvé, utilisation des valeurs par défaut")
+        # Créer un fichier de configuration par défaut
         try:
-            # Créer le répertoire parent s'il n'existe pas
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            
-            with open(path, 'w') as f:
-                json.dump(self.config, f, indent=4)
-                
-            logger.info(f"Configuration sauvegardée dans {path}")
-            return True
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(DEFAULT_CONFIG, f, indent=4)
+            logger.info(f"Fichier de configuration par défaut créé à {config_path}")
         except Exception as e:
-            logger.error(f"Erreur lors de la sauvegarde de la configuration: {str(e)}")
-            return False
-            
-    def get(self, key: str, default: Any = None) -> Any:
-        """
-        Récupère une valeur de configuration
+            logger.error(f"Erreur lors de la création du fichier de configuration par défaut: {e}")
+    
+    # Charger les variables d'environnement
+    env_vars = load_env_vars()
+    env_config = env_to_config(env_vars)
+    
+    # Mettre à jour la configuration avec les variables d'environnement
+    deep_update(config, env_config)
+    
+    return config
+
+def save(config: Dict[str, Any], config_path: Optional[str] = None) -> bool:
+    """
+    Sauvegarde la configuration du GBPBot
+    
+    Args:
+        config: Configuration à sauvegarder
+        config_path: Chemin vers le fichier de configuration (optionnel)
         
-        Args:
-            key: Chemin de la clé, séparé par des points (par exemple "blockchain.solana.rpc_endpoints")
-            default: Valeur par défaut à retourner si la clé n'existe pas
-            
-        Returns:
-            La valeur de configuration ou la valeur par défaut
-        """
-        keys = key.split('.')
-        value = self.config
+    Returns:
+        bool: True si la sauvegarde a réussi, False sinon
+    """
+    if config_path is None:
+        config_path = DEFAULT_CONFIG_PATH
+    
+    # Assurer que le répertoire de configuration existe
+    ensure_config_dir()
+    
+    try:
+        # Créer une sauvegarde du fichier existant
+        if os.path.exists(config_path):
+            backup_path = f"{config_path}.bak"
+            try:
+                with open(config_path, 'r', encoding='utf-8') as src:
+                    with open(backup_path, 'w', encoding='utf-8') as dst:
+                        dst.write(src.read())
+                logger.info(f"Sauvegarde de la configuration créée à {backup_path}")
+            except Exception as e:
+                logger.warning(f"Impossible de créer une sauvegarde de la configuration: {e}")
         
-        try:
-            for k in keys:
-                value = value[k]
-            return value
-        except (KeyError, TypeError):
+        # Sauvegarder la nouvelle configuration
+        with open(config_path, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=4)
+        
+        logger.info(f"Configuration sauvegardée à {config_path}")
+        return True
+    except Exception as e:
+        logger.error(f"Erreur lors de la sauvegarde de la configuration: {e}")
+        return False
+
+def deep_update(target: Dict[str, Any], source: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Met à jour récursivement un dictionnaire avec les valeurs d'un autre
+    
+    Args:
+        target: Dictionnaire cible
+        source: Dictionnaire source
+        
+    Returns:
+        Dict[str, Any]: Dictionnaire cible mis à jour
+    """
+    for key, value in source.items():
+        if key in target and isinstance(target[key], dict) and isinstance(value, dict):
+            deep_update(target[key], value)
+        else:
+            target[key] = value
+    
+    return target
+
+def get_config_value(config: Dict[str, Any], path: List[str], default: Any = None) -> Any:
+    """
+    Récupère une valeur dans la configuration en suivant un chemin
+    
+    Args:
+        config: Configuration
+        path: Chemin vers la valeur
+        default: Valeur par défaut si le chemin n'existe pas
+        
+    Returns:
+        Any: Valeur trouvée ou valeur par défaut
+    """
+    current = config
+    for key in path:
+        if key in current:
+            current = current[key]
+        else:
             return default
-            
-    def set(self, key: str, value: Any) -> None:
-        """
-        Définit une valeur de configuration
-        
-        Args:
-            key: Chemin de la clé, séparé par des points
-            value: Valeur à définir
-        """
-        keys = key.split('.')
-        config = self.config
-        
-        # Naviguer jusqu'au dernier niveau
-        for k in keys[:-1]:
-            if k not in config or not isinstance(config[k], dict):
-                config[k] = {}
-            config = config[k]
-            
-        # Définir la valeur
-        config[keys[-1]] = value
-        
-    def get_rpc_endpoints(self, blockchain: str = "solana") -> List[Dict[str, Any]]:
-        """
-        Récupère les endpoints RPC pour une blockchain donnée
-        
-        Args:
-            blockchain: Nom de la blockchain
-            
-        Returns:
-            Liste des endpoints RPC
-        """
-        return self.get(f"blockchain.{blockchain}.rpc_endpoints", [])
-        
-    def get_preferred_dex(self) -> List[Dict[str, Any]]:
-        """
-        Récupère la liste des DEX préférés
-        
-        Returns:
-            Liste des DEX préférés
-        """
-        return self.get("dex.preferred_dex", [])
-        
-    def get_performance_mode(self) -> str:
-        """
-        Récupère le mode de performance
-        
-        Returns:
-            Mode de performance (high, balanced, economy, auto)
-        """
-        return self.get("performance_mode", "auto")
-        
-    def get_resource_limits(self) -> Dict[str, Any]:
-        """
-        Récupère les limites de ressources
-        
-        Returns:
-            Limites de ressources
-        """
-        return self.get("resource_limits", {})
-        
-    def _update_nested_dict(self, d: Dict[str, Any], u: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Met à jour un dictionnaire imbriqué
-        
-        Args:
-            d: Dictionnaire à mettre à jour
-            u: Dictionnaire avec les nouvelles valeurs
-            
-        Returns:
-            Dictionnaire mis à jour
-        """
-        for k, v in u.items():
-            if isinstance(v, dict) and k in d and isinstance(d[k], dict):
-                d[k] = self._update_nested_dict(d[k], v)
-            else:
-                d[k] = v
-        return d
+    
+    return current
 
-
-# Créer une instance globale du gestionnaire de configuration
-config_manager = ConfigManager()
-
-# Exporter des fonctions utilitaires pour faciliter l'accès
-def get(key: str, default: Any = None) -> Any:
-    """Récupère une valeur de configuration"""
-    return config_manager.get(key, default)
-
-def set(key: str, value: Any) -> None:
-    """Définit une valeur de configuration"""
-    config_manager.set(key, value)
-
-def save(config_path: Optional[str] = None) -> bool:
-    """Sauvegarde la configuration"""
-    return config_manager.save_config(config_path)
-
-def load(config_path: Optional[str] = None) -> bool:
-    """Charge la configuration"""
-    if config_path:
-        config_manager.config_path = config_path
-    return config_manager.load_config() 
+def set_config_value(config: Dict[str, Any], path: List[str], value: Any) -> Dict[str, Any]:
+    """
+    Définit une valeur dans la configuration en suivant un chemin
+    
+    Args:
+        config: Configuration
+        path: Chemin vers la valeur
+        value: Nouvelle valeur
+        
+    Returns:
+        Dict[str, Any]: Configuration mise à jour
+    """
+    if not path:
+        return config
+    
+    current = config
+    for i, key in enumerate(path):
+        if i == len(path) - 1:
+            current[key] = value
+        else:
+            if key not in current:
+                current[key] = {}
+            current = current[key]
+    
+    return config 

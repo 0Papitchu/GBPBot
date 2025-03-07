@@ -1,0 +1,170 @@
+{
+  "version_python": {
+    "success": true,
+    "critical": true,
+    "details": null,
+    "time": 0.0
+  },
+  "d\u00e9pendances_critiques": {
+    "success": false,
+    "critical": true,
+    "details": {
+      "aiohttp": {
+        "installed": true,
+        "version": "3.9.3"
+      },
+      "asyncio": {
+        "installed": true,
+        "version": "version inconnue"
+      },
+      "cryptography": {
+        "installed": true,
+        "version": "44.0.2"
+      },
+      "numpy": {
+        "installed": true,
+        "version": "1.26.4"
+      },
+      "pandas": {
+        "installed": true,
+        "version": "2.2.1"
+      },
+      "requests": {
+        "installed": true,
+        "version": "2.31.0"
+      },
+      "python-dotenv": {
+        "installed": false,
+        "version": null
+      },
+      "web3": {
+        "installed": true,
+        "version": "6.15.1"
+      },
+      "solana": {
+        "installed": true,
+        "version": "version inconnue"
+      }
+    },
+    "time": 1.9529993534088135
+  },
+  "d\u00e9pendances_optionnelles": {
+    "success": true,
+    "critical": false,
+    "details": {
+      "telegram": {
+        "installed": true,
+        "version": "20.8"
+      },
+      "torch": {
+        "installed": false,
+        "version": null
+      },
+      "tensorflow": {
+        "installed": false,
+        "version": null
+      },
+      "matplotlib": {
+        "installed": true,
+        "version": "3.8.2"
+      },
+      "scikit-learn": {
+        "installed": false,
+        "version": null
+      },
+      "streamlit": {
+        "installed": false,
+        "version": null
+      },
+      "openai": {
+        "installed": true,
+        "version": "1.65.4"
+      }
+    },
+    "time": 83.73997330665588
+  },
+  "connexions_blockchain": {
+    "success": false,
+    "critical": false,
+    "details": [
+      [
+        "Solana",
+        "https://api.mainnet-beta.solana.com",
+        true,
+        "Connexion RPC Solana OK"
+      ],
+      [
+        "Avalanche",
+        "https://api.avax.network/ext/bc/C/rpc",
+        true,
+        "Connexion RPC Avalanche OK"
+      ],
+      [
+        "Sonic",
+        "https://mainnet.sonic.ooo/rpc",
+        false,
+        "Erreur de connexion RPC Sonic: HTTPSConnectionPool(host='mainnet.sonic.ooo', port=443): Max retries exceeded with url: /rpc (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x00000214671DFD90>: Failed to resolve 'mainnet.sonic.ooo' ([Errno 11001] getaddrinfo failed)\"))"
+      ]
+    ],
+    "time": 0.13500142097473145
+  },
+  "permissions_de_stockage": {
+    "success": true,
+    "critical": true,
+    "details": {
+      "logs": true,
+      "data": true,
+      "config": true
+    },
+    "time": 0.0030007362365722656
+  },
+  "capacit\u00e9s_gpu": {
+    "success": true,
+    "critical": false,
+    "details": {
+      "tensorflow": {
+        "available": false,
+        "device": null
+      },
+      "pytorch": {
+        "available": false,
+        "device": null
+      }
+    },
+    "time": 0.0009999275207519531
+  },
+  "environment_variables": {
+    "success": false,
+    "critical": true,
+    "details": {
+      "SOLANA_RPC_URL": {
+        "set": true,
+        "critical": true
+      },
+      "SOLANA_PRIVATE_KEY": {
+        "set": false,
+        "critical": true
+      },
+      "PRIVATE_KEY": {
+        "set": true,
+        "critical": true
+      },
+      "AVAX_RPC_URL": {
+        "set": true,
+        "critical": true
+      },
+      "TELEGRAM_BOT_TOKEN": {
+        "set": false,
+        "critical": false
+      },
+      "TELEGRAM_ALLOWED_USERS": {
+        "set": false,
+        "critical": false
+      },
+      "OPENAI_API_KEY": {
+        "set": false,
+        "critical": false
+      }
+    }
+  }
+}

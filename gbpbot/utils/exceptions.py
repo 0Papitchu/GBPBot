@@ -117,6 +117,29 @@ class APIError(GBPBotError):
         super().__init__(message)
 
 
+class ArbitrageError(GBPBotError):
+    """Raised when there is an error with arbitrage operations."""
+    pass
+
+
+class ExchangeError(GBPBotError):
+    """Base class for exchange-related errors."""
+    pass
+
+
+class ExchangeConnectionError(ExchangeError):
+    """Raised when there is an error connecting to an exchange."""
+    pass
+
+
+class ExchangeAPIError(ExchangeError):
+    """Raised when there is an error with an exchange API call."""
+    def __init__(self, message, status_code=None, response=None):
+        self.status_code = status_code
+        self.response = response
+        super().__init__(message)
+
+
 def handle_blockchain_error(error, blockchain_type=None):
     """
     Handle common blockchain errors and convert them to our custom exceptions.

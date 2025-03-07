@@ -1,0 +1,330 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Module définissant l'interface de base pour les clients d'échanges centralisés (CEX).
+
+Ce module fournit une classe abstraite qui définit l'interface commune que tous les
+clients CEX doivent implémenter. Il garantit une cohérence dans l'utilisation des
+différents clients CEX (Binance, KuCoin, Gate.io, etc.) au sein du GBPBot.
+"""
+
+import abc
+import logging
+from typing import Dict, List, Optional, Union, Any
+from decimal import Decimal
+
+# Configuration du logger
+logger = logging.getLogger(__name__)
+
+class BaseCEXClient(abc.ABC):
+    """
+    Classe abstraite définissant l'interface commune pour tous les clients CEX.
+    
+    Cette classe définit les méthodes que chaque client CEX doit implémenter pour
+    assurer une interopérabilité avec le reste du système GBPBot.
+    """
+    
+    def __init__(
+        self,
+        exchange_name: str,
+        api_key: Optional[str] = None,
+        api_secret: Optional[str] = None,
+        passphrase: Optional[str] = None,
+        testnet: bool = False,
+        config: Optional[Dict[str, Any]] = None,
+        rate_limits: Optional[Dict[str, int]] = None
+    ):
+        """
+        Initialise un client CEX avec les paramètres d'authentification.
+        
+        Args:
+            exchange_name: Nom de l'échange (ex: "binance", "kucoin")
+            api_key: Clé API pour l'authentification
+            api_secret: Secret API pour l'authentification
+            passphrase: Phrase secrète (requise pour certains échanges comme KuCoin)
+            testnet: Utiliser le réseau de test
+            config: Configuration additionnelle
+            rate_limits: Limites de taux pour les requêtes API (ex: {"requests_per_second": 10})
+        """
+        self.exchange_name = exchange_name
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.passphrase = passphrase
+        self.testnet = testnet
+        self.config = config or {}
+        self.rate_limits = rate_limits or {}
+        
+        # Limites de rate
+        self.rate_limits_usage = {
+            "requests": 0,
+            "orders": 0
+        }
+        
+        # Statistiques et métriques
+        self.request_count = 0
+        self.error_count = 0
+        self.last_error = None
+        
+        logger.info(f"Client {exchange_name} initialisé (testnet: {testnet})")
+    
+    @abc.abstractmethod
+    async def initialize(self) -> None:
+        """
+        Initialise le client et établit la connexion avec l'API de l'échange.
+        
+        Cette méthode doit être appelée avant d'utiliser le client.
+        
+        Returns:
+            None
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def shutdown(self) -> None:
+        """
+        Ferme proprement la connexion avec l'API de l'échange.
+        
+        Cette méthode doit être appelée lorsque le client n'est plus utilisé.
+        
+        Returns:
+            None
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Récupère les informations de ticker pour un symbole donné.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT").
+            
+        Returns:
+            Dict contenant les informations de ticker (bid, ask, last, volume, etc.).
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_price(self, symbol: str) -> Decimal:
+        """
+        Récupère le prix actuel pour un symbole donné.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT").
+            
+        Returns:
+            Prix actuel sous forme de Decimal.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_orderbook(self, symbol: str, limit: int = 20) -> Dict[str, List]:
+        """
+        Récupère le carnet d'ordres pour un symbole donné.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT").
+            limit: Nombre maximum d'ordres à récupérer de chaque côté.
+            
+        Returns:
+            Dict contenant les listes d'ordres bid et ask.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_balance(self, currency: Optional[str] = None) -> Union[Dict[str, Decimal], Decimal]:
+        """
+        Récupère le solde du compte pour une ou toutes les devises.
+        
+        Args:
+            currency: Devise spécifique à récupérer (ex: "BTC"). Si None, récupère toutes les devises.
+            
+        Returns:
+            Si currency est spécifié, retourne le solde pour cette devise.
+            Sinon, retourne un dictionnaire de tous les soldes.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def create_order(
+        self,
+        symbol: str,
+        order_type: str,
+        side: str,
+        amount: Decimal,
+        price: Optional[Decimal] = None,
+        params: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Crée un nouvel ordre sur l'échange.
+        
+        Args:
+            symbol: Symbole de la paire de trading (ex: "BTC/USDT").
+            order_type: Type d'ordre ("limit", "market", etc.).
+            side: Côté de l'ordre ("buy" ou "sell").
+            amount: Quantité à acheter ou vendre.
+            price: Prix pour les ordres limit. Non utilisé pour les ordres market.
+            params: Paramètres supplémentaires spécifiques à l'échange.
+            
+        Returns:
+            Dict contenant les informations sur l'ordre créé.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Annule un ordre existant.
+        
+        Args:
+            order_id: ID de l'ordre à annuler.
+            symbol: Symbole de la paire de trading (peut être requis par certains échanges).
+            
+        Returns:
+            Dict contenant les informations sur l'ordre annulé.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Récupère les informations sur un ordre spécifique.
+        
+        Args:
+            order_id: ID de l'ordre à récupérer.
+            symbol: Symbole de la paire de trading (peut être requis par certains échanges).
+            
+        Returns:
+            Dict contenant les informations sur l'ordre.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Récupère tous les ordres ouverts.
+        
+        Args:
+            symbol: Symbole de la paire de trading pour filtrer les ordres.
+                   Si None, récupère tous les ordres ouverts.
+            
+        Returns:
+            Liste de dictionnaires contenant les informations sur les ordres ouverts.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_closed_orders(
+        self,
+        symbol: Optional[str] = None,
+        since: Optional[int] = None,
+        limit: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Récupère les ordres fermés (exécutés ou annulés).
+        
+        Args:
+            symbol: Symbole de la paire de trading pour filtrer les ordres.
+            since: Timestamp en millisecondes pour récupérer les ordres depuis cette date.
+            limit: Nombre maximum d'ordres à récupérer.
+            
+        Returns:
+            Liste de dictionnaires contenant les informations sur les ordres fermés.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_my_trades(
+        self,
+        symbol: Optional[str] = None,
+        since: Optional[int] = None,
+        limit: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Récupère l'historique des trades du compte.
+        
+        Args:
+            symbol: Symbole de la paire de trading pour filtrer les trades.
+            since: Timestamp en millisecondes pour récupérer les trades depuis cette date.
+            limit: Nombre maximum de trades à récupérer.
+            
+        Returns:
+            Liste de dictionnaires contenant les informations sur les trades.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_markets(self) -> List[Dict[str, Any]]:
+        """
+        Récupère la liste des marchés disponibles sur l'échange.
+        
+        Returns:
+            Liste de dictionnaires contenant les informations sur les marchés.
+        """
+        pass
+    
+    @abc.abstractmethod
+    async def get_exchange_info(self) -> Dict[str, Any]:
+        """
+        Récupère les informations générales sur l'échange.
+        
+        Returns:
+            Dict contenant les informations sur l'échange.
+        """
+        pass
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """
+        Récupère les statistiques d'utilisation du client.
+        
+        Returns:
+            Dict contenant les statistiques d'utilisation.
+        """
+        return {
+            "exchange": self.exchange_name,
+            "request_count": self.request_count,
+            "error_count": self.error_count,
+            "last_error": str(self.last_error) if self.last_error else None,
+            "testnet": self.testnet
+        }
+    
+    def _increment_request_count(self) -> None:
+        """
+        Incrémente le compteur de requêtes.
+        
+        Cette méthode doit être appelée à chaque requête API.
+        
+        Returns:
+            None
+        """
+        self.request_count += 1
+    
+    def _record_error(self, error: Exception) -> None:
+        """
+        Enregistre une erreur.
+        
+        Cette méthode doit être appelée à chaque erreur API.
+        
+        Args:
+            error: L'exception qui s'est produite.
+            
+        Returns:
+            None
+        """
+        self.error_count += 1
+        self.last_error = error
+    
+    def _update_rate_limit(self, limit_type: str, value: int) -> None:
+        """
+        Met à jour l'utilisation des limites de taux.
+        
+        Args:
+            limit_type: Type de limite (ex: "requests", "orders")
+            value: Valeur à ajouter
+            
+        Returns:
+            None
+        """
+        if limit_type in self.rate_limits_usage:
+            self.rate_limits_usage[limit_type] += value 

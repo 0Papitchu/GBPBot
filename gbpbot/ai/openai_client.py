@@ -1,81 +1,215 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Client pour l'API OpenAI (GPT)
-==============================
+Client OpenAI pour GBPBot
+========================
 
-Ce module fournit une implémentation de l'interface LLMProvider
-pour interagir avec les modèles OpenAI (GPT).
+Ce module fournit une implémentation de LLMProvider pour utiliser
+les modèles d'OpenAI (GPT-4, GPT-3.5, etc.) dans le GBPBot.
 """
 
 import os
+import logging
 import time
 import json
-import logging
-from typing import Dict, List, Any, Optional, Union, Tuple
+from typing import Dict, Any, List, Optional, Union, Tuple, cast
 
+# Configuration du logger
+logger = logging.getLogger(__name__)
+
+# Vérifier si OpenAI est disponible
 try:
+    import openai
     from openai import OpenAI
-    OPENAI_AVAILABLE = True
+    from openai.types.chat import ChatCompletionMessageParam
+    from openai.types.chat import ChatCompletionSystemMessageParam
+    from openai.types.chat import ChatCompletionUserMessageParam
+    HAS_OPENAI = True
 except ImportError:
-    OPENAI_AVAILABLE = False
+    HAS_OPENAI = False
+    logger.warning("Package OpenAI non disponible. Installez-le avec 'pip install openai'.")
 
+# Importer la classe de base
 from gbpbot.ai.llm_provider import LLMProvider
-
-# Configurer le logger
-logger = logging.getLogger("gbpbot.ai.openai")
 
 class OpenAIClient(LLMProvider):
     """
-    Client pour l'API OpenAI (GPT).
+    Client pour les modèles d'OpenAI
     
-    Cette classe implémente l'interface LLMProvider pour OpenAI, permettant
-    d'utiliser les modèles GPT pour diverses tâches d'analyse et de génération.
+    Cette classe implémente l'interface LLMProvider pour utiliser
+    les modèles d'OpenAI comme GPT-4, GPT-3.5, etc.
     """
     
-    def __init__(
-        self,
-        api_key: Optional[str] = None,
-        model: str = "gpt-3.5-turbo",
-        **kwargs
-    ):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
-        Initialise le client OpenAI.
+        Initialise le client OpenAI
         
         Args:
-            api_key: Clé API OpenAI (utilise OPENAI_API_KEY de l'environnement si non spécifiée)
-            model: Modèle OpenAI à utiliser
-            **kwargs: Arguments supplémentaires pour le client OpenAI
-        
-        Raises:
-            ImportError: Si la bibliothèque OpenAI n'est pas installée
-            ValueError: Si aucune clé API n'est disponible
+            config: Configuration du client OpenAI
+                - api_key: Clé API OpenAI
+                - model_name: Nom du modèle à utiliser (default: "gpt-3.5-turbo")
+                - max_tokens: Nombre maximum de tokens (default: 1024)
+                - temperature: Température pour la génération (default: 0.7)
         """
-        if not OPENAI_AVAILABLE:
-            raise ImportError(
-                "La bibliothèque OpenAI n'est pas installée. "
-                "Installez-la avec 'pip install openai'"
-            )
+        super().__init__(config)
         
-        # Récupérer la clé API
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
-        if not self.api_key:
-            raise ValueError(
-                "Aucune clé API OpenAI fournie. Définissez la variable "
-                "d'environnement OPENAI_API_KEY ou fournissez la clé directement."
-            )
+        # Extraire la configuration
+        api_key = self.config.get("api_key") or os.environ.get("OPENAI_API_KEY")
+        self.model_name = self.config.get("model_name", "gpt-3.5-turbo")
+        self.max_tokens = self.config.get("max_tokens", 1024)
+        self.temperature = self.config.get("temperature", 0.7)
         
-        # Initialiser le client
-        self.client = OpenAI(api_key=self.api_key)
+        # Vérifier si la clé API est disponible
+        if not api_key:
+            logger.error("Clé API OpenAI non fournie. Définissez-la dans la configuration ou via la variable d'environnement OPENAI_API_KEY.")
+            self._client = None
+            return
         
-        # Configurer le modèle par défaut
-        self.model = model
-        self.max_retries = kwargs.get("max_retries", 3)
-        self.retry_delay = kwargs.get("retry_delay", 2)
-        
-        logger.info(f"Client OpenAI initialisé avec le modèle {self.model}")
+        # Initialiser le client OpenAI
+        try:
+            if HAS_OPENAI:
+                self._client = OpenAI(api_key=api_key)
+                logger.info(f"Client OpenAI initialisé avec le modèle {self.model_name}")
+            else:
+                logger.error("OpenAI n'est pas disponible. Installez le package 'openai'.")
+                self._client = None
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation du client OpenAI: {e}")
+            self._client = None
     
-    def generate_text(
+    def generate_text(self, prompt: str, **kwargs) -> str:
+        """
+        Génère du texte à partir d'un prompt en utilisant le modèle OpenAI
+        
+        Args:
+            prompt: Le prompt à utiliser
+            **kwargs: Arguments supplémentaires
+                - max_tokens: Nombre maximum de tokens
+                - temperature: Température pour la génération
+                - system_message: Message système pour contextualiser
+                
+        Returns:
+            str: Le texte généré
+            
+        Raises:
+            Exception: Si la génération échoue
+        """
+        if not self._client:
+            logger.error("Client OpenAI non initialisé")
+            return ""
+        
+        # Extraire les paramètres
+        max_tokens = kwargs.get("max_tokens", self.max_tokens)
+        temperature = kwargs.get("temperature", self.temperature)
+        system_message = kwargs.get("system_message", "Tu es un assistant d'IA spécialisé en trading et cryptomonnaies.")
+        
+        # Créer les messages
+        system_msg: ChatCompletionSystemMessageParam = {
+            "role": "system",
+            "content": system_message
+        }
+        
+        user_msg: ChatCompletionUserMessageParam = {
+            "role": "user",
+            "content": prompt
+        }
+        
+        messages: List[ChatCompletionMessageParam] = [system_msg, user_msg]
+        
+        # Appeler l'API avec gestion des erreurs et retries
+        max_retries = 3
+        retry_delay = 2
+        
+        for attempt in range(max_retries):
+            try:
+                response = self._client.chat.completions.create(
+                    model=self.model_name,
+                    messages=messages,
+                    max_tokens=max_tokens,
+                    temperature=temperature
+                )
+                
+                # Extraire le texte généré
+                if response.choices and len(response.choices) > 0:
+                    generated_text = response.choices[0].message.content
+                    if generated_text is None:
+                        return ""
+                    return generated_text
+                else:
+                    logger.warning("Réponse OpenAI vide")
+                    return ""
+                
+            except Exception as e:
+                logger.error(f"Erreur lors de la génération de texte (tentative {attempt+1}/{max_retries}): {e}")
+                
+                if attempt < max_retries - 1:
+                    # Attendre avant de réessayer
+                    time.sleep(retry_delay)
+                    retry_delay *= 2  # Backoff exponentiel
+                else:
+                    logger.error(f"Échec de la génération de texte après {max_retries} tentatives: {e}")
+                    return ""
+        
+        return ""  # Ne devrait jamais arriver
+    
+    def generate_embedding(self, text: str) -> List[float]:
+        """
+        Génère un embedding vectoriel pour le texte donné
+        
+        Args:
+            text: Le texte à encoder
+            
+        Returns:
+            List[float]: L'embedding vectoriel
+            
+        Raises:
+            Exception: Si la génération échoue
+        """
+        if not self._client:
+            logger.error("Client OpenAI non initialisé")
+            return []
+        
+        # Modèle d'embedding
+        embedding_model = "text-embedding-ada-002"
+        
+        try:
+            response = self._client.embeddings.create(
+                model=embedding_model,
+                input=text
+            )
+            
+            if response.data and len(response.data) > 0:
+                return response.data[0].embedding
+            else:
+                logger.warning("Réponse d'embedding OpenAI vide")
+                return []
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la génération d'embedding: {e}")
+            return []
+    
+    @property
+    def provider_name(self) -> str:
+        """Retourne le nom du fournisseur"""
+        return "openai"
+    
+    @property
+    def is_available(self) -> bool:
+        """Vérifie si le fournisseur est disponible et fonctionnel"""
+        return HAS_OPENAI and self._client is not None
+    
+    @property
+    def capabilities(self) -> Dict[str, bool]:
+        """Retourne les capacités du fournisseur"""
+        return {
+            "text_generation": True,
+            "embeddings": True,
+            "code_analysis": True,
+            "market_analysis": True,
+            "token_scoring": True
+        }
+    
+    async def generate_text(
         self, 
         prompt: str,
         max_tokens: int = 500,
@@ -99,26 +233,26 @@ class OpenAIClient(LLMProvider):
         Raises:
             Exception: Si la génération échoue
         """
-        messages = []
+        messages: List[ChatCompletionMessageParam] = []
         
         # Ajouter le message système si fourni
         if system_message:
-            messages.append({"role": "system", "content": system_message})
+            messages.append(cast(ChatCompletionSystemMessageParam, {"role": "system", "content": system_message}))
         else:
             # Message système par défaut
-            messages.append({
+            messages.append(cast(ChatCompletionSystemMessageParam, {
                 "role": "system", 
                 "content": "Vous êtes un assistant spécialisé dans l'analyse de trading crypto."
-            })
+            }))
         
         # Ajouter le prompt utilisateur
-        messages.append({"role": "user", "content": prompt})
+        messages.append(cast(ChatCompletionUserMessageParam, {"role": "user", "content": prompt}))
         
         # Appeler l'API avec gestion des erreurs et retries
-        for attempt in range(self.max_retries):
+        for attempt in range(3):
             try:
-                response = self.client.chat.completions.create(
-                    model=kwargs.get("model", self.model),
+                response = self._client.chat.completions.create(
+                    model=self.model_name,
                     messages=messages,
                     max_tokens=max_tokens,
                     temperature=temperature,
@@ -128,14 +262,20 @@ class OpenAIClient(LLMProvider):
                 
                 # Extraire et retourner le texte généré
                 return response.choices[0].message.content.strip()
-                
             except Exception as e:
-                if attempt < self.max_retries - 1:
-                    logger.warning(f"Tentative {attempt+1} échouée: {e}. Nouvelle tentative...")
-                    time.sleep(self.retry_delay * (2 ** attempt))  # Exponential backoff
+                logger.warning(f"Erreur lors de la génération (tentative {attempt+1}/3): {e}")
+                if attempt < 2:
+                    # Attendre avant de réessayer (backoff exponentiel)
+                    wait_time = 2 ** attempt
+                    logger.info(f"Attente de {wait_time}s avant de réessayer...")
+                    time.sleep(wait_time)
                 else:
-                    logger.error(f"Échec de la génération de texte après {self.max_retries} tentatives: {e}")
+                    logger.error(f"Échec de la génération après 3 tentatives")
                     raise
+        
+        # Cette ligne ne devrait jamais être atteinte en raison du raise dans la boucle,
+        # mais elle est nécessaire pour satisfaire le type checker
+        raise Exception("Échec inattendu de la génération de texte")
     
     def generate_chat_response(
         self,
@@ -167,10 +307,10 @@ class OpenAIClient(LLMProvider):
                 raise ValueError("Le rôle doit être 'user', 'assistant' ou 'system'")
         
         # Appeler l'API avec gestion des erreurs et retries
-        for attempt in range(self.max_retries):
+        for attempt in range(3):
             try:
-                response = self.client.chat.completions.create(
-                    model=kwargs.get("model", self.model),
+                response = self._client.chat.completions.create(
+                    model=self.model_name,
                     messages=messages,
                     max_tokens=max_tokens,
                     temperature=temperature,
@@ -182,11 +322,11 @@ class OpenAIClient(LLMProvider):
                 return response.choices[0].message.content.strip()
                 
             except Exception as e:
-                if attempt < self.max_retries - 1:
+                if attempt < 2:
                     logger.warning(f"Tentative {attempt+1} échouée: {e}. Nouvelle tentative...")
-                    time.sleep(self.retry_delay * (2 ** attempt))  # Exponential backoff
+                    time.sleep(2 ** attempt)  # Exponential backoff
                 else:
-                    logger.error(f"Échec de la génération de chat après {self.max_retries} tentatives: {e}")
+                    logger.error(f"Échec de la génération de chat après 3 tentatives: {e}")
                     raise
     
     def analyze_code(
@@ -488,34 +628,4 @@ class OpenAIClient(LLMProvider):
                 "red_flags": ["Impossible d'évaluer ce token"],
                 "assessment": "Analyse non disponible",
                 "recommendation": "avoid"
-            })
-    
-    @property
-    def provider_name(self) -> str:
-        """Retourne le nom du fournisseur"""
-        return "openai"
-    
-    @property
-    def is_available(self) -> bool:
-        """Vérifie si le fournisseur est disponible et fonctionnel"""
-        if not OPENAI_AVAILABLE:
-            return False
-        
-        try:
-            # Test simple pour vérifier que l'API est fonctionnelle
-            self.client.models.list()
-            return True
-        except Exception as e:
-            logger.warning(f"Le client OpenAI n'est pas disponible: {e}")
-            return False
-    
-    @property
-    def capabilities(self) -> Dict[str, bool]:
-        """Retourne un dictionnaire des capacités supportées"""
-        return {
-            "chat": True,
-            "code_analysis": True,
-            "token_contract_analysis": True,
-            "market_analysis": True,
-            "embeddings": True
-        } 
+            }) 

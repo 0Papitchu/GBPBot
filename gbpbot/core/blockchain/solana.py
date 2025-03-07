@@ -2,7 +2,11 @@
 Solana blockchain client implementation.
 
 This module provides an implementation of the BaseBlockchainClient for the
-Solana blockchain, using solana-py to interact with Solana nodes.
+Solana blockchain.
+
+IMPORTANT: À partir de Python 3.11, ce module utilise l'adaptateur Solana Web3.js
+au lieu de solana-py directement. Toutes les fonctionnalités restent identiques
+pour le reste du code, mais l'implémentation sous-jacente utilise Node.js et @solana/web3.js.
 """
 
 import asyncio

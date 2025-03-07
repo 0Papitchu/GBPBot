@@ -1,0 +1,196 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Factory pour les clients d'échanges centralisés (CEX).
+
+Ce module fournit une factory qui permet de créer des instances de clients CEX
+en fonction du nom de l'échange et des paramètres de configuration.
+"""
+
+import logging
+import importlib
+from typing import Dict, Any, Optional, Type, List
+
+from gbpbot.clients.cex.base_cex_client import BaseCEXClient
+from gbpbot.config.config_manager import ConfigManager
+
+# Configuration du logger
+logger = logging.getLogger(__name__)
+
+class CEXClientFactory:
+    """
+    Factory pour créer des instances de clients CEX.
+    
+    Cette classe permet de créer des instances de clients CEX en fonction
+    du nom de l'échange et des paramètres de configuration.
+    """
+    
+    # Mapping des noms d'échanges vers les classes de clients
+    _client_classes: Dict[str, Type[BaseCEXClient]] = {}
+    
+    # Instances de clients déjà créées (singleton pattern)
+    _instances: Dict[str, BaseCEXClient] = {}
+    
+    @classmethod
+    def register_client_class(cls, exchange_name: str, client_class: Type[BaseCEXClient]) -> None:
+        """
+        Enregistre une classe de client CEX pour un échange donné.
+        
+        Args:
+            exchange_name: Nom de l'échange (ex: "binance", "kucoin")
+            client_class: Classe du client CEX
+            
+        Returns:
+            None
+        """
+        cls._client_classes[exchange_name.lower()] = client_class
+        logger.debug(f"Classe de client CEX enregistrée pour {exchange_name}")
+    
+    @classmethod
+    def create_client(
+        cls,
+        exchange: str,
+        api_key: Optional[str] = None,
+        api_secret: Optional[str] = None,
+        passphrase: Optional[str] = None,
+        testnet: bool = False,
+        config: Optional[Dict[str, Any]] = None,
+        use_singleton: bool = True
+    ) -> BaseCEXClient:
+        """
+        Crée une instance de client CEX pour un échange donné.
+        
+        Args:
+            exchange: Nom de l'échange (ex: "binance", "kucoin")
+            api_key: Clé API pour l'authentification
+            api_secret: Secret API pour l'authentification
+            passphrase: Phrase secrète (requise pour certains échanges comme KuCoin)
+            testnet: Utiliser le réseau de test
+            config: Configuration additionnelle
+            use_singleton: Si True, réutilise une instance existante si disponible
+            
+        Returns:
+            Instance de client CEX
+            
+        Raises:
+            ValueError: Si l'échange n'est pas supporté
+        """
+        exchange = exchange.lower()
+        
+        # Vérifier si une instance existe déjà et doit être réutilisée
+        instance_key = f"{exchange}_{testnet}"
+        if use_singleton and instance_key in cls._instances:
+            logger.debug(f"Réutilisation de l'instance existante pour {exchange}")
+            return cls._instances[instance_key]
+        
+        # Charger la configuration depuis le fichier de configuration si nécessaire
+        if api_key is None or api_secret is None:
+            config_manager = ConfigManager()
+            cex_config = config_manager.get_config().get("exchanges", {}).get(exchange, {})
+            
+            if api_key is None:
+                api_key = cex_config.get("api_key", "")
+            
+            if api_secret is None:
+                api_secret = cex_config.get("api_secret", "")
+            
+            if passphrase is None and "passphrase" in cex_config:
+                passphrase = cex_config.get("passphrase", "")
+            
+            # Utiliser la valeur de testnet de la configuration seulement si elle existe
+            if "testnet" in cex_config:
+                testnet = cex_config.get("testnet", False)
+            
+            rate_limits = cex_config.get("rate_limits", {})
+        else:
+            rate_limits = {}
+        
+        # Vérifier si la classe de client est déjà enregistrée
+        if exchange not in cls._client_classes:
+            # Tenter de charger dynamiquement la classe de client
+            try:
+                module_name = f"gbpbot.clients.cex.{exchange}_client"
+                class_name = f"{exchange.capitalize()}Client"
+                
+                module = importlib.import_module(module_name)
+                client_class = getattr(module, class_name)
+                
+                cls.register_client_class(exchange, client_class)
+            except (ImportError, AttributeError) as e:
+                logger.error(f"Impossible de charger le client pour {exchange}: {str(e)}")
+                raise ValueError(f"Échange non supporté: {exchange}")
+        
+        # Créer l'instance de client
+        client_class = cls._client_classes[exchange]
+        client = client_class(
+            exchange_name=exchange,
+            api_key=api_key,
+            api_secret=api_secret,
+            passphrase=passphrase,
+            testnet=testnet,
+            config=config,
+            rate_limits=rate_limits
+        )
+        
+        # Stocker l'instance si le singleton est activé
+        if use_singleton:
+            cls._instances[instance_key] = client
+        
+        logger.info(f"Client CEX créé pour {exchange} (testnet: {testnet})")
+        return client
+    
+    @classmethod
+    def get_supported_exchanges(cls) -> List[str]:
+        """
+        Récupère la liste des échanges supportés.
+        
+        Returns:
+            Liste des noms d'échanges supportés
+        """
+        # Combiner les échanges enregistrés et ceux configurés
+        exchanges = set(cls._client_classes.keys())
+        
+        # Ajouter les échanges configurés
+        try:
+            config_manager = ConfigManager()
+            configured_exchanges = config_manager.get_config().get("exchanges", {}).keys()
+            exchanges.update(configured_exchanges)
+        except Exception as e:
+            logger.warning(f"Impossible de récupérer les échanges configurés: {str(e)}")
+        
+        return sorted(list(exchanges))
+    
+    @classmethod
+    def get_instance(cls, exchange: str, testnet: bool = False) -> Optional[BaseCEXClient]:
+        """
+        Récupère une instance existante de client CEX.
+        
+        Args:
+            exchange: Nom de l'échange
+            testnet: Si True, récupère l'instance du réseau de test
+            
+        Returns:
+            Instance de client CEX ou None si aucune instance n'existe
+        """
+        instance_key = f"{exchange.lower()}_{testnet}"
+        return cls._instances.get(instance_key)
+    
+    @classmethod
+    def shutdown_all(cls) -> None:
+        """
+        Ferme proprement toutes les instances de clients CEX.
+        
+        Returns:
+            None
+        """
+        for instance_key, client in cls._instances.items():
+            try:
+                # Appeler la méthode shutdown de manière synchrone
+                import asyncio
+                asyncio.run(client.shutdown())
+                logger.info(f"Client {instance_key} fermé proprement")
+            except Exception as e:
+                logger.error(f"Erreur lors de la fermeture du client {instance_key}: {str(e)}")
+        
+        # Vider le dictionnaire d'instances
+        cls._instances.clear() 

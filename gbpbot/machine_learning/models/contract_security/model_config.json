@@ -1,0 +1,40 @@
+{
+    "name": "contract_security_analyzer",
+    "type": "onnx",
+    "task": "contract_security",
+    "model_path": "contract_security_model.onnx",
+    "version": "1.0.0",
+    "description": "Modèle léger pour l'analyse rapide de sécurité des contrats de tokens. Détecte les fonctions potentiellement malveillantes, les backdoors, et les risques de honeypot.",
+    "config": {
+        "use_cuda": true,
+        "threshold_score": 0.65,
+        "max_tokens": 4096,
+        "optimized_for_speed": true,
+        "quantized": true
+    },
+    "metadata": {
+        "input_shape": [1, 768],
+        "output_shape": [1, 7],
+        "classes": [
+            "secure",
+            "honeypot_risk",
+            "rugpull_risk",
+            "backdoor_risk",
+            "tax_manipulation_risk",
+            "privileged_functions_risk",
+            "transfer_blocking_risk"
+        ],
+        "accuracy": 0.92,
+        "precision": 0.89,
+        "recall": 0.94,
+        "f1_score": 0.91,
+        "average_inference_time_ms": 15.3,
+        "training_dataset": "solana_contracts_2023Q2",
+        "architecture": "DistilBERT + BiLSTM + Classification Head",
+        "quantization": "int8",
+        "parameters": 12800000,
+        "size_mb": 48.6,
+        "creation_date": "2023-12-15",
+        "author": "GBPBot Team"
+    }
+} 

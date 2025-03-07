@@ -40,4 +40,31 @@ RAM	16 Go+	8 Go	✅ 16 Go (OK, améliorable)
 Stockage	SSD rapide	SSD recommandé	✅ SSD NVMe (OK)
 ✅ Ton PC est excellent pour un bot classique.
 ✅ Ton PC peut faire du Machine Learning grâce au GPU RTX 3060.
-🚀 Si tu veux aller plus loin en IA, une extension de RAM à 32 Go serait un plus.
+
+
+C:\Users\randr>wmic MemoryChip get devicelocator, manufacturer, capacity, partnumber, speed, smbiosmemorytype, formfactor
+Capacity    DeviceLocator       FormFactor  Manufacturer  PartNumber        SMBIOSMemoryType  Speed
+8589934592  Controller0-DIMMA2  8           G Skill Intl  F4-3000C16-8GISB  26                3000
+8589934592  Controller1-DIMMB2  8           G Skill Intl  F4-3000C16-8GISB  26                3000
+
+
+C:\Users\randr>wmic baseboard get product, manufacturer, version, serialnumber
+Manufacturer                        Product                          SerialNumber        Version
+Micro-Star International Co., Ltd.  MAG B660M MORTAR DDR4 (MS-7D42)  07D4211_M11E458502  1.0
+
+
+C:\Users\randr>wmic MemoryChip get devicelocator, manufacturer, capacity, partnumber, speed
+Capacity    DeviceLocator       Manufacturer  PartNumber        Speed
+8589934592  Controller0-DIMMA2  G Skill Intl  F4-3000C16-8GISB  3000
+8589934592  Controller1-DIMMB2  G Skill Intl  F4-3000C16-8GISB  3000
+
+
+C:\Users\randr>wmic path win32_videocontroller get name, adapterram
+AdapterRAM  Name
+4293918720  NVIDIA GeForce RTX 3060
+
+Mémoire physique (RAM) installée	16,0 Go
+Processeur	12th Gen Intel(R) Core(TM) i5-12400F, 2500 MHz, 6 cœur(s), 12 processeur(s) logique(s)
+Mode BIOS	UEFI
+
+open api :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

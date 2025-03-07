@@ -1,0 +1,83 @@
+2025-03-07 23:41:48,145 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-03-07 23:41:48,149 - __main__ - ERROR - Erreur fatale: No module named 'gbpbot'
+Traceback (most recent call last):
+  File "C:\GBPBot\gbpbot\start.py", line 103, in <module>
+    asyncio.run(main())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\GBPBot\gbpbot\start.py", line 41, in main
+    from gbpbot.core.rpc.rpc_manager import rpc_manager
+ModuleNotFoundError: No module named 'gbpbot'
+2025-03-07 23:42:03,998 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-03-07 23:42:04,000 - __main__ - ERROR - Erreur fatale: No module named 'gbpbot'
+Traceback (most recent call last):
+  File "C:\GBPBot\gbpbot\start.py", line 103, in <module>
+    asyncio.run(main())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\GBPBot\gbpbot\start.py", line 41, in main
+    from gbpbot.core.rpc.rpc_manager import rpc_manager
+ModuleNotFoundError: No module named 'gbpbot'
+2025-03-07 23:56:24,632 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-03-07 23:56:24,633 - __main__ - ERROR - Erreur fatale: No module named 'gbpbot'
+Traceback (most recent call last):
+  File "C:\GBPBot\gbpbot\start.py", line 103, in <module>
+    asyncio.run(main())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\GBPBot\gbpbot\start.py", line 41, in main
+    from gbpbot.core.rpc.rpc_manager import rpc_manager
+ModuleNotFoundError: No module named 'gbpbot'
+2025-03-08 00:04:16,874 - __main__ - ERROR - Erreur fatale: No module named 'gbpbot'
+Traceback (most recent call last):
+  File "C:\GBPBot\gbpbot\start.py", line 103, in <module>
+    asyncio.run(main())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\GBPBot\gbpbot\start.py", line 41, in main
+    from gbpbot.core.rpc.rpc_manager import rpc_manager
+ModuleNotFoundError: No module named 'gbpbot'
+2025-03-08 00:06:20,157 - __main__ - ERROR - Erreur fatale: No module named 'gbpbot'
+Traceback (most recent call last):
+  File "C:\GBPBot\gbpbot\start.py", line 103, in <module>
+    asyncio.run(main())
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\randr\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\GBPBot\gbpbot\start.py", line 41, in main
+    from gbpbot.core.rpc.rpc_manager import rpc_manager
+ModuleNotFoundError: No module named 'gbpbot'

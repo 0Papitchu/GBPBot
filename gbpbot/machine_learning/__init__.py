@@ -1,19 +1,23 @@
 """
-Module de Machine Learning pour GBPBot
+Modules de Machine Learning pour GBPBot
 ======================================
 
-Ce module fournit des fonctionnalités d'apprentissage automatique pour optimiser
-les stratégies de trading du GBPBot.
+Ce package contient les différents modules d'apprentissage automatique
+et d'intelligence artificielle utilisés par GBPBot pour l'analyse et
+l'optimisation des stratégies de trading.
 """
 
-from gbpbot.machine_learning.ml_integrator import MLIntegrator, create_ml_integrator
+from typing import Dict, Any, Optional
 
-try:
-    from gbpbot.machine_learning.prediction_model import TradingPredictionModel, create_prediction_model
-    PREDICTION_MODEL_AVAILABLE = True
-except ImportError:
-    PREDICTION_MODEL_AVAILABLE = False
+# Exporter les fonctions de création des analyseurs/predicteurs
+from gbpbot.machine_learning.contract_analyzer import create_contract_analyzer
+from gbpbot.machine_learning.lightweight_models import create_model_manager
+from gbpbot.machine_learning.prediction_model import create_prediction_model
+from gbpbot.machine_learning.volatility_predictor import create_volatility_predictor
 
-__all__ = ['MLIntegrator', 'create_ml_integrator']
-if PREDICTION_MODEL_AVAILABLE:
-    __all__.extend(['TradingPredictionModel', 'create_prediction_model']) 
+__all__ = [
+    "create_contract_analyzer", 
+    "create_model_manager",
+    "create_prediction_model",
+    "create_volatility_predictor"
+] 

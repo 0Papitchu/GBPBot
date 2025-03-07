@@ -85,7 +85,8 @@ class RPCManager:
             "response_times": [],
             "active_connections": 0,
             "batch_calls": 0,
-            "cache_hits": 0
+            "cache_hits": 0,
+            "provider_stats": {}
         }
         
         # Initialiser les fournisseurs et la session
@@ -94,11 +95,14 @@ class RPCManager:
         
         # Planifier la tâche d'optimisation si le moniteur de ressources est disponible
         if resource_monitor:
-            resource_monitor.register_handler(self._handle_resource_optimization)
-            logger.info("Gestionnaire d'optimisation de ressources enregistré pour le RPCManager")
+            try:
+                resource_monitor.register_handler(self._handle_resource_optimization)
+                logger.info("Gestionnaire d'optimisation de ressources enregistré pour le RPCManager")
+            except AttributeError:
+                logger.warning("Méthode register_handler non disponible dans le module resource_monitor")
         
         # Surveillance des ressources
-        self.connection_pool_optimization_task = asyncio.create_task(self._connection_pool_optimizer())
+        self.connection_pool_optimization_task = None  # Ne pas créer la tâche immédiatement
         
         # Planifier la tâche de rafraîchissement de session
         self.session_refresh_task = asyncio.create_task(self._periodic_session_refresh())
@@ -1196,6 +1200,12 @@ class RPCManager:
         
         # Si aucun fournisseur n'est disponible, lever une erreur
         raise ValueError(f"Aucun fournisseur disponible pour {chain}/{network}")
+
+    async def start_optimization_task(self):
+        """Démarre la tâche d'optimisation du pool de connexions."""
+        if not self.connection_pool_optimization_task:
+            self.connection_pool_optimization_task = asyncio.create_task(self._connection_pool_optimizer())
+            logger.debug("Tâche d'optimisation du pool de connexions démarrée")
 
 # Créer une instance singleton du gestionnaire RPC
 rpc_manager = RPCManager() 

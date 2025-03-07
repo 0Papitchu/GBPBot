@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 """
 Test script to verify that GBPBot can be imported correctly.
 """
@@ -36,4 +38,10 @@ def main():
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())
+
+try:
+    from gbpbot.ai import create_market_analyzer
+    print('Import successful')
+except Exception as e:
+    print(f'Import failed: {e}') 

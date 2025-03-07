@@ -1,0 +1,504 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Client Sonic pour GBPBot
+=======================
+
+Ce module fournit un client pour interagir avec la blockchain Sonic,
+permettant d'exécuter des transactions, d'analyser le marché et de
+surveiller les nouveaux tokens.
+"""
+
+import os
+import json
+import time
+import asyncio
+import logging
+from typing import Dict, List, Any, Optional, Union, Tuple
+from decimal import Decimal
+
+from gbpbot.clients.base_client import BaseBlockchainClient
+from gbpbot.config.config_manager import config_manager
+from gbpbot.utils.cache_manager import cache_manager
+
+# Configuration du logger
+logger = logging.getLogger("gbpbot.clients.sonic")
+
+class SonicClient(BaseBlockchainClient):
+    """
+    Client pour la blockchain Sonic.
+    
+    Cette classe fournit des méthodes pour interagir avec la blockchain Sonic,
+    les DEXs et les contrats sur cette blockchain.
+    """
+    
+    BLOCKCHAIN_NAME = "sonic"
+    DEFAULT_RPC_URL = "https://rpc.sonic.fantom.network/"
+    DEFAULT_CHAIN_ID = 250  # Chain ID de Fantom Opera
+    
+    def __init__(
+        self,
+        rpc_url: Optional[str] = None,
+        private_key: Optional[str] = None,
+        address: Optional[str] = None,
+        network: str = "mainnet",
+        config: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initialise un client Sonic.
+        
+        Args:
+            rpc_url: URL du point d'accès RPC Sonic (optionnel)
+            private_key: Clé privée pour les transactions (optionnel)
+            address: Adresse du wallet (optionnel, calculée à partir de la clé privée si fournie)
+            network: Réseau Sonic (mainnet, testnet)
+            config: Configuration additionnelle
+        """
+        super().__init__(
+            blockchain=self.BLOCKCHAIN_NAME,
+            network=network,
+            rpc_url=rpc_url or self.DEFAULT_RPC_URL,
+            config=config
+        )
+        
+        logger.info(f"Initialisation du client Sonic ({network})")
+        
+        # Configurer la Web3
+        self._setup_web3()
+        
+        # Initialiser le portefeuille
+        self._setup_wallet(private_key, address)
+        
+        # Charger les contrats et dexes
+        self._load_contracts()
+        self._load_dexes()
+        
+        logger.info(f"Client Sonic initialisé ({network})")
+    
+    def _setup_web3(self):
+        """
+        Configure la connexion Web3 pour Sonic (Fantom).
+        """
+        try:
+            from web3 import Web3
+            from web3.middleware import geth_poa_middleware
+            
+            # Création de l'instance Web3
+            self.web3 = Web3(Web3.HTTPProvider(self.rpc_url))
+            
+            # Ajouter le middleware PoA pour Fantom
+            self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+            
+            # Vérifier la connexion
+            if not self.web3.is_connected():
+                logger.error(f"Impossible de se connecter au nœud Sonic: {self.rpc_url}")
+            else:
+                chain_id = self.web3.eth.chain_id
+                logger.info(f"Connecté au réseau Sonic: Chain ID {chain_id}")
+                
+                if chain_id != self.DEFAULT_CHAIN_ID and self.network == "mainnet":
+                    logger.warning(f"Chain ID inattendu: {chain_id}, attendu {self.DEFAULT_CHAIN_ID} pour mainnet")
+        
+        except ImportError:
+            logger.error("Module web3 non disponible. Installez-le avec 'pip install web3'")
+            self.web3 = None
+        except Exception as e:
+            logger.error(f"Erreur lors de l'initialisation de Web3: {str(e)}")
+            self.web3 = None
+    
+    def _setup_wallet(self, private_key: Optional[str], address: Optional[str]):
+        """
+        Configure le portefeuille pour les transactions.
+        
+        Args:
+            private_key: Clé privée pour les transactions
+            address: Adresse du wallet
+        """
+        self.private_key = private_key
+        self.address = address
+        
+        if private_key and not address:
+            try:
+                account = self.web3.eth.account.from_key(private_key)
+                self.address = account.address
+                logger.info(f"Adresse calculée à partir de la clé privée: {self.address}")
+            except Exception as e:
+                logger.error(f"Erreur lors du calcul de l'adresse: {str(e)}")
+    
+    def _load_contracts(self):
+        """
+        Charge les adresses des contrats importants sur Sonic.
+        """
+        self.contracts = {
+            # Adresses des contrats standard sur Sonic (à remplacer par les vraies adresses)
+            "router": "0xa6AD18C2aC47803E193F75c3677b14BF19B94883",  # SpiritSwap Router
+            "factory": "0xEF45d134b73241eDa7703fa787148D9C9F4950b0",  # SpiritSwap Factory
+            "wftm": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",  # Wrapped FTM
+            "usdc": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",  # USDC on Fantom
+        }
+        
+        # Charger les contrats depuis la configuration
+        if "contracts" in self.config:
+            network_config = self.config["contracts"].get(self.network, {})
+            self.contracts.update(network_config)
+            
+        logger.debug(f"Contrats chargés: {len(self.contracts)} contrats")
+    
+    def _load_dexes(self):
+        """
+        Charge les informations sur les DEXs disponibles sur Sonic.
+        """
+        self.dexes = {
+            "spiritswap": {
+                "router": "0xa6AD18C2aC47803E193F75c3677b14BF19B94883",
+                "factory": "0xEF45d134b73241eDa7703fa787148D9C9F4950b0",
+                "fee": 0.003,  # 0.3%
+            },
+            "spookyswap": {
+                "router": "0xF491e7B69E4244ad4002BC14e878a34207E38c29",
+                "factory": "0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3",
+                "fee": 0.002,  # 0.2%
+            },
+        }
+        
+        # Charger les DEXs depuis la configuration
+        if "dexes" in self.config:
+            network_dexes = self.config["dexes"].get(self.network, {})
+            self.dexes.update(network_dexes)
+            
+        logger.debug(f"DEXs chargés: {len(self.dexes)} plateformes")
+    
+    async def get_token_price(self, token_address: str, quote_token: str = None) -> Decimal:
+        """
+        Récupère le prix actuel d'un token sur Sonic.
+        
+        Args:
+            token_address: Adresse du token
+            quote_token: Adresse du token de référence (USDC par défaut)
+            
+        Returns:
+            Prix du token en unités du token de référence
+        """
+        if not quote_token:
+            quote_token = self.contracts.get("usdc")
+        
+        # Clé de cache unique
+        cache_key = f"sonic_price_{token_address}_{quote_token}"
+        
+        # Vérifier le cache
+        cached_price = cache_manager.get(cache_key)
+        if cached_price is not None:
+            return Decimal(cached_price)
+        
+        price = Decimal("0")
+        
+        try:
+            # Méthode simple pour obtenir le prix à partir des réserves de pool
+            # Dans une implémentation réelle, il faudrait interroger les DEXs ou les oracles
+            
+            # Simuler un prix (à remplacer par la vraie logique)
+            # Ici, nous utiliserions le contrat du DEX pour obtenir les réserves du pool
+            price = Decimal("1.23")  # Prix factice pour l'exemple
+            
+            # Mettre en cache
+            cache_manager.set(cache_key, str(price), ttl=30)  # Cache de 30 secondes
+            
+            return price
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération du prix du token {token_address}: {str(e)}")
+            return Decimal("0")
+    
+    async def get_token_info(self, token_address: str) -> Dict[str, Any]:
+        """
+        Récupère les informations sur un token Sonic.
+        
+        Args:
+            token_address: Adresse du token
+            
+        Returns:
+            Informations sur le token (nom, symbole, décimales, etc.)
+        """
+        # Clé de cache unique
+        cache_key = f"sonic_token_info_{token_address}"
+        
+        # Vérifier le cache
+        cached_info = cache_manager.get(cache_key)
+        if cached_info is not None:
+            return json.loads(cached_info)
+        
+        token_info = {
+            "address": token_address,
+            "name": "Unknown",
+            "symbol": "UNKNOWN",
+            "decimals": 18,
+            "total_supply": "0",
+            "error": None
+        }
+        
+        try:
+            # Ici, nous utiliserions l'ABI du token ERC20 pour récupérer les informations
+            # Dans cet exemple, nous simulons des informations
+            
+            # Simuler des informations de token (à remplacer par la vraie logique)
+            token_info.update({
+                "name": "Example Token",
+                "symbol": "EX",
+                "decimals": 18,
+                "total_supply": "1000000000000000000000000"
+            })
+            
+            # Mettre en cache
+            cache_manager.set(cache_key, json.dumps(token_info), ttl=3600)  # Cache d'une heure
+            
+            return token_info
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération des infos du token {token_address}: {str(e)}")
+            token_info["error"] = str(e)
+            return token_info
+    
+    async def get_account_balance(self, token_address: str = None, address: str = None) -> Decimal:
+        """
+        Récupère le solde d'un token pour une adresse.
+        
+        Args:
+            token_address: Adresse du token (None pour le token natif)
+            address: Adresse du compte (None pour utiliser l'adresse du client)
+            
+        Returns:
+            Solde du token
+        """
+        if not address:
+            address = self.address
+            
+        if not address:
+            logger.error("Aucune adresse spécifiée et aucune adresse configurée pour le client")
+            return Decimal("0")
+            
+        try:
+            if not token_address:
+                # Récupérer le solde natif (FTM)
+                balance_wei = self.web3.eth.get_balance(address)
+                balance = Decimal(balance_wei) / Decimal(10**18)
+                return balance
+            else:
+                # Récupérer le solde du token
+                # Ici, nous utiliserions l'ABI du token ERC20
+                # Dans cet exemple, nous simulons un solde
+                return Decimal("100")  # Solde factice pour l'exemple
+                
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération du solde: {str(e)}")
+            return Decimal("0")
+    
+    async def get_pools(self, dex: str = None) -> List[Dict[str, Any]]:
+        """
+        Récupère la liste des pools sur un DEX.
+        
+        Args:
+            dex: Nom du DEX (None pour tous)
+            
+        Returns:
+            Liste des pools avec leurs informations
+        """
+        pools = []
+        
+        try:
+            # Ici, nous interrogerions l'API du DEX ou les contrats
+            # Dans cet exemple, nous simulons des pools
+            
+            # Simuler des pools (à remplacer par la vraie logique)
+            pool1 = {
+                "address": "0x2b4c76d0dc16be1c31d4c1dc53bf9b45987fc75c",
+                "token0": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",  # WFTM
+                "token1": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",  # USDC
+                "reserves0": "1000000000000000000000",
+                "reserves1": "1200000000",
+                "dex": "spiritswap"
+            }
+            
+            pool2 = {
+                "address": "0x9d45081706102e7aaddd0973268457527722e274",
+                "token0": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",  # WFTM
+                "token1": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",  # DAI
+                "reserves0": "2000000000000000000000",
+                "reserves1": "2500000000000000000000",
+                "dex": "spookyswap"
+            }
+            
+            pools = [pool1, pool2]
+            
+            # Filtrer par DEX si spécifié
+            if dex:
+                pools = [p for p in pools if p["dex"] == dex]
+            
+            return pools
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération des pools: {str(e)}")
+            return []
+    
+    async def send_transaction(self, to: str, value: int, data: str = "") -> str:
+        """
+        Envoie une transaction sur Sonic.
+        
+        Args:
+            to: Adresse de destination
+            value: Valeur en wei à envoyer
+            data: Données de la transaction
+            
+        Returns:
+            Hash de la transaction
+        """
+        if not self.private_key:
+            raise ValueError("Pas de clé privée configurée pour envoyer des transactions")
+            
+        try:
+            tx_params = {
+                "from": self.address,
+                "to": to,
+                "value": value,
+                "gas": 2000000,  # Estimation de gaz (à ajuster)
+                "gasPrice": self.web3.eth.gas_price,
+                "nonce": self.web3.eth.get_transaction_count(self.address),
+                "data": data,
+                "chainId": self.web3.eth.chain_id
+            }
+            
+            # Estimer le gaz si possible
+            try:
+                estimated_gas = self.web3.eth.estimate_gas(tx_params)
+                tx_params["gas"] = int(estimated_gas * 1.2)  # Ajouter 20% de marge
+            except Exception as e:
+                logger.warning(f"Impossible d'estimer le gaz: {str(e)}")
+            
+            # Signer la transaction
+            signed_tx = self.web3.eth.account.sign_transaction(tx_params, self.private_key)
+            
+            # Envoyer la transaction
+            tx_hash = self.web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            
+            logger.info(f"Transaction envoyée: {tx_hash.hex()}")
+            return tx_hash.hex()
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'envoi de la transaction: {str(e)}")
+            raise
+    
+    async def swap_tokens(self, 
+                        token_in: str, 
+                        token_out: str, 
+                        amount_in: int, 
+                        min_amount_out: int,
+                        dex: str = "spiritswap") -> str:
+        """
+        Effectue un swap de tokens sur Sonic.
+        
+        Args:
+            token_in: Adresse du token d'entrée
+            token_out: Adresse du token de sortie
+            amount_in: Montant d'entrée en wei
+            min_amount_out: Montant minimum de sortie en wei
+            dex: DEX à utiliser
+            
+        Returns:
+            Hash de la transaction
+        """
+        if dex not in self.dexes:
+            raise ValueError(f"DEX non supporté: {dex}")
+            
+        router_address = self.dexes[dex]["router"]
+        
+        # Pour un swap réel, nous utiliserions l'ABI du routeur
+        # Ici, nous simulons un appel au routeur
+        
+        # Simuler un swap (à remplacer par la vraie logique)
+        tx_hash = await self.send_transaction(
+            to=router_address,
+            value=0,
+            data="0x0"  # Données d'appel au contrat (à remplacer)
+        )
+        
+        return tx_hash
+    
+    async def monitor_new_tokens(self, callback: callable = None) -> None:
+        """
+        Surveille les nouveaux tokens sur Sonic.
+        
+        Args:
+            callback: Fonction à appeler lorsqu'un nouveau token est détecté
+        """
+        if not callback:
+            logger.warning("Pas de callback fourni pour monitor_new_tokens")
+            return
+            
+        try:
+            # Dans une implémentation réelle, nous surveillerions les événements de création de pool
+            # Ici, nous simulons une détection
+            
+            logger.info("Démarrage de la surveillance des nouveaux tokens sur Sonic")
+            
+            # Simuler une détection après 5 secondes
+            await asyncio.sleep(5)
+            
+            # Simuler un nouveau token
+            new_token = {
+                "address": "0x1234567890123456789012345678901234567890",
+                "name": "New Token",
+                "symbol": "NEW",
+                "decimals": 18,
+                "creator": "0x0987654321098765432109876543210987654321",
+                "creation_time": time.time(),
+                "creation_block": 12345678,
+                "dex": "spiritswap"
+            }
+            
+            # Appeler le callback
+            await callback(new_token)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la surveillance des nouveaux tokens: {str(e)}")
+    
+    async def get_contract_code(self, address: str) -> str:
+        """
+        Récupère le code d'un contrat sur Sonic.
+        
+        Args:
+            address: Adresse du contrat
+            
+        Returns:
+            Code du contrat au format hexadécimal
+        """
+        try:
+            code = self.web3.eth.get_code(address).hex()
+            return code
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération du code du contrat {address}: {str(e)}")
+            return ""
+            
+    async def estimate_gas(self, to: str, value: int = 0, data: str = "") -> int:
+        """
+        Estime le gaz nécessaire pour une transaction.
+        
+        Args:
+            to: Adresse de destination
+            value: Valeur en wei à envoyer
+            data: Données de la transaction
+            
+        Returns:
+            Estimation du gaz en unités
+        """
+        try:
+            tx_params = {
+                "from": self.address or "0x0000000000000000000000000000000000000000",
+                "to": to,
+                "value": value,
+                "data": data
+            }
+            
+            estimated_gas = self.web3.eth.estimate_gas(tx_params)
+            return estimated_gas
+        except Exception as e:
+            logger.error(f"Erreur lors de l'estimation du gaz: {str(e)}")
+            return 2000000  # Valeur par défaut en cas d'erreur 

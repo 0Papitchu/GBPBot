@@ -1,161 +1,160 @@
-# GBPBot - Trading Bot pour MEME Coins
+# GBPBot - Trading Bot Ultra-Rapide pour MEME Coins
 
-![GBPBot Logo](https://img.shields.io/badge/GBPBot-Ultra%20Trading%20Bot-blue)
-![Version](https://img.shields.io/badge/Version-1.0.0-green)
-![Blockchains](https://img.shields.io/badge/Blockchains-Solana%20%7C%20AVAX%20%7C%20Sonic-orange)
+## 🚀 Vue d'ensemble
 
-## 🚀 Présentation
+GBPBot est un bot de trading privé, discret et hautement optimisé pour les MEME coins sur Solana, AVAX et Sonic. Conçu pour maximiser les profits via le sniping de nouveaux tokens, l'arbitrage entre DEX et le front-running, il combine vitesse d'exécution et intelligence artificielle pour des décisions de trading précises.
 
-GBPBot est un bot de trading ultra-rapide, furtif et intelligent pour le trading de MEME coins sur Solana, AVAX et Sonic. Conçu pour maximiser les profits via le sniping de nouveaux tokens, l'arbitrage entre pools, et le front-running, GBPBot combine des stratégies avancées avec une architecture optimisée pour la performance.
+### 🔑 Caractéristiques principales
 
-**Caractéristiques principales :**
-- ✅ **Ultra-rapide** - Exécutions de transactions optimisées pour battre la concurrence
-- ✅ **Multi-stratégies** - Arbitrage, sniping, scalping et frontrunning
-- ✅ **Multi-chaînes** - Support pour Solana (prioritaire), AVAX et Sonic
-- ✅ **Intelligent** - Machine learning intégré pour l'analyse et l'adaptation
-- ✅ **Sécurisé** - Protection contre les rugpulls, honeypots et autres risques
-- ✅ **Flexible** - Mode automatique ou semi-automatique avec interface CLI ou Telegram
+- **⚡ Sniping Ultra-Rapide** : Détection et achat automatique des nouveaux tokens prometteurs en quelques millisecondes
+- **💹 Arbitrage Inter-DEX** : Exploitation des écarts de prix entre différentes plateformes d'échange
+- **🔍 Optimisation MEV** : Techniques avancées pour prioriser vos transactions dans les mempools
+- **🤖 Scalping Automatisé** : Entrées et sorties rapides pour capturer les mouvements de prix à court terme
+- **🔒 Sécurité Avancée** : Protection contre les rug pulls, honeypots et autres arnaques
+- **🌐 Multi-Blockchain** : Support pour Solana (prioritaire), Avalanche et Sonic
+- **🧠 Capacités IA** : Analyse de marché et évaluation des contrats par intelligence artificielle
+- **📊 Système de Backtesting Avancé** : Test et optimisation des stratégies avant déploiement
 
-## 📋 Fonctionnalités
+## 📋 Prérequis
 
-### 1. Arbitrage entre DEX
-- Détection d'opportunités entre différents DEX (TraderJoe, Pangolin, Raydium...)
-- Flash arbitrage sans immobilisation de fonds
-- Optimisation du gas et priorité dans la mempool
-- Monitoring des écarts de prix en temps réel
+- **Système d'exploitation** : Windows 10/11, Linux ou macOS
+- **Python** : Version 3.9 ou supérieure
+- **Matériel recommandé** :
+  - CPU : Intel i5 / Ryzen 5 ou supérieur (votre i5-12400F est parfait)
+  - RAM : 16 Go minimum (votre configuration actuelle)
+  - GPU : NVIDIA avec support CUDA pour l'IA (votre RTX 3060 est idéal)
+  - Stockage : SSD rapide (votre SSD NVMe est parfait)
 
-### 2. Sniping de Tokens
-- Détection ultra-rapide des nouveaux tokens à fort potentiel
-- Analyse automatique de la liquidité et du contrat
-- Filtres intelligents contre les scams et rugpulls
-- Stratégies de prise de profit optimisées
+## 🔧 Installation
 
-### 3. Mode Automatique Intelligent
-- Adaptation en temps réel entre stratégies de sniping et arbitrage
-- Machine learning pour identifier les meilleures opportunités
-- Gestion optimisée des ressources et fonds
-- Analyse continue du marché et adaptation des paramètres
+1. **Cloner le dépôt**
 
-### 4. Optimisation des Performances
-- Suite complète d'outils d'optimisation des performances
-- Auto-Optimizer pour surveillance et ajustement en temps réel
-- Monitoring des ressources système (CPU, RAM, GPU)
-- Paramètres optimisés pour votre configuration matérielle
-
-## 🛠️ Installation
-
-### Prérequis
-- Python 3.8 ou supérieur
-- Git
-- Solana CLI (pour les fonctionnalités Solana)
-- Wallet compatible avec chaque blockchain
-
-### Installation automatique
 ```bash
-# Cloner le répertoire
 git clone https://github.com/votre-username/GBPBot.git
 cd GBPBot
-
-# Installer les dépendances
-python setup.py install
 ```
 
-### Configuration
-1. Créez un fichier `.env` en copiant le fichier `.env.example`
+2. **Installer les dépendances**
+
+```bash
+pip install -r requirements.txt
+```
+
+3. **Configurer les clés API et paramètres**
+
+Copiez le fichier `.env.example` vers `.env` et modifiez-le avec vos clés API et paramètres :
+
 ```bash
 cp .env.example .env
 ```
 
-2. Modifiez le fichier `.env` avec vos informations personnelles :
-```
-PRIVATE_KEY=votre_clé_privée
-WALLET_ADDRESS=votre_adresse_wallet
-```
+Éditez le fichier `.env` avec vos informations :
+- Clés privées des wallets
+- URLs RPC pour Solana, Avalanche, etc.
+- Paramètres de trading (slippage, gas, etc.)
+- Configuration des stratégies
 
-3. Installez les outils d'optimisation pour maximiser les performances :
+## 🚀 Utilisation
+
+GBPBot peut être lancé dans différents modes selon vos besoins :
+
+### Mode CLI (Interface en ligne de commande)
+
 ```bash
-python setup_optimization_tools.py
+python run_gbpbot.py --mode cli
 ```
 
-## 💻 Utilisation
+### Mode Dashboard (Interface Web)
 
-### Démarrer le bot via l'interface CLI
 ```bash
-python -m gbpbot.gbpbot_menu
+python run_gbpbot.py --mode dashboard
 ```
 
-### Démarrer le bot via Telegram
+Puis accédez à `http://localhost:8000` dans votre navigateur.
+
+### Mode Automatique
+
 ```bash
-python -m gbpbot.telegram_bot
+python run_gbpbot.py --mode auto
 ```
 
-### Utiliser directement les modules
-```python
-# Exemple d'utilisation du module de sniping Solana
-from gbpbot.sniping import solana_memecoin_sniper
+### Mode Telegram (Contrôle à distance)
 
-# Initialiser le sniper
-sniper = solana_memecoin_sniper.create_memecoin_sniper()
-
-# Démarrer le sniping
-await sniper.start()
+```bash
+python run_gbpbot.py --mode telegram
 ```
 
-## 📊 Architecture
+## 📊 Système de Backtesting Avancé
 
+Le GBPBot intègre un système de backtesting complet pour tester et optimiser vos stratégies avant de les déployer en environnement réel :
+
+- **Simulation réaliste** : Reproduit les conditions de marché avec slippage, frais et latence
+- **Chargement de données historiques** : Supporte diverses sources (Binance, KuCoin, Gate.io, CSV, JSON)
+- **Analyse de performance** : Métriques détaillées (rendement, Sharpe, Sortino, drawdown, etc.)
+- **Optimisation de paramètres** : Méthodes avancées (grille, aléatoire, bayésienne, génétique)
+- **Comparaison de stratégies** : Évaluez différentes approches côte à côte
+
+Pour lancer un backtest depuis l'interface CLI :
+
+```bash
+python run_gbpbot.py --mode cli
+# Puis sélectionnez "Backtesting" dans le menu
 ```
-gbpbot/
-├── core/                 # Composants fondamentaux
-├── strategies/           # Stratégies de trading
-├── sniping/              # Modules spécialisés pour le sniping
-├── machine_learning/     # Analyse prédictive et IA
-├── utils/                # Utilitaires et helpers
-├── blockchain/           # Intégrations blockchain
-├── cli/                  # Interface en ligne de commande
-├── telegram_bot.py       # Interface Telegram
-└── gbpbot_menu.py        # Menu principal
+
+Ou via le dashboard web :
+
+```bash
+python run_gbpbot.py --mode dashboard
+# Accédez à l'onglet "Backtesting" dans l'interface
 ```
 
-## 🛡️ Sécurité
+## 🧠 Intelligence Artificielle
 
-GBPBot intègre plusieurs couches de sécurité :
-- Simulation de transactions avant exécution
-- Vérification de la liquidité des tokens
-- Détection des contrats malveillants
-- Analyse des honeypots
-- Stop-loss intelligents
+GBPBot utilise l'IA pour améliorer ses décisions de trading :
 
-## 🚧 Roadmap
+- **Analyse de contrats** : Détection des fonctions malveillantes dans les smart contracts
+- **Prédiction de volatilité** : Estimation des mouvements de prix à court terme
+- **Scoring de tokens** : Évaluation du potentiel basée sur des critères multiples
+- **Détection d'anomalies** : Identification des comportements suspects sur le marché
 
-- [x] Architecture système de base
-- [x] Module d'arbitrage entre DEX
-- [x] Module de sniping Solana
-- [x] Outils d'optimisation des performances
-- [ ] Interface web avec tableau de bord
-- [ ] Intégration de stratégies avancées de MEV
-- [ ] Support étendu pour plus de DEX
-- [ ] Système d'alertes et notifications avancées
+L'IA est optimisée pour fonctionner sur votre matériel actuel (RTX 3060, 16 Go RAM) sans nécessiter d'équipement supplémentaire.
 
-## 📝 Documentation
+## 🛡️ Sécurité et Discrétion
 
-Pour une documentation complète, consultez :
-- [GBPBOT_ROADMAP.md](GBPBOT_ROADMAP.md) - Feuille de route détaillée
-- [NOUVELLES_FONCTIONNALITES.md](NOUVELLES_FONCTIONNALITES.md) - Dernières fonctionnalités
-- [OPTIMIZATIONS_SUMMARY.md](OPTIMIZATIONS_SUMMARY.md) - Optimisations appliquées
-- [AUTO_OPTIMIZER_README.md](AUTO_OPTIMIZER_README.md) - Guide de l'optimiseur automatique
-- [gbpbot/USER_GUIDE.md](gbpbot/USER_GUIDE.md) - Guide utilisateur complet
+En tant que bot privé, GBPBot met l'accent sur la sécurité et la discrétion :
 
-## 📢 Support
+- **Opérations furtives** : Mécanismes anti-détection pour éviter les blocages par les DEX
+- **Protection des fonds** : Vérification rigoureuse avant chaque transaction
+- **Confidentialité totale** : Aucun partage de données ou de stratégies
+- **Indépendance** : Fonctionnement sans dépendances externes critiques
 
-Pour toute question ou assistance, vous pouvez :
-- Ouvrir une issue sur GitHub
-- Rejoindre notre canal Telegram
-- Consulter la documentation incluse
+## ⚙️ Optimisation des Performances
+
+GBPBot est spécifiquement optimisé pour votre configuration matérielle :
+
+- **Utilisation efficace du CPU** : Optimisé pour votre i5-12400F
+- **Accélération GPU** : Exploitation de votre RTX 3060 pour les modèles d'IA
+- **Gestion de la mémoire** : Fonctionnement optimal dans 16 Go de RAM
+- **Stockage rapide** : Utilisation efficace de votre SSD NVMe
+
+## 📚 Documentation
+
+Une documentation détaillée est disponible dans le dossier `docs/` :
+
+- [Guide d'utilisation](docs/USER_GUIDE.md) - Instructions détaillées pour l'utilisation du bot
+- [Guide de configuration](docs/CONFIGURATION.md) - Explication de tous les paramètres
+- [Documentation technique](docs/TECHNICAL_DOCUMENTATION.md) - Architecture et détails techniques
+- [Guide du dashboard](docs/DASHBOARD.md) - Utilisation de l'interface web
+- [Guide de backtesting](docs/BACKTESTING.md) - Instructions pour le système de backtesting
 
 ## ⚠️ Avertissement
 
-Le trading de crypto-monnaies comporte des risques importants. GBPBot est un outil avancé qui nécessite une configuration et une surveillance appropriées. L'utilisation du bot se fait à vos propres risques.
+Le trading de cryptomonnaies comporte des risques significatifs. GBPBot est un outil avancé mais ne garantit pas de profits. Utilisez-le à vos propres risques et ne tradez jamais avec des fonds que vous ne pouvez pas vous permettre de perdre.
 
-## 📜 Licence
+## 📝 Licence
 
-Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
+Ce logiciel est à usage strictement privé et n'est pas destiné à la redistribution ou à l'usage commercial par des tiers.
+
+---
+
+**GBPBot** - Votre assistant de trading privé, discret et optimisé pour les MEME coins.
