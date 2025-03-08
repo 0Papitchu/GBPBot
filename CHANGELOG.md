@@ -5,6 +5,19 @@ Tous les changements notables apportés à ce projet seront documentés dans ce 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-04-08
+
+### Sécurité
+- Mise à jour de `cryptography` vers ≥43.0.1 pour corriger une vulnérabilité d'attaque timing oracle
+- Mise à jour de `aiohttp` vers ≥3.10.11 pour corriger une vulnérabilité de DoS dans le traitement multipart/form-data
+- Mise à jour de `gunicorn` vers ≥22.0.0 pour corriger une vulnérabilité de HTTP Request Smuggling
+- Mise à jour de `pyarrow` vers ≥14.0.1 pour corriger une vulnérabilité critique permettant l'exécution de code arbitraire
+- Mise à jour de `eth-abi` vers ≥5.0.1 pour corriger une vulnérabilité DoS récursive
+- Mise à jour de `scikit-learn` vers ≥1.5.0 pour corriger une fuite de données sensibles
+- Mise à jour de `pymongo` vers ≥4.6.3 pour corriger une vulnérabilité de lecture hors limites
+- Mise à jour de `pydantic` vers ≥2.4.0 pour corriger une vulnérabilité de déni de service par expression régulière
+- Ajout de fichiers de verrouillage des dépendances (requirements-core.lock) pour permettre à Dependabot de gérer automatiquement les mises à jour de sécurité
+
 ## [1.0.0] - 2025-03-04
 
 ### Ajouté

@@ -1,3 +1,107 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "gbpbot"
+version = "1.0.0"
+description = "Trading Bot pour MEME Coins sur Solana, AVAX et Sonic"
+authors = ["GBPBot Team <contact@gbpbot.com>"]
+readme = "README.md"
+repository = "https://github.com/yourusername/GBPBot"
+license = "MIT"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+packages = [{include = "gbpbot"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+python-dotenv = ">=1.0.0,<1.1.0"
+requests = ">=2.31.0,<2.33.0"
+websockets = ">=9.0,<11.0"
+aiohttp = ">=3.10.11"
+pydantic = ">=2.4.0"
+loguru = ">=0.7.2,<0.8.0"
+click = ">=8.1.7,<8.2.0"
+rich = ">=13.5.2,<13.6.0"
+schedule = ">=1.2.0,<1.3.0"
+pytz = ">=2023.3,<2024.0"
+python-dateutil = ">=2.8.2,<2.9.0"
+tqdm = ">=4.66.1,<4.67.0"
+retry = ">=0.9.2,<0.10.0"
+tenacity = ">=8.2.3,<8.3.0"
+cachetools = ">=5.3.1,<5.4.0"
+ujson = ">=5.8.0,<5.9.0"
+httpx = ">=0.25.0,<0.26.0"
+asyncio = ">=3.4.3,<3.5.0"
+web3 = ">=6.5.0,<6.7.0"
+solana = ">=0.30.2,<0.31.0"
+anchorpy = ">=0.17.0,<0.18.0"
+anchorpy-core = ">=0.1.2,<0.2.0"
+eth-account = ">=0.8.0,<0.10.0"
+eth-typing = ">=3.3.0,<3.5.0"
+eth-utils = ">=2.1.1,<2.3.0"
+pyserum = ">=0.5.0,<0.6.0"
+base58 = ">=2.1.1,<2.2.0"
+eth-hash = ">=0.5.1,<0.6.0"
+eth-abi = ">=5.0.1"
+ecdsa = ">=0.18.0,<0.19.0"
+coincurve = ">=18.0.0,<19.0.0"
+mnemonic = ">=0.20,<0.21"
+py-solc-x = ">=1.1.1,<1.2.0"
+pyevmasm = ">=0.2.3,<0.3.0"
+ccxt = ">=3.1.0,<3.2.0"
+pandas-ta = ">=0.3.14b0,<0.4.0"
+exchange-calendars = ">=4.2.8,<4.3.0"
+numpy = ">=1.24.3,<1.26.0"
+pandas = ">=2.0.3,<2.2.0"
+scikit-learn = ">=1.5.0"
+joblib = ">=1.3.2,<1.4.0"
+matplotlib = ">=3.7.2,<3.8.0"
+seaborn = ">=0.12.2,<0.13.0"
+statsmodels = ">=0.14.0,<0.15.0"
+pyarrow = ">=14.0.1"
+Flask = ">=2.3.3,<2.4.0"
+Flask-SocketIO = ">=5.3.5,<5.4.0"
+Flask-Cors = ">=4.0.0,<4.1.0"
+gunicorn = ">=22.0.0"
+prompt-toolkit = ">=2.0.0"
+PyInquirer = ">=1.0.3,<1.1.0"
+blessed = ">=1.20.0,<1.21.0"
+ansimarkup = ">=1.5.0,<1.6.0"
+colorama = ">=0.4.6,<0.5.0"
+termcolor = ">=2.3.0,<2.4.0"
+tabulate = ">=0.9.0,<0.10.0"
+asciichartpy = ">=1.5.25,<1.6.0"
+cryptography = ">=43.0.1"
+pyjwt = ">=2.8.0,<2.9.0"
+argon2-cffi = ">=23.1.0,<23.2.0"
+pyotp = ">=2.9.0,<2.10.0"
+SQLAlchemy = ">=2.0.20,<2.1.0"
+alembic = ">=1.12.0,<1.13.0"
+aiosqlite = ">=0.19.0,<0.20.0"
+redis = ">=5.0.0,<5.1.0"
+pymongo = ">=4.6.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4.1,<7.5.0"
+pytest-asyncio = ">=0.21.1,<0.22.0"
+black = ">=23.7.0"
+mypy = ">=1.4.1"
+flake8 = ">=6.1.0"
+isort = ">=5.12.0"
+
+[tool.poetry.scripts]
+gbpbot = "gbpbot.main:main"
+
 [tool.black]
 line-length = 100
 target-version = ['py38', 'py39', 'py310']

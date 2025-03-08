@@ -1,0 +1,19 @@
+# GBPBot - Dépendances Critiques pour la Sécurité
+
+# Versions sécurisées
+cryptography>=43.0.1
+aiohttp>=3.10.11
+gunicorn>=22.0.0
+pyarrow>=14.0.1
+eth-abi>=5.0.1
+scikit-learn>=1.5.0
+pymongo>=4.6.3
+pydantic>=2.4.0
+
+# Autres dépendances essentielles
+python-dotenv>=1.0.0
+requests>=2.31.0
+websockets>=9.0
+click>=8.1.7
+rich>=13.5.2
+loguru>=0.7.2 

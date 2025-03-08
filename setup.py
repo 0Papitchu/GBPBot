@@ -35,6 +35,10 @@ COMMON_REQUIRES = [
     "websockets>=9.0,<11.0",
     "cryptography>=43.0.1",
     "telegram-send==0.34",
+    "pydantic>=2.4.0",
+    "pyarrow>=14.0.1",
+    "pymongo>=4.6.3",
+    "scikit-learn>=1.5.0",
 ]
 
 # Dépendances spécifiques à Solana
@@ -52,6 +56,7 @@ AVAX_REQUIRES = [
     "eth-hash==0.5.1",
     "eth-typing==3.3.0",
     "eth-utils==2.1.1",
+    "eth-abi>=5.0.1",
 ]
 
 # Dépendances de développement
