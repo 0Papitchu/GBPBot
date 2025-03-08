@@ -9,7 +9,7 @@ requests>=2.31.0,<2.33.0
 # Pour les connexions WebSocket
 websockets>=9.0,<11.0
 # Pour les requêtes HTTP asynchrones
-aiohttp>=3.8.5,<3.9.0
+aiohttp>=3.10.11
 # Pour la validation des données
 pydantic>=2.3.0,<2.4.0
 # Pour la gestion des logs améliorée
@@ -116,7 +116,7 @@ Flask-SocketIO>=5.3.5,<5.4.0
 # Pour gérer le CORS avec Flask
 Flask-Cors>=4.0.0,<4.1.0
 # Serveur WSGI pour Flask
-gunicorn>=21.2.0,<21.3.0
+gunicorn>=22.0.0
 # Pour les interfaces interactives en ligne de commande
 prompt_toolkit>=3.0.36,<3.1.0
 # Pour les prompts interactifs dans la console
@@ -136,7 +136,7 @@ asciichartpy>=1.5.25,<1.6.0
 
 # Sécurité
 # Pour les opérations cryptographiques
-cryptography>=41.0.3,<42.0.0
+cryptography>=43.0.1
 # Pour la gestion des JWT
 pyjwt>=2.8.0,<2.9.0
 # Pour le hachage sécurisé des mots de passe

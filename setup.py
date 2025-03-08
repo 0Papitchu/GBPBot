@@ -19,7 +19,7 @@ VERSION = "1.0.0"
 
 # Liste des dépendances communes
 COMMON_REQUIRES = [
-    "aiohttp==3.8.5",
+    "aiohttp>=3.10.11",
     "asyncio==3.4.3",
     "python-dotenv==1.0.0",
     "pyyaml==6.0.1",
@@ -33,7 +33,7 @@ COMMON_REQUIRES = [
     "numpy==1.24.3",
     "pandas==2.0.3",
     "websockets>=9.0,<11.0",
-    "cryptography==41.0.3",
+    "cryptography>=43.0.1",
     "telegram-send==0.34",
 ]
 
