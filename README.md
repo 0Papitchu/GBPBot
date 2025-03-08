@@ -9,6 +9,7 @@
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![Version](https://img.shields.io/badge/version-0.1.0-green)
 ![Security](https://img.shields.io/badge/security-codeql-green)
+![Quality](https://img.shields.io/badge/quality-sonarqube-orange)
 
 GBPBot est un bot de trading avancé conçu pour maximiser les profits dans l'écosystème des MEME coins sur Solana, AVAX et Sonic. Il intègre des fonctionnalités d'arbitrage, de sniping et de MEV/frontrunning avec une optimisation continue basée sur l'intelligence artificielle.
 
@@ -223,6 +224,21 @@ Nous utilisons les outils suivants pour maintenir la qualité et la sécurité d
 3. **Dependabot** - Surveillance automatique des dépendances pour détecter les vulnérabilités
 4. **Bandit** - Détection des vulnérabilités spécifiques à Python
 5. **Safety** - Vérification des dépendances Python pour les vulnérabilités connues
+
+### Analyse Locale
+
+Pour les développeurs souhaitant exécuter des analyses localement avant de soumettre leur code, nous fournissons des scripts d'analyse locale :
+
+- **Windows** : `analyse_locale.ps1`
+- **Linux/macOS** : `analyse_locale.sh`
+
+Ces scripts exécutent les mêmes analyses que notre pipeline CI/CD et génèrent des rapports détaillés dans le dossier `reports/`.
+
+### Badges de Qualité
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GBPBot&metric=alert_status)](https://sonarcloud.io/dashboard?id=GBPBot)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=GBPBot&metric=security_rating)](https://sonarcloud.io/dashboard?id=GBPBot)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=GBPBot&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=GBPBot)
 
 ### Intégration CI/CD
 

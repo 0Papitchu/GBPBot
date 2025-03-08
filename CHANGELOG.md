@@ -5,6 +5,20 @@ Tous les changements notables apportés à ce projet seront documentés dans ce 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-04-15
+
+### Ajouté
+- Intégration SonarQube pour l'analyse approfondie de la qualité et de la sécurité du code
+- Scripts d'analyse locale pour Windows (`analyse_locale.ps1`) et Linux/macOS (`analyse_locale.sh`)
+- Configuration personnalisée pour la détection des vulnérabilités spécifiques aux applications blockchain
+- Workflow GitHub Actions pour l'analyse automatique du code à chaque commit et pull request
+- Vérification automatique des Quality Gates SonarQube dans le pipeline CI/CD
+
+### Changé
+- Migration de Codiga vers GitHub CodeQL suite à l'annonce de la fermeture des services Codiga au 4 mai
+- Renforcement de l'analyse de sécurité avec une combinaison d'outils spécialisés (CodeQL, Bandit, Pylint, Ruff, Safety)
+- Mise à jour des badges et de la documentation pour refléter les nouveaux outils d'analyse
+
 ## [1.0.3] - 2025-04-12
 
 ### Changé

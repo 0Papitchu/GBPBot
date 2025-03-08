@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: SonarCloud Analysis
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
     - cron: '0 0 * * 3'  # Exécuter l'analyse complète tous les mercredis à minuit
 
 jobs:
-  sonarqube:
-    name: SonarQube Scan
+  sonarcloud:
+    name: SonarCloud Scan
     runs-on: ubuntu-latest
     
     steps:
@@ -56,7 +56,7 @@ jobs:
           pytest --cov=. --cov-report=xml:coverage.xml
         continue-on-error: true  # Ne pas bloquer l'analyse si les tests échouent
       
-      - name: SonarQube Scan
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
