@@ -13,6 +13,7 @@ Ce document fournit des solutions aux problèmes les plus courants rencontrés l
 7. [Logs et Diagnostics](#logs-et-diagnostics)
 8. [Résolution Avancée](#résolution-avancée)
 9. [Mise à Jour de Sécurité - Mars 2025](#mise-à-jour-de-sécurité---mars-2025)
+10. [Mise à Jour de Sécurité - Avril 2025](#mise-à-jour-de-sécurité---avril-2025)
 
 ## Problèmes d'Installation
 
@@ -342,6 +343,76 @@ Le résultat devrait montrer des versions égales ou supérieures à celles reco
 ### Remarques Importantes
 
 - Ces mises à jour peuvent potentiellement introduire des changements dans l'API des bibliothèques, surtout pour aiohttp. En cas de problèmes après la mise à jour, consultez la section [Résolution Avancée](#résolution-avancée).
+- Si vous utilisez des environnements de développement et de production séparés, assurez-vous de mettre à jour les deux.
+- Ces mises à jour sont critiques pour la sécurité de votre système et devraient être appliquées dès que possible.
+
+## Mise à Jour de Sécurité - Avril 2025
+
+De nouvelles vulnérabilités de sécurité ont été identifiées et corrigées dans plusieurs dépendances critiques utilisées par GBPBot. Ces mises à jour sont particulièrement importantes pour la sécurité des opérations de trading et de manipulation des données.
+
+### Vulnérabilités Corrigées
+
+#### 1. pyarrow < 14.0.1 (CRITIQUE)
+- **Vulnérabilité :** Désérialisation de données non fiables dans les lecteurs IPC et Parquet permettant l'exécution de code arbitraire
+- **Impact potentiel :** Exécution de code arbitraire lors de la lecture de fichiers Arrow IPC, Feather ou Parquet provenant de sources non fiables
+- **Severity :** Critique (CVSS 10/10)
+- **Version corrigée :** ≥ 14.0.1
+- **Instruction de mise à jour :** `pip install "pyarrow>=14.0.1"`
+- **Alternative :** Si la mise à jour n'est pas possible, utilisez le package `pyarrow-hotfix` pour désactiver la vulnérabilité sur les versions antérieures
+
+#### 2. eth-abi < 5.0.1 (MODÉRÉ)
+- **Vulnérabilité :** Problème de pointeur récursif pouvant provoquer un déni de service
+- **Impact potentiel :** Crash de l'application lors du décodage de certaines données ABI malformées
+- **Version corrigée :** ≥ 5.0.1
+- **Instruction de mise à jour :** `pip install "eth-abi>=5.0.1"`
+
+#### 3. scikit-learn < 1.5.0 (MODÉRÉ)
+- **Vulnérabilité :** Fuite de données sensibles dans TfidfVectorizer
+- **Impact potentiel :** Stockage inattendu de tous les tokens présents dans les données d'entraînement dans l'attribut `stop_words_`
+- **Version corrigée :** ≥ 1.5.0
+- **Instruction de mise à jour :** `pip install "scikit-learn>=1.5.0"`
+
+#### 4. pymongo < 4.6.3 (MODÉRÉ)
+- **Vulnérabilité :** Lecture hors limites dans le module bson
+- **Impact potentiel :** Le parser pourrait désérialiser de la mémoire non gérée et provoquer des exceptions
+- **Version corrigée :** ≥ 4.6.3
+- **Instruction de mise à jour :** `pip install "pymongo>=4.6.3"`
+
+#### 5. pydantic < 2.4.0 (MODÉRÉ)
+- **Vulnérabilité :** Déni de service par expression régulière (ReDoS)
+- **Impact potentiel :** Attaques DoS via des chaînes d'email malformées
+- **Version corrigée :** ≥ 2.4.0
+- **Instruction de mise à jour :** `pip install "pydantic>=2.4.0"`
+
+### Comment Mettre à Jour
+
+Exécutez la commande suivante pour mettre à jour toutes les nouvelles dépendances vulnérables en une seule fois :
+
+```bash
+pip install -U "pyarrow>=14.0.1" "eth-abi>=5.0.1" "scikit-learn>=1.5.0" "pymongo>=4.6.3" "pydantic>=2.4.0"
+```
+
+Ou mettez à jour l'ensemble des dépendances en utilisant le fichier requirements.txt mis à jour :
+
+```bash
+pip install -U -r requirements.txt
+```
+
+### Vérification de la Mise à Jour
+
+Pour vérifier que les mises à jour ont été correctement appliquées :
+
+```bash
+pip list | grep -E 'pyarrow|eth-abi|scikit-learn|pymongo|pydantic'
+```
+
+Le résultat devrait montrer des versions égales ou supérieures à celles recommandées.
+
+### Remarques Importantes
+
+- La vulnérabilité dans pyarrow est particulièrement critique (CVSS 10/10) et affecte toutes les applications qui lisent des données Arrow, Feather ou Parquet de sources non fiables.
+- Si votre application utilise des modèles d'apprentissage automatique avec scikit-learn, il est recommandé de revoir vos modèles TfidfVectorizer pour s'assurer qu'aucune donnée sensible n'a été exposée.
+- Ces mises à jour peuvent potentiellement introduire des changements dans l'API des bibliothèques. En cas de problèmes après la mise à jour, consultez la section [Résolution Avancée](#résolution-avancée).
 - Si vous utilisez des environnements de développement et de production séparés, assurez-vous de mettre à jour les deux.
 - Ces mises à jour sont critiques pour la sécurité de votre système et devraient être appliquées dès que possible.
 
