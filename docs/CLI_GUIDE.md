@@ -44,6 +44,41 @@ start_gbpbot.bat
 ./start_gbpbot.sh
 ```
 
+## Méthode Alternative de Lancement (Dépannage)
+
+Si vous rencontrez des problèmes avec les méthodes de lancement standard, utilisez le script pont dédié au dépannage :
+
+```bash
+# Sur Windows
+lancer_gbpbot_depannage.bat
+# ou
+python gbpbot_cli_bridge.py
+
+# Sur Linux/Mac
+python3 gbpbot_cli_bridge.py
+```
+
+### Avantages du Script Pont
+
+Le script pont offre plusieurs avantages pour résoudre les problèmes de lancement :
+
+- Résout automatiquement les problèmes d'importation de modules
+- Installe les dépendances manquantes avec différents niveaux d'installation
+- Contourne les erreurs de boucle asyncio courantes sur Windows
+- Fournit un menu simplifié pour configurer le fichier .env
+- Offre des diagnostics en cas d'échec du lancement
+
+### Problèmes courants résolus
+
+Le script pont résout automatiquement plusieurs problèmes courants :
+
+- `RuntimeError: no running event loop` - En configurant correctement asyncio
+- `Module not found` - En ajustant le PYTHONPATH et en créant des stubs
+- Dépendances manquantes - En installant les packages essentiels
+- Erreurs d'environnement - En configurant correctement les variables d'environnement
+
+Pour plus d'informations sur la résolution des problèmes, consultez [TROUBLESHOOTING_LAUNCH.md](TROUBLESHOOTING_LAUNCH.md).
+
 ## Navigation dans les Menus
 
 La navigation dans les menus est simple et intuitive:

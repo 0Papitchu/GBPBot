@@ -201,11 +201,11 @@ def get_config() -> Config:
 def update_config(updates: Dict[str, Any]) -> Config:
     """
     Met à jour la configuration avec de nouvelles valeurs.
-    
-    Args:
-        updates: Dictionnaire des mises à jour à appliquer.
         
-    Returns:
+        Args:
+        updates: Dictionnaire des mises à jour à appliquer.
+            
+        Returns:
         Dict[str, Any]: La configuration mise à jour.
     """
     global _config_instance
@@ -223,11 +223,11 @@ def update_config(updates: Dict[str, Any]) -> Config:
 def save_config(config_path: Optional[str] = None) -> bool:
     """
     Sauvegarde la configuration actuelle dans le fichier .env.
-    
-    Args:
-        config_path: Chemin optionnel vers un fichier de configuration spécifique.
         
-    Returns:
+        Args:
+        config_path: Chemin optionnel vers un fichier de configuration spécifique.
+            
+        Returns:
         bool: True si la sauvegarde a réussi, False sinon.
     """
     global _config_instance
@@ -351,8 +351,8 @@ def save_config(config_path: Optional[str] = None) -> bool:
 def reset_config() -> Config:
     """
     Réinitialise la configuration aux valeurs par défaut.
-    
-    Returns:
+            
+        Returns:
         Dict[str, Any]: La configuration réinitialisée.
     """
     global _config_instance

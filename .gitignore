@@ -1,0 +1,98 @@
+# Environnements virtuels
+venv/
+env/
+.env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Fichiers de logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Fichiers OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*.swp
+*~
+.~lock.*
+*.backup
+tmp/
+temp/
+
+# Fichiers spécifiques au projet GBPBot
+.cache/
+cache/
+config.local.yaml
+credentials.yaml
+secrets.json
+*.key
+api_keys.json
+*.env
+.coverage
+htmlcov/
+.pytest_cache/
+metrics/
+backtest_results/
+performance_graphs/
+
+# Fichiers de dépendances
+node_modules/
+package-lock.json
+yarn.lock
+
+# Fichiers de compilation
+*.o
+*.obj
+*.exe
+*.dll
+*.pyd
+*.pyc 

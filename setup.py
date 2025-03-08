@@ -32,7 +32,7 @@ COMMON_REQUIRES = [
     "matplotlib==3.7.2",
     "numpy==1.24.3",
     "pandas==2.0.3",
-    "websockets==11.0.3",
+    "websockets>=9.0,<11.0",
     "cryptography==41.0.3",
     "telegram-send==0.34",
 ]
@@ -40,8 +40,8 @@ COMMON_REQUIRES = [
 # Dépendances spécifiques à Solana
 SOLANA_REQUIRES = [
     "solana==0.30.2",
-    "solders==0.18.1",
-    "anchorpy==0.15.1",
+    "solders>=0.15.1,<0.16.0",
+    "anchorpy==0.17.0",
     "base58==2.1.1",
 ]
 
@@ -74,6 +74,8 @@ def print_colored(text, color):
         "purple": "\033[95m",
         "end": "\033[0m",
     }
+    # Remplacer les caractères Unicode par des alternatives ASCII
+    text = text.replace("✓", "OK")
     print(f"{colors.get(color, '')}{text}{colors.get('end', '')}")
 
 def check_python_version():
@@ -90,7 +92,7 @@ def check_python_version():
         sys.exit(1)
     
     print_colored(
-        f"Python {current_version[0]}.{current_version[1]} détecté. ✓",
+        f"Python {current_version[0]}.{current_version[1]} détecté. OK",
         "green"
     )
 
@@ -151,7 +153,7 @@ def setup_optimization_tools():
         print_colored("Configuration des outils d'optimisation...", "blue")
         try:
             subprocess.run([sys.executable, "setup_optimization_tools.py"], check=True)
-            print_colored("Outils d'optimisation configurés avec succès. ✓", "green")
+            print_colored("Outils d'optimisation configurés avec succès. OK", "green")
         except subprocess.CalledProcessError:
             print_colored(
                 "Avertissement: Impossible de configurer les outils d'optimisation. "

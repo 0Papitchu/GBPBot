@@ -1,0 +1,264 @@
+💡 Objectif :
+Développer un GBPBot ultra-rapide, furtif et intelligent pour le trading de MEME coins sur Sonic, AVAX et Solana, avec scalping automatique, arbitrage entre pools, sniping des nouveaux tokens et MEV/Frontrunning
+
+💡 Le GBPBot doit être : 
+ ✅ Facile d'utilisation.
+ ✅ Etre automatiser (l'utilisateur peut choisir de lancer chaque mode en automatique ou semi automatique)
+✅ avoir un code bien structuré
+✅ De tourner en Local ou depuis Telegram ou interface cli 
+✅ Maximiser le profit via Sniping Token, arbitrage et front-running.
+✅ Exécuter des transactions rapides et optimisées sur TraderJoe, Pangolin et Raydium, CEX et DEX.
+✅ Surveiller et réagir aux mouvements des whales et bots concurrents(Sniping de Token, ARbitrage ).
+✅ Sécuriser les fonds contre les rug pulls et les honeypots.
+✅ Optimiser les transactions pour passer en priorité dans les mempool (MEV).
+✅ Se rendre indétectable par les DEX pour éviter d’être bloqué.
+Collecter des donnes pour tout les fonctionnalités du bot et analyse via algorythme intelligent 
+✅ S’auto-améliorer et ajuster ses stratégies de facon intelligente en fonction des résultats passés, des collectes de données sur les blockchain et l'algorythme. et pouvoir 
+
+CONCERNANT LES DONNEES ANALYSES ET STRATEGIES POUR LES MODULES DU GBPBOT :
+
+✅ Machine Learning en Local
+✅ Identification des signaux ultra positifs et detection des signaux ultra négatifs
+✅
+ 
+
+A Menu une fois le GBPBOT LANCER : ============================================================
+                    GBPBot - Menu Principal
+============================================================
+Bienvenue dans GBPBot, votre assistant de trading sur Avalanche!
+
+Veuillez choisir une option:
+1. Démarrer le Bot
+2. Configurer les paramètres
+3. Afficher la configuration actuelle
+4. Statistiques et Logs
+5. Afficher les Modules Disponibles
+6. Quitter 
+
+
+📌 "1. Démarrer le Bot" : MODULES AVEC OBJECTIFS & FONCTIONNALITÉS
+📢 Organisation détaillée avec chaque module et son rôle dans le GBPBot voici le menu :"
+ 
+  GBPBot - Sélection de Module
+============================================================
+1. Arbitrage entre les DEX
+2. Sniping de Token
+3. Lancer automatiquement le bot
+4. Retour au menu principal "
+
+--               1. Arbitrage entre les DEX
+🔹 2️⃣ Arbitrage Entre Pools de Liquidité
+📌 Module : arbitrage_engine.py 📌 Module : scalping_bot.py  mev_optimizer.py
+🎯 Objectif : Exploiter les écarts de prix entre différents DEX et/ou CEX. Acheter et vendre en boucle pour profiter des opportunités.
+✅ système automatisé 
+✅ Surveillance des différences de prix et paires à forte volatilité entre TraderJoe, Pangolin, SushiSwap, et Binance, kucoin, gate io.
+✅ Calcul des frais et impact du slippage pour chaque arbitrage.
+✅ Exécution instantanée des transactions pour profiter des écarts de prix.
+✅ Intégration d’un mode "Flash Arbitrage" pour ne jamais immobiliser de fonds.n.
+✅ Achat/Vente en rafale pour chaque opportunité detecter si les analyses et les indices et conditions sont favorables  
+✅ Augmentation dynamique du gas pour dépasser les autres traders.
+✅ Exécution d’attaques sandwich si possible (ex : acheter avant un gros ordre).
+✅ Front-run des grosses transactions en achetant avant elles.
+✅ Gestion intelligente des stop-loss et take-profit pour optimiser chaque
+✅ transactions courtes avec des profits élevés, correspondant à du sniping de nouveaux tokens ou du frontrunning.
+✅ Exécutions ultra-rapides pour ne pas se faire doubler par les autres bots.
+Faire passer nos transactions en priorité pour maximiser les gains.
+
+Objectif finale de la fonction "1. Arbitrage entre les DEX" : 
+agissant de manière automatique ou semi automatique, ultra-rapide et sécurisé, optimisé, pour un système automatisé d'achat et ventes rapides en série → Sniping & Frontrunning ransactions courtes avec des profits élevés, correspondant à du sniping de nouveaux tokens ou du frontrunning.
+
+
+
+
+--            2. Sniping de Token 
+🚀 Implémentation existante a ameliorer : 📌 Module : market_trends.py  📌 Module : monitor_pump.py  📌 Module : token_sniper.py
+✅ système automatisé sniping de nouveaux tokens ou du frontrunning
+✅ Analyse intelligente des MEME coins explosifs des 3 derniers mois.
+✅ Détection des périodes bullish/bearish pour ajuster la stratégie.
+✅ Stockage des patterns récurrents de tokens qui pumpent fortement
+✅ Surveillance en continue des nouvelles paires créées sur les DEX.
+✅ Détection des whales qui achètent massivement un nouveau token.
+
+✅ Prioriser Solana, éviter les blockchains à faible volume.
+✅ Génération d’un score de confiance pour éviter les scams.
+✅ Détecter les "diamond hands" et éviter les paper hands.
+✅
+✅ Bloquer les rug pulls avec des filtres stricts.
+✅ Prendre des profits progressivement avant le dump.
+✅ Surveiller les wallets des smart traders et copier leurs mouvements.
+✅ Gestion intelligente des prises de profit & stop-loss
+✅ Facilité de la configuration des wallets
+✅ transactions courtes avec des profits élevés, correspondant à du sniping de nouveaux tokens ou du frontrunning.
+✅ Surveillance des nouveaux tokens listés sur TraderJoe, Raydium, etc.
+✅ Analyse de la liquidité et du market cap initial pour éviter les scams.
+✅ Exécution ultra-rapide via WebSockets et transactions pré-signées.
+✅ Stop-loss intelligent pour éviter les rug pulls et les honeypots. 
+
+DONNES POUR STRATEGIE :
+✅ Si un token fait x10 en 2 min, ne pas tout vendre immédiatement.
+✅ Si un token stagne, sortie rapide pour éviter un dump.
+✅ Sélectif (volume, liquidité, dev wallets, taxes).
+✅ Automatisé avec intelligence (trailing stop, take profit progressif).
+✅ Axé sur Solana en priorité
+✅Diviser les ordres en plusieurs petites transactions pour éviter les slippages.
+✅Prendre en compte le gas optimal
+✅ Éviter les tokens avec une faible profondeur de marché.Caractéristiques des Memecoins Explosifs
+✅ Detecter Les tokens avec un potentiel $500K de volume en moins d'1h sont de bons candidats.
+✅ Nombre de transactions élevé (>25K en 24h) : Indicateur de forte demande.
+✅ Ratio Liquidity/MarketCap > 5% : Garde-fou contre les rug pulls.
+✅ analyser Présence sur Twitter/Télégram avec une communauté active.
+💡 → Un bon bot doit filtrer les nouveaux tokens selon ces critères.
+✅ Dev wallet détient >30% des tokens → Dump probable.
+✅Taxes élevées sur les transactions (>5%) → Risque de ponzi.
+✅ Code non vérifié sur Solscan→ Projet potentiellement malveillant.
+ ✅ Blockchain	API Recommandées	RPC les plus rapides
+Solana	Pump.fun, DexScreener	Jito (mempool privé), Solana Beach
+Avalanche	SnowTrace, Pangolin	Ava Labs RPC, QuickNode
+Sonic	FantomScan	RPC Sonic (projet en cours)
+
+
+Objectif finale de la fonction " 2 Snipping de token" :  100% local agissant de manière automatique ou semi automatique, ultra-rapide et sécurisé, optimisé pour sniper les nouveaux memecoins sur Solana avec une utilisation claire pour l'utilisateur avec l'affichage des opportunités sur le terminal et des actions.
+
+
+--            3. Lancer le bot en automatique 
+🎯 Objectif :
+A l'aide l'algoryhme cette option doit agir automatiquement pour l'arbitrage et le sniping de token  : ✅ Simulation en temps réel des pools avancé !
+✅ ajuster ses stratégies et ses analyses d'opportunités 
+✅ analyse de facon intelligente en fonction des résultats passés, des collectes de données sur les blockchaing 
+✅ Analyse des opportunités de sniping ou d'arbitrage en temps rééls
+✅ Calculer les meilleurs probabilités en fonction des différents indicateurs positifs et négatifs
+✅Ajuster intelligement et automatiquement les actions, trades, et stratégies de Take Profit et Stop Loss en fonction des résultats et indicateurs 
+✅ En fonction des résultats et indicateurs Appliquer intelligement ces strategies apres calculs et applications des strategies choisies  
+✅ Avoir une gestion automatique des fonds sur les wallets
+✅ Agir de facon discrète et efficace pour des gros gais
+✅ Analyse de la microstructure du marché pour éviter l’auto-impact.
+✅ Optimisation du slippage & PnL adaptatif.
+✅ transactions courtes avec des profits élevés, correspondant à du sniping de nouveaux tokens ou du frontrunning.
+
+🔹 🛠️ Améliorations possibles :
+
+Intégrer des "Prediction Markets" (ex: Gnosis, Polymarket) pour anticiper les tendances de liquidité et la volatilité future.
+Ajouter une analyse NLP des news et Twitter pour détecter les signaux d'achat/vente en temps réel.
+
+
+
+OBLIGATIONS TECHNIQUES DU GBPBOT pour CHAQUE MODULE: 
+le GBPBot doit :
+4️⃣ Système de fail-safe & détection d’anomalies
+📌 Indicateurs clés :
+Transactions annulées ou non exécutées si certaines conditions ne sont pas remplies.
+Aucun retrait ou mouvement suspect en période de forte volatilité.
+🛠️ Fonctions techniques probables :
+Détection de liquidité insuffisante sur les pools DEX.
+Vérification des prix avec des oracles externes (Chainlink, Pyth Network) pour éviter les manipulations.
+Système d’arrêt d’urgence (Kill-Switch) en cas d’échec répété de transactions.
+✅ avoir des documentations techniques dont les 3 plus important (Guide d'utilsitation, Guide de configuratios, Fiche Technique du GBPBot)
+✅Stocker les données du bot de manière optimisée.
+✅ avoir des séries de test, de validations, afin d'eviter les erreurs
+
+ Sécurité et Protection GBPBOT
+📌 Module surement existant: security_manager.py
+✅Analyse des comportements des tokens pour identifier les meilleurs à sniper.
+✅ Vérification de la liquidité bloquée avant d’acheter.
+✅ Simulation d’une vente avant achat pour détecter les honeypots.
+✅ Détection des contrats suspects et rug pulls avant exécution.
+✅ Protection anti-blacklist pour éviter d’être banni par les DEX.
+✅ Simulation d’un comportement humain (randomisation des délais d’ordres).
+✅ Modification aléatoire des montants des transactions pour brouiller les pistes.
+
+Optimisation Dynamique et Intelligence Adaptative GBPBOT
+
+
+✅ Ajustement du stop-loss selon la volatilité.
+✅ Si un token fait x10 en 2 min, ne pas vendre immédiatement.
+✅ Si un token stagne, sortie rapide pour éviter un dump.
+
+📌 Module : self_learning.py
+🎯 Objectif : Amélioration continue du bot en fonction des résultats passés.
+🚀 Implémentation :
+✅ Stocker chaque trade réussi/raté pour analyser les performances.
+✅ Adapter automatiquement les futures stratégies en fonction des tendances du marché.
+✅ Prédire les meilleurs moments pour acheter/vendre selon l’historique du bot.
+
+
+# FONCTIONNALITÉS OPÉRATIONNELLES
+- **Avertissements de fenêtre de contexte :** Alertez l'utilisateur lorsqu'il approche de la limite de la fenêtre de contexte.
+- **Demandes de contenu manquant :** Demandez à l'utilisateur de fournir le code du projet, la documentation ou les définitions nécessaires à une réponse adéquate.
+- **Correction d'erreur :** Indiquez toutes les erreurs d'invite utilisateur de terminologie, de convention ou de compréhension, quelle que soit leur pertinence par rapport à l'invite utilisateur.
+
+# RÈGLES D'UNE IMPORTANCE CRITIQUE
+1. **Complétude :** Générez du code complet, pas de caractères génériques. Si impossible, expliquez dans les commentaires.
+2. **Commentaires :** Incluez des commentaires en ligne clairs et des en-têtes décrivant chaque étape du code.
+3. **Vérification des erreurs :** Implémentez la vérification des erreurs et la validation des types.
+4. **Types :** Implémentez une notation TypeScript stricte, en définissant de nouveaux types si nécessaire. De plus :
+   - N'utilisez pas le type 'any'.
+   - N'utilisez pas l'opérateur d'assertion non nulle (`!`).
+   - Ne convertissez pas en inconnu (par exemple `as unknown as T`).
+5. **Chaînes :** Respectez ces normes pour les chaînes :
+   - Utilisez des guillemets doubles (`"`) pour les chaînes.
+   - Utilisez des modèles de chaîne ou `.join()` au lieu de la concaténation opérationnelle.
+6- VERIFIE toutes LES importations
+ 
+✅ Analyse du PC utilisateu
+
+D'après les résultats de tes commandes, voici comment ton PC se positionne par rapport aux recommandations pour l'IA et les bots classiques :
+
+📌 1️⃣ Processeur (CPU)
+Modèle : Intel Core i5-12400F
+Nombre de cœurs : 6
+Nombre de threads : 12
+📌 Analyse : ✔ Convient parfaitement pour un bot classique (Intel i5+ recommandé).
+✔ Peut faire tourner des modèles de Machine Learning, mais moins rapide qu’un i7/Ryzen 7.
+🔥 Optimisation possible : Overclocking (si la carte mère le permet).
+
+📌 2️⃣ Carte Graphique (GPU)
+Modèle : NVIDIA GeForce RTX 3060
+Mémoire Vidéo (VRAM) : 4 Go (calculé : 4293918720 / 1 073 741 824 = 4 Go environ).
+Pilote installé : 32.0.15.6636
+Compatible NVIDIA CUDA ? ✅ Oui !
+📌 Analyse : ✔ Carte parfaite pour l'IA et le Machine Learning (TensorFlow, PyTorch en CUDA).
+✔ Supporte CUDA pour accélérer les calculs IA.
+🔥 Optimisation possible : Mise à jour des pilotes NVIDIA sur 🔗 GeForce Drivers.
+
+📌 3️⃣ Mémoire Vive (RAM)
+TotalVisibleMemorySize : 16 633 720 KB → 16 Go
+📌 Analyse : ✔ Suffisant pour exécuter un bot classique et du Machine Learning léger.
+✔ Peut être amélioré à 32 Go pour gérer des modèles d’IA plus grands.
+🔥 Optimisation possible : Active le mode XMP dans le BIOS pour booster la vitesse de la RAM.
+
+📌 4️⃣ Stockage (SSD)
+Modèle : KINGSTON SNV2S500G
+Type : SSD NVMe
+📌 Analyse : ✔ SSD rapide, recommandé pour le Machine Learning et les bots.
+✔ Bonne réactivité du système (temps de chargement rapide).
+🔥 Optimisation possible : Vérifier les vitesses avec CrystalDiskMark et activer le mode "Meilleures performances" pour le SSD.
+
+🚀 Conclusion : Ton PC est-il prêt pour l'IA et les bots ?
+Composant	Recommandé pour l'IA	Minimum pour bot classique	Ton PC
+Processeur	Intel i7 / Ryzen 7+	Intel i5 / Ryzen 5+	✅ i5-12400F (Bon)
+Carte Graphique	NVIDIA RTX 3060+	Aucune (pas nécessaire sans ML)	✅ RTX 3060 (Parfait pour l'IA)
+RAM	16 Go+	8 Go	✅ 16 Go (OK, améliorable)
+Stockage	SSD rapide	SSD recommandé	✅ SSD NVMe (OK)
+✅ Ton PC est excellent pour un bot classique.
+✅ Ton PC peut faire du Machine Learning grâce au GPU RTX 3060.
+
+**O/S :** Windows 11 64 bits
+- **Terminal :** Powershell intégré de Cursor avec droits d'administrateur
+Évitez de répondre avec des informations liées à d'autres environnements.
+
+# FONCTIONNALITÉS OPÉRATIONNELLES
+- **Demandes de contenu manquant :la documentation ou les définitions nécessaires à une réponse adéquate.**
+- **Correction d'erreur :** Indiquez toutes les erreurs d'invite utilisateur de terminologie, de convention ou de compréhension, quelle que soit leur pertinence par rapport à l'invite utilisateur.
+
+# RÈGLES D'UNE IMPORTANCE CRITIQUE
+1. **Complétude :** Générez du code complet, pas de caractères génériques. Si impossible, expliquez dans les commentaires.
+2. **Commentaires :** Incluez des commentaires en ligne clairs et des en-têtes décrivant chaque étape du code.
+3. **Vérification des erreurs :** Implémentez la vérification des erreurs et la validation des types.
+4. **Types :** Implémentez une notation TypeScript stricte, en définissant de nouveaux types si nécessaire. De plus :
+   - N'utilisez pas le type 'any'.
+   - N'utilisez pas l'opérateur d'assertion non nulle (`!`).
+   - Ne convertissez pas en inconnu (par exemple `as unknown as T`).
+5. **Chaînes :** Respectez ces normes pour les chaînes :
+   - Utilisez des guillemets doubles (`"`) pour les chaînes.
+   - Utilisez des modèles de chaîne ou `.join()` au lieu de la concaténation opérationnelle.
+6- VERIFIE toutes LES importations

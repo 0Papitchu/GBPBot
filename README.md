@@ -121,15 +121,29 @@ Consultez la [documentation complète](docs/configuration.md) pour tous les para
 
 ### Démarrer GBPBot
 
-Sous Linux/macOS:
-```bash
-./start_gbpbot.sh
-```
+#### Méthode recommandée (scripts unifiés)
 
 Sous Windows:
 ```bash
-start_gbpbot.bat
+# Double-cliquez simplement sur le fichier ou exécutez:
+launch_gbpbot_cli.bat
 ```
+
+Sous Linux/macOS:
+```bash
+# Rendre le script exécutable (première fois uniquement)
+chmod +x launch_gbpbot.sh
+
+# Lancer GBPBot
+./launch_gbpbot.sh
+```
+
+#### Autres méthodes disponibles
+
+Consultez la [documentation détaillée sur les méthodes de lancement](docs/LANCEMENT_GBPBOT.md) pour explorer toutes les options disponibles, notamment:
+- Lancement via script Python direct
+- Options avancées avec PowerShell
+- Mode simulation rapide
 
 ### Menu principal
 
@@ -139,7 +153,7 @@ Une fois lancé, GBPBot affiche un menu interactif:
 ============================================================
                     GBPBot - Menu Principal
 ============================================================
-Bienvenue dans GBPBot, votre assistant de trading sur Avalanche!
+Bienvenue dans GBPBot, votre assistant de trading sur MEME coins!
 
 Veuillez choisir une option:
 1. Démarrer le Bot
@@ -209,6 +223,7 @@ Le trading de crypto-monnaies comporte des risques significatifs. N'investissez 
 - [x] Module d'arbitrage entre DEX
 - [x] Module de sniping de tokens
 - [x] Mode automatique avec ML
+- [x] Méthodes de lancement unifiées
 - [ ] Interface web avancée
 - [ ] Support multicompte
 - [ ] Intégration de nouveaux DEX (Raydium v2, Uniswap v4)

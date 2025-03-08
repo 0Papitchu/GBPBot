@@ -224,4 +224,47 @@ def shutdown_optimization():
         
         finally:
             _optimizations_initialized = False
-            _hardware_optimizer = None 
+            _hardware_optimizer = None
+
+"""
+Package d'optimisation unifié pour GBPBot
+========================================
+
+Ce package fournit un système unifié pour l'optimisation des performances
+et des ressources dans GBPBot, remplaçant les implémentations disparates
+précédentes par une architecture cohérente et extensible.
+"""
+
+from .base_optimizer import (
+    BaseOptimizer, OptimizationManager, get_optimization_manager,
+    OptimizationException, OptimizationResult, OptimizationConfig
+)
+from .hardware_optimizer import HardwareOptimizer, get_hardware_optimizer
+from gbpbot.core.monitoring.compatibility import HardwareOptimizerCompat, get_hardware_optimizer_compat
+
+__all__ = [
+    'BaseOptimizer',
+    'OptimizationManager',
+    'get_optimization_manager',
+    'OptimizationException',
+    'OptimizationResult',
+    'OptimizationConfig',
+    'HardwareOptimizer',
+    'get_hardware_optimizer',
+    # Classes de compatibilité
+    'HardwareOptimizerCompat',
+    'get_hardware_optimizer_compat',
+]
+
+# Initialisation de l'optimiseur hardware
+_hardware_optimizer = None
+
+def get_hardware_optimizer_instance(config=None):
+    """
+    Fonction de compatibilité pour maintenir l'interface existante.
+    Utilise la nouvelle implémentation HardwareOptimizer.
+    """
+    global _hardware_optimizer
+    if _hardware_optimizer is None:
+        _hardware_optimizer = get_hardware_optimizer(config)
+    return _hardware_optimizer 

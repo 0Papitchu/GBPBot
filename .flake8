@@ -1,0 +1,54 @@
+[flake8]
+# Maximum line length (compatible with Black formatter)
+max-line-length = 100
+
+# Exclude some directories from checking
+exclude =
+    .git,
+    .github,
+    __pycache__,
+    build,
+    dist,
+    venv,
+    env,
+    .env,
+    .venv
+
+# Ignore certain errors or warnings
+# E203: whitespace before ':' (Black formats this differently)
+# W503: line break before binary operator (Black formats this differently)
+# E231: missing whitespace after ',', ';', or ':'
+# F401: imported but unused
+# F403: unable to detect undefined names
+ignore = E203, W503, E231
+
+# Set the maximum McCabe complexity allowed
+max-complexity = 15
+
+# Path(s) to the Python files to check
+# (you can use --filename to specify this from command line instead)
+# filename = *.py
+
+# Specify plugins
+# plugins = flake8-docstrings
+
+# Don't require docstrings for some functions/methods/classes
+# docstring-convention = numpy
+
+# Set the format of the output
+format = %(path)s:%(row)d:%(col)d: %(code)s %(text)s
+
+# Set statistics display
+statistics = True
+
+# Count errors
+count = True
+
+# Show source code for each error
+show-source = True
+
+# Set verbosity level
+verbose = 0
+
+# Maximum allowed docstring length
+docstring-max-length = 100 
