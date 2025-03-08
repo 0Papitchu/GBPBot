@@ -42,6 +42,68 @@ DEFAULT_CONFIG = {
         "enabled": True  # Activer/désactiver le cache
     },
     
+    # Configuration du cache distribué
+    "distributed_cache": {
+        "mode": "local",  # Mode de fonctionnement: "local" ou "redis"
+        "local_cache_dir": None,  # Répertoire pour le cache local (None = utiliser tempdir)
+        "redis_host": "localhost",  # Hôte Redis (pour mode "redis")
+        "redis_port": 6379,  # Port Redis (pour mode "redis")
+        "redis_password": None,  # Mot de passe Redis (pour mode "redis")
+        "redis_db": 0,  # Base de données Redis (pour mode "redis")
+        "prefix": "gbpbot:",  # Préfixe pour les clés de cache
+        "default_ttl": 600,  # Durée de vie par défaut en secondes (10 minutes)
+        "enable_compression": True,  # Activer la compression des données (pour économiser de l'espace)
+        "max_memory": "100MB",  # Limite de mémoire pour le cache
+        "eviction_policy": "lru",  # Politique d'éviction: "lru", "lfu", "fifo"
+        "sync_interval": 60,  # Intervalle de synchronisation en secondes
+        "persistent": True,  # Sauvegarder le cache sur disque pour récupération après redémarrage
+        "replica_sync": False,  # Synchroniser avec les réplicas Redis si disponibles
+        "fallback_to_local": True,  # Basculer en mode local si Redis est indisponible
+    },
+    
+    # Configuration du moniteur de performance
+    "performance_monitor": {
+        "enabled": True,  # Activer/désactiver le monitoring des performances
+        "monitoring_interval": 5.0,  # Intervalle de collecte des métriques en secondes
+        "log_interval": 60.0,  # Intervalle d'enregistrement des métriques dans le log en secondes
+        "cpu_alert_threshold": 90.0,  # Seuil d'alerte pour l'utilisation CPU en pourcentage
+        "memory_alert_threshold": 85.0,  # Seuil d'alerte pour l'utilisation de la mémoire en pourcentage
+        "disk_alert_threshold": 95.0,  # Seuil d'alerte pour l'utilisation du disque en pourcentage
+        "tx_latency_alert_threshold": 10.0,  # Seuil d'alerte pour la latence des transactions en secondes
+        "rpc_time_alert_threshold": 5.0,  # Seuil d'alerte pour le temps de réponse RPC en secondes
+        "metrics_storage_dir": "metrics",  # Répertoire pour stocker les métriques exportées
+        "metrics_retention_days": 30,  # Nombre de jours de rétention des métriques
+        "alert_notifications": {
+            "enabled": True,  # Activer/désactiver les notifications d'alerte
+            "email": False,  # Envoyer des alertes par email
+            "telegram": False,  # Envoyer des alertes par Telegram
+            "discord": False,  # Envoyer des alertes par Discord
+            "cooldown_period": 300  # Période de cooldown entre les alertes en secondes
+        },
+        "custom_metrics": {
+            # Métriques personnalisées
+            "arbitrage_profit": {
+                "max_history": 1000,
+                "alert_threshold": None
+            },
+            "sniper_success_rate": {
+                "max_history": 1000,
+                "alert_threshold": 50.0  # Alerte si le taux de succès descend en dessous de 50%
+            }
+        },
+        "export_settings": {
+            "auto_export": False,  # Exporter automatiquement les métriques
+            "export_interval": 3600,  # Intervalle d'exportation en secondes (1 heure)
+            "format": "csv"  # Format d'exportation: "csv" ou "json"
+        },
+        "hardware_optimization": {
+            "auto_adapt": True,  # Adapter automatiquement les paramètres en fonction des ressources disponibles
+            "low_resource_mode": False,  # Mode économie de ressources (à activer manuellement ou automatiquement)
+            "cpu_target_usage": 70.0,  # Utilisation CPU cible en pourcentage
+            "memory_target_usage": 60.0  # Utilisation mémoire cible en pourcentage
+        }
+    },
+    
     # Configuration WebSocket
     "websocket": {
         "reconnect_interval": 5,  # Intervalle de reconnexion en secondes

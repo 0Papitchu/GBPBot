@@ -210,4 +210,4 @@ gbpbot/
 
 ## Conclusion
 
-Le système de backtesting et simulation représente une composante critique pour l'évolution du GBPBot, permettant de tester et d'optimiser les stratégies de trading dans un environnement contrôlé avant leur déploiement en production. Ce plan d'implémentation fournit une feuille de route détaillée pour développer un système complet, précis et flexible qui s'intègre parfaitement avec l'architecture existante du GBPBot. 
+Le système de backtesting et simulation représente une composante critique pour l'évolution du GBPBot, permettant de tester et d'optimiser les stratégies de trading dans un environnement contrôlé avant leur déploiement en production. Ce plan d'implémentation fournit une feuille de route détaillée pour développer un système complet, précis et flexible qui s'intègre parfaitement avec l'architecture existante du GBPBot.

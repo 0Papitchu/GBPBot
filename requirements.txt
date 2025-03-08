@@ -1,136 +1,117 @@
-# Core dependencies
-aiohttp>=3.8.4
-asyncio>=3.4.3
-ccxt>=3.0.0
-cryptography>=39.0.0
-eth-account>=0.8.0
-eth-typing>=3.0.0
-eth-utils>=2.1.0
-numpy>=1.24.0
-pandas>=1.5.3
-pydantic>=1.10.7
-python-dotenv>=1.0.0
-requests>=2.28.2
-web3>=6.0.0
-websockets>=10.4
+# GBPBot - Dépendances Python
+# Ce fichier liste toutes les dépendances nécessaires pour le fonctionnement de GBPBot
 
-# Blockchain specific
-solana>=0.29.0
-solders>=0.18.0
-anchorpy>=0.17.0
-jito-searcher-client>=0.1.0
+# Dépendances de base
+python-dotenv==1.0.0       # Pour la gestion des variables d'environnement
+requests==2.31.0           # Pour les requêtes HTTP
+websockets==11.0.3         # Pour les connexions WebSocket
+aiohttp==3.8.5             # Pour les requêtes HTTP asynchrones
+pydantic==2.3.0            # Pour la validation des données
+loguru==0.7.2              # Pour la gestion des logs améliorée
+click==8.1.7               # Pour la création d'interfaces en ligne de commande
+rich==13.5.2               # Pour l'affichage coloré dans le terminal
+schedule==1.2.0            # Pour la planification de tâches
+pytz==2023.3               # Pour la gestion des fuseaux horaires
+python-dateutil==2.8.2     # Pour la manipulation des dates
+tqdm==4.66.1               # Pour les barres de progression
+retry==0.9.2               # Pour les mécanismes de réessai automatique
+tenacity==8.2.3            # Pour les mécanismes de réessai avancés
+cachetools==5.3.1          # Pour la mise en cache des réponses API
+ujson==5.8.0               # Pour le parsing JSON ultra-rapide
+httpx==0.25.0              # Client HTTP moderne pour Python
+asyncio==3.4.3             # Pour la programmation asynchrone
+uvloop==0.18.0             # Implémentation rapide de la boucle asyncio (pas pour Windows)
 
-# Machine Learning
-scikit-learn>=1.2.2
-xgboost>=1.7.5
-lightgbm>=3.3.5
-tensorflow>=2.12.0; platform_system != "Windows" or python_version < "3.10"
-tensorflow-cpu>=2.12.0; platform_system == "Windows" and python_version >= "3.10"
-torch>=2.0.0
-onnxruntime>=1.14.1
-onnxruntime-gpu>=1.14.1; platform_system != "Windows" or python_version < "3.10"
+# Dépendances blockchain
+web3==6.6.1                # Pour l'interaction avec les blockchains basées sur Ethereum
+solana==0.30.2             # SDK Python pour Solana
+anchorpy==0.17.0           # SDK Python pour Anchor sur Solana
+eth-account==0.9.0         # Pour la gestion des comptes Ethereum
+eth-typing==3.4.0          # Types pour Ethereum
+eth-utils==2.2.0           # Utilitaires pour Ethereum
+avalanche-python==0.0.5    # SDK pour Avalanche
+pyserum==0.5.0             # Pour interagir avec Serum sur Solana
+base58==2.1.1              # Pour l'encodage/décodage des adresses blockchain
+eth-hash==0.5.2            # Pour les fonctions de hachage Ethereum
+eth-abi==4.2.0             # Pour l'encodage/décodage ABI Ethereum
+ecdsa==0.18.0              # Pour la cryptographie sur les courbes elliptiques
+coincurve==18.0.0          # Pour la cryptographie sur les courbes elliptiques optimisée
+mnemonic==0.20             # Pour la gestion des phrases mnémoniques
+py-solc-x==1.1.1           # Pour compiler les contrats Solidity
+pyevmasm==0.2.3            # Pour désassembler le bytecode EVM
 
-# AI and LLM
-langchain>=0.0.200
-transformers>=4.28.1
-sentence-transformers>=2.2.2
-llama-cpp-python>=0.1.77; platform_system != "Windows"
-openai>=0.27.8
+# Outils de trading
+ccxt==3.1.0                # Bibliothèque unifiée pour les échanges de crypto-monnaies
+TA-Lib==0.4.28             # Bibliothèque d'analyse technique (peut nécessiter une installation manuelle)
+pandas-ta==0.3.14b0        # Indicateurs techniques basés sur pandas
+exchange-calendars==4.2.8  # Calendriers pour les marchés financiers
 
-# Backtesting
-matplotlib>=3.7.1
-seaborn>=0.12.2
-scikit-optimize>=0.9.0
-optuna>=3.1.1
-pyfolio>=0.9.2
-empyrical>=0.5.5
+# IA et Machine Learning
+numpy==1.25.2              # Pour les calculs numériques
+pandas==2.1.0              # Pour l'analyse de données
+scikit-learn==1.3.0        # Pour les algorithmes ML classiques
+joblib==1.3.2              # Pour la sérialisation des modèles ML
+matplotlib==3.7.3          # Pour la visualisation des données
+seaborn==0.12.2            # Pour la visualisation statistique
+statsmodels==0.14.0        # Pour les modèles statistiques
+pyarrow==13.0.0            # Pour le stockage efficace des données
+lightgbm==4.0.0            # Implémentation efficace de Gradient Boosting
+xgboost==1.7.6             # Implémentation efficace de Gradient Boosting
+pytorch-lightning==2.0.8   # Pour simplifier l'entraînement PyTorch
+transformers==4.33.2       # Pour les modèles de transformers (BERT, etc.)
+catboost==1.2.1            # Autre implémentation de Gradient Boosting
+scipy==1.11.2              # Pour les calculs scientifiques
+hyperopt==0.2.7            # Pour l'optimisation des hyperparamètres
+ray[tune]==2.6.3           # Pour l'optimisation distribuée des hyperparamètres
+skopt==0.9.0               # Pour l'optimisation bayésienne
 
-# Dashboard and Web UI
-fastapi>=0.95.1
-uvicorn>=0.22.0
-jinja2>=3.1.2
-python-multipart>=0.0.6
-aiofiles>=23.1.0
-websockets>=10.4
-pydantic>=1.10.7
+# Interface utilisateur
+Flask==2.3.3               # Pour l'API web
+Flask-SocketIO==5.3.5      # Pour les WebSockets avec Flask
+Flask-Cors==4.0.0          # Pour gérer le CORS avec Flask
+gunicorn==21.2.0           # Serveur WSGI pour Flask
+prompt_toolkit==3.0.36     # Pour les interfaces interactives en ligne de commande
+PyInquirer==1.0.3          # Pour les prompts interactifs dans la console
+blessed==1.20.0            # Pour les interfaces TUI
+ansimarkup==1.5.0          # Pour le formatage des couleurs ANSI
+colorama==0.4.6            # Pour la sortie colorée sous Windows
+termcolor==2.3.0           # Pour la sortie colorée
+tabulate==0.9.0            # Pour l'affichage de tableaux dans le terminal
+asciichartpy==1.5.25       # Pour les graphiques ASCII dans le terminal
 
-# Security
-cryptography>=39.0.0
-passlib>=1.7.4
-python-jose>=3.3.0
-bcrypt>=4.0.1
-
-# Testing
-pytest>=7.3.1
-pytest-asyncio>=0.21.0
-pytest-cov>=4.1.0
-
-# Documentation
-sphinx>=6.2.1
-sphinx-rtd-theme>=1.2.1
-nbsphinx>=0.9.1
-
-# Utilities
-tqdm>=4.65.0
-colorama>=0.4.6
-rich>=13.3.5
-typer>=0.9.0
-loguru>=0.7.0
-
-# Development dependencies
-pytest>=7.0.0
-pytest-asyncio>=0.18.2
-black>=22.1.0
-pylint>=2.12.2
-mypy>=0.931
-
-# Utilities
-python-dotenv==1.0.0
-nest-asyncio==1.5.6
-
-# Blockchain specific
-solders==0.18.0
-anchorpy==0.17.0
-
-# Utilities
-tenacity==8.2.2
-cachetools==5.3.0
-python-dateutil==2.8.2
-statistics==1.0.3.5
-
-# Development
-isort==5.12.0
-flake8==6.0.0
-
-# Dépendances principales
-matplotlib>=3.4.0
+# Sécurité
+cryptography==41.0.3       # Pour les opérations cryptographiques
+pyjwt==2.8.0               # Pour la gestion des JWT
+argon2-cffi==23.1.0        # Pour le hachage sécurisé des mots de passe
+pyotp==2.9.0               # Pour la génération de codes TOTP (2FA)
+secrets==1.0.2             # Pour la génération de secrets cryptographiques
 
 # Base de données
-sqlalchemy>=1.4.0
-asyncpg>=0.25.0
-psycopg2-binary>=2.9.0
+SQLAlchemy==2.0.20         # ORM pour les bases de données
+alembic==1.12.0            # Pour les migrations de schémas SQLAlchemy
+aiosqlite==0.19.0          # Pour SQLite asynchrone
+redis==5.0.0               # Client Python pour Redis
+pymongo==4.5.0             # Client Python pour MongoDB
 
-# Web et API
-flask>=2.0.0
-flask-cors>=3.0.10
-flask-limiter>=2.8.0
-websockets>=10.3.0
+# Tests et développement
+pytest==7.4.1              # Pour les tests unitaires
+pytest-asyncio==0.21.1     # Pour les tests de code asyncio
+pytest-cov==4.1.0          # Pour la couverture de code
+black==23.7.0              # Pour le formatage du code
+isort==5.12.0              # Pour le tri des imports
+flake8==6.1.0              # Pour le linting du code
+mypy==1.5.1                # Pour la vérification des types
+types-requests==2.31.0.2   # Types pour requests
 
-# Monitoring et sécurité
-prometheus-client>=0.14.0
-pyOpenSSL>=22.0.0
-certifi>=2022.5.18
+# Documentation
+Sphinx==7.2.5              # Pour générer la documentation
+sphinx-rtd-theme==1.3.0    # Thème ReadTheDocs pour Sphinx
+sphinx-autodoc-typehints==1.24.0  # Pour inclure les typehints dans la documentation
 
-# Nouvelles dépendances
-scipy==1.10.1
-solders-macros==0.2.0
+# Packaging
+twine==4.0.2               # Pour publier des packages sur PyPI
+build==1.0.3               # Pour construire des packages Python
 
-# General dependencies
-python-dotenv>=0.21.0
-websockets>=10.4
-numpy>=1.24.1
-pandas>=1.5.2
-
-# Specific to the project
-pytest>=7.2.0
-pytest-asyncio>=0.20.3
+# Outils de développement optionnels
+ipython==8.15.0            # Shell Python interactif amélioré
+jupyter==1.0.0             # Notebooks Jupyter pour l'analyse interactive

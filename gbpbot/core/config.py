@@ -1,400 +1,370 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
-Module de gestion de la configuration pour GBPBot
-================================================
+Module de configuration pour GBPBot.
 
-Ce module gère la configuration de GBPBot, y compris le chargement
-des paramètres depuis les fichiers de configuration et les variables d'environnement.
+Ce module gère le chargement et la validation des paramètres de configuration
+depuis le fichier .env et d'autres sources.
 """
 
 import os
-import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, Union, List
+from typing import Dict, Any, Optional, Union, List, TypedDict, cast
 from dotenv import load_dotenv
 
-# Configurer le logging
-logger = logging.getLogger(__name__)
+# TypedDict pour la configuration
+class Config(TypedDict, total=False):
+    """TypedDict pour la configuration de GBPBot."""
+    # Configuration générale
+    DEBUG: bool
+    LOG_LEVEL: str
+    ENVIRONMENT: str
+    
+    # Configuration Solana
+    SOLANA_RPC_URL: str
+    SOLANA_PRIVATE_KEY: str
+    
+    # Configuration AVAX
+    AVAX_RPC_URL: str
+    AVAX_PRIVATE_KEY: str
+    
+    # Configuration Sonic
+    SONIC_RPC_URL: str
+    SONIC_PRIVATE_KEY: str
+    
+    # Paramètres trading
+    MAX_SLIPPAGE: float
+    GAS_PRIORITY: str
+    MAX_TRANSACTION_AMOUNT: float
+    ENABLE_SNIPING: bool
+    ENABLE_ARBITRAGE: bool
+    ENABLE_AUTO_MODE: bool
+    
+    # Sécurité
+    REQUIRE_CONTRACT_ANALYSIS: bool
+    ENABLE_STOP_LOSS: bool
+    DEFAULT_STOP_LOSS_PERCENTAGE: float
+    
+    # Interface utilisateur
+    ENABLE_WEB_DASHBOARD: bool
+    WEB_DASHBOARD_PORT: int
+    
+    # IA et Machine Learning
+    ENABLE_AI_ANALYSIS: bool
+    USE_LOCAL_MODELS: bool
+    USE_OPENAI_API: bool
+    OPENAI_API_KEY: str
+    
+    # Configuration avancée
+    MEMPOOL_MONITORING: bool
+    MEV_PROTECTION: bool
+    ENABLE_ANTI_RUGPULL: bool
 
-# Chemins de configuration par défaut
-CONFIG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "config")
-DEFAULT_CONFIG_FILE = "config.json"
-DEFAULT_CONFIG_PATH = os.path.join(CONFIG_DIR, DEFAULT_CONFIG_FILE)
-
-# Configuration par défaut
-DEFAULT_CONFIG = {
-    "version": "1.0.0",
-    "system": {
-        "log_level": "INFO",
-        "log_file": "logs/gbpbot.log",
-        "debug_mode": False
-    },
-    "blockchain": {
-        "solana": {
-            "enabled": True,
-            "rpc_url": "https://api.mainnet-beta.solana.com",
-            "websocket_url": "wss://api.mainnet-beta.solana.com",
-            "commitment": "processed"
-        },
-        "avalanche": {
-            "enabled": True,
-            "rpc_url": "https://api.avax.network/ext/bc/C/rpc",
-            "websocket_url": "wss://api.avax.network/ext/bc/C/ws",
-            "chain_id": 43114
-        },
-        "sonic": {
-            "enabled": False,
-            "rpc_url": "https://mainnet.sonic.ooo/rpc",
-            "websocket_url": "wss://mainnet.sonic.ooo/ws",
-            "chain_id": 1
-        }
-    },
-    "wallets": {
-        "main_private_key": "",
-        "main_address": "",
-        "backup_private_key": "",
-        "backup_address": ""
-    },
-    "trading": {
-        "max_slippage": 2.0,
-        "gas_price_multiplier": 1.2,
-        "max_trade_amount_usd": 500,
-        "transaction_timeout": 60,
-        "min_profit_threshold": 0.5
-    },
-    "sniping": {
-        "enabled": True,
-        "check_honeypot": True,
-        "min_liquidity_usd": 10000,
-        "default_take_profit": 20.0,
-        "default_stop_loss": 10.0,
-        "trailing_take_profit": True,
-        "trailing_percent": 5.0,
-        "max_tokens_per_day": 5,
-        "blacklisted_tokens": []
-    },
-    "arbitrage": {
-        "enabled": True,
-        "min_profit_threshold": 0.5,
-        "max_arbitrage_amount_usd": 1000,
-        "check_interval": 5.0,
-        "use_flash_loans": False
-    },
-    "mev": {
-        "enabled": True,
-        "mempool_scan_interval": 0.1,
-        "gas_boost_multiplier": 1.5,
-        "priority_gas": 2.0
-    },
-    "security": {
-        "stealth_mode": True,
-        "tx_delay_random": True,
-        "tx_delay_min": 1,
-        "tx_delay_max": 3,
-        "wallet_rotation": True,
-        "transaction_variance": 0.15
-    },
-    "ai": {
-        "enabled": True,
-        "provider": "auto",
-        "openai_api_key": "",
-        "llama_model_path": "",
-        "risk_threshold": 0.7,
-        "confidence_threshold": 0.8
-    },
-    "backtesting": {
-        "enabled": True,
-        "default_timeframe": "1h",
-        "default_data_source": "binance",
-        "default_initial_balance": {"USDT": 1000}
-    },
-    "dashboard": {
-        "enabled": True,
-        "host": "0.0.0.0",
-        "port": 8000,
-        "debug": False
-    },
-    "telegram": {
-        "enabled": False,
-        "bot_token": "",
-        "allowed_user_ids": []
-    }
+# Valeurs par défaut pour la configuration
+DEFAULT_CONFIG: Config = {
+    # Configuration générale
+    "DEBUG": False,
+    "LOG_LEVEL": "info",
+    "ENVIRONMENT": "production",
+    
+    # Configuration Solana
+    "SOLANA_RPC_URL": "https://api.mainnet-beta.solana.com",
+    "SOLANA_PRIVATE_KEY": "",
+    
+    # Configuration AVAX
+    "AVAX_RPC_URL": "https://api.avax.network/ext/bc/C/rpc",
+    "AVAX_PRIVATE_KEY": "",
+    
+    # Configuration Sonic
+    "SONIC_RPC_URL": "https://rpc.sonic.fantom.network/",
+    "SONIC_PRIVATE_KEY": "",
+    
+    # Paramètres trading
+    "MAX_SLIPPAGE": 1.0,
+    "GAS_PRIORITY": "medium",
+    "MAX_TRANSACTION_AMOUNT": 0.1,
+    "ENABLE_SNIPING": True,
+    "ENABLE_ARBITRAGE": False,
+    "ENABLE_AUTO_MODE": False,
+    
+    # Sécurité
+    "REQUIRE_CONTRACT_ANALYSIS": True,
+    "ENABLE_STOP_LOSS": True,
+    "DEFAULT_STOP_LOSS_PERCENTAGE": 5.0,
+    
+    # Interface utilisateur
+    "ENABLE_WEB_DASHBOARD": True,
+    "WEB_DASHBOARD_PORT": 8080,
+    
+    # IA et Machine Learning
+    "ENABLE_AI_ANALYSIS": True,
+    "USE_LOCAL_MODELS": True,
+    "USE_OPENAI_API": False,
+    "OPENAI_API_KEY": "",
+    
+    # Configuration avancée
+    "MEMPOOL_MONITORING": True,
+    "MEV_PROTECTION": True,
+    "ENABLE_ANTI_RUGPULL": True
 }
 
-def ensure_config_dir():
-    """Crée le répertoire de configuration s'il n'existe pas"""
-    os.makedirs(CONFIG_DIR, exist_ok=True)
+# Singleton pour la configuration
+_config_instance: Optional[Config] = None
 
-def load_env_vars() -> Dict[str, Any]:
+def load_config(config_path: Optional[str] = None) -> Config:
     """
-    Charge les variables d'environnement depuis le fichier .env
-    
-    Returns:
-        Dict[str, Any]: Variables d'environnement chargées
-    """
-    # Charger les variables d'environnement depuis .env
-    load_dotenv()
-    
-    # Extraire les variables pertinentes
-    env_vars = {}
-    for key, value in os.environ.items():
-        if key.startswith(("GBPBOT_", "BOT_", "SOLANA_", "AVALANCHE_", "SONIC_", "OPENAI_")):
-            env_vars[key] = value
-    
-    return env_vars
-
-def env_to_config(env_vars: Dict[str, str]) -> Dict[str, Any]:
-    """
-    Convertit les variables d'environnement en configuration structurée
+    Charge la configuration depuis le fichier .env et d'autres sources.
     
     Args:
-        env_vars: Variables d'environnement
+        config_path: Chemin optionnel vers un fichier de configuration spécifique.
         
     Returns:
-        Dict[str, Any]: Configuration structurée
+        Dict[str, Any]: La configuration chargée.
     """
-    config = {}
+    global _config_instance
     
-    # Mapping des variables d'environnement vers la configuration
-    mappings = {
-        # Système
-        "BOT_MODE": ("system", "mode"),
-        "LOG_LEVEL": ("system", "log_level"),
-        "DEBUG_MODE": ("system", "debug_mode"),
-        
-        # Blockchain - Solana
-        "SOLANA_ENABLED": ("blockchain", "solana", "enabled"),
-        "SOLANA_RPC_URL": ("blockchain", "solana", "rpc_url"),
-        "SOLANA_WEBSOCKET_URL": ("blockchain", "solana", "websocket_url"),
-        
-        # Blockchain - Avalanche
-        "AVALANCHE_ENABLED": ("blockchain", "avalanche", "enabled"),
-        "AVAX_RPC_URL": ("blockchain", "avalanche", "rpc_url"),
-        "AVALANCHE_CHAIN_ID": ("blockchain", "avalanche", "chain_id"),
-        
-        # Blockchain - Sonic
-        "SONIC_ENABLED": ("blockchain", "sonic", "enabled"),
-        "SONIC_RPC_URL": ("blockchain", "sonic", "rpc_url"),
-        
-        # Wallets
-        "PRIVATE_KEY": ("wallets", "main_private_key"),
-        "WALLET_ADDRESS": ("wallets", "main_address"),
-        
-        # Trading
-        "MAX_SLIPPAGE": ("trading", "max_slippage"),
-        "GAS_PRICE_MULTIPLIER": ("trading", "gas_price_multiplier"),
-        "MAX_TRADE_AMOUNT_USD": ("trading", "max_trade_amount_usd"),
-        "TRANSACTION_TIMEOUT": ("trading", "transaction_timeout"),
-        
-        # Sniping
-        "SNIPING_ENABLED": ("sniping", "enabled"),
-        "CHECK_HONEYPOT": ("sniping", "check_honeypot"),
-        "MIN_LIQUIDITY_USD": ("sniping", "min_liquidity_usd"),
-        "DEFAULT_TAKE_PROFIT": ("sniping", "default_take_profit"),
-        "DEFAULT_STOP_LOSS": ("sniping", "default_stop_loss"),
-        
-        # Arbitrage
-        "ARBITRAGE_ENABLED": ("arbitrage", "enabled"),
-        "MIN_PROFIT_THRESHOLD": ("arbitrage", "min_profit_threshold"),
-        "MAX_ARBITRAGE_AMOUNT_USD": ("arbitrage", "max_arbitrage_amount_usd"),
-        
-        # MEV
-        "MEV_ENABLED": ("mev", "enabled"),
-        "MEMPOOL_SCAN_INTERVAL": ("mev", "mempool_scan_interval"),
-        "GAS_BOOST_MULTIPLIER": ("mev", "gas_boost_multiplier"),
-        
-        # Security
-        "STEALTH_MODE": ("security", "stealth_mode"),
-        "TX_DELAY_RANDOM": ("security", "tx_delay_random"),
-        
-        # AI
-        "AI_ENABLED": ("ai", "enabled"),
-        "OPENAI_API_KEY": ("ai", "openai_api_key"),
-        
-        # Dashboard
-        "DASHBOARD_ENABLED": ("dashboard", "enabled"),
-        "DASHBOARD_PORT": ("dashboard", "port"),
-        
-        # Telegram
-        "TELEGRAM_ENABLED": ("telegram", "enabled"),
-        "TELEGRAM_BOT_TOKEN": ("telegram", "bot_token")
-    }
+    # Si la configuration est déjà chargée, retourner l'instance singleton
+    if _config_instance is not None:
+        return _config_instance
     
-    # Appliquer les mappings
-    for env_key, value in env_vars.items():
-        if env_key in mappings:
-            path = mappings[env_key]
-            
-            # Convertir les valeurs
-            if value.lower() in ("true", "yes", "1"):
-                value = True
-            elif value.lower() in ("false", "no", "0"):
-                value = False
-            elif value.isdigit():
-                value = int(value)
-            elif value.replace(".", "", 1).isdigit():
-                value = float(value)
-            
-            # Créer la structure imbriquée
-            current = config
-            for i, key in enumerate(path):
-                if i == len(path) - 1:
-                    current[key] = value
-                else:
-                    if key not in current:
-                        current[key] = {}
-                    current = current[key]
+    # Créer une nouvelle configuration basée sur les valeurs par défaut
+    config: Config = DEFAULT_CONFIG.copy()
     
-    return config
-
-def load(config_path: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Charge la configuration du GBPBot
-    
-    Args:
-        config_path: Chemin vers le fichier de configuration (optionnel)
-        
-    Returns:
-        Dict[str, Any]: Configuration chargée
-    """
-    config = DEFAULT_CONFIG.copy()
-    
-    # Assurer que le répertoire de configuration existe
-    ensure_config_dir()
-    
-    # Charger depuis le fichier de configuration
+    # Déterminer le chemin du fichier .env
     if config_path is None:
-        config_path = DEFAULT_CONFIG_PATH
+        # Rechercher le fichier .env dans le répertoire courant et les répertoires parents
+        current_dir = Path.cwd()
+        env_path = None
+        
+        # Rechercher dans le répertoire courant et jusqu'à 3 niveaux au-dessus
+        for i in range(4):
+            test_path = current_dir / ".env"
+            if test_path.exists():
+                env_path = test_path
+                break
+            current_dir = current_dir.parent
+        
+        if env_path is not None:
+            config_path = str(env_path)
+        else:
+            logging.warning("Fichier .env non trouvé. Utilisation des valeurs par défaut.")
+            _config_instance = config
+            return config
     
-    if os.path.exists(config_path):
-        try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                file_config = json.load(f)
-                # Mise à jour récursive de la configuration
-                deep_update(config, file_config)
-            logger.info(f"Configuration chargée depuis {config_path}")
-        except Exception as e:
-            logger.error(f"Erreur lors du chargement de la configuration depuis {config_path}: {e}")
-    else:
-        logger.warning(f"Fichier de configuration {config_path} non trouvé, utilisation des valeurs par défaut")
-        # Créer un fichier de configuration par défaut
-        try:
-            with open(config_path, 'w', encoding='utf-8') as f:
-                json.dump(DEFAULT_CONFIG, f, indent=4)
-            logger.info(f"Fichier de configuration par défaut créé à {config_path}")
-        except Exception as e:
-            logger.error(f"Erreur lors de la création du fichier de configuration par défaut: {e}")
-    
-    # Charger les variables d'environnement
-    env_vars = load_env_vars()
-    env_config = env_to_config(env_vars)
+    # Charger les variables d'environnement depuis le fichier .env
+    load_dotenv(dotenv_path=config_path)
     
     # Mettre à jour la configuration avec les variables d'environnement
-    deep_update(config, env_config)
+    for key in config.keys():
+        env_value = os.getenv(key)
+        if env_value is not None:
+            # Convertir les valeurs en types appropriés
+            if isinstance(config[key], bool):
+                # Convertir les chaînes en booléens
+                config[key] = env_value.lower() in ("true", "t", "1", "yes", "y")
+            elif isinstance(config[key], int):
+                # Convertir les chaînes en entiers
+                try:
+                    config[key] = int(env_value)
+                except ValueError:
+                    logging.warning(f"Valeur invalide pour {key}: {env_value}. Utilisation de la valeur par défaut: {config[key]}")
+            elif isinstance(config[key], float):
+                # Convertir les chaînes en flottants
+                try:
+                    config[key] = float(env_value)
+                except ValueError:
+                    logging.warning(f"Valeur invalide pour {key}: {env_value}. Utilisation de la valeur par défaut: {config[key]}")
+            else:
+                # Pour les chaînes et autres types
+                config[key] = env_value
+    
+    # Stocker la configuration dans le singleton
+    _config_instance = config
     
     return config
 
-def save(config: Dict[str, Any], config_path: Optional[str] = None) -> bool:
+def get_config() -> Config:
     """
-    Sauvegarde la configuration du GBPBot
+    Retourne la configuration actuelle. La charge si ce n'est pas déjà fait.
+    
+    Returns:
+        Dict[str, Any]: La configuration actuelle.
+    """
+    global _config_instance
+    
+    if _config_instance is None:
+        _config_instance = load_config()
+    
+    return _config_instance
+
+def update_config(updates: Dict[str, Any]) -> Config:
+    """
+    Met à jour la configuration avec de nouvelles valeurs.
     
     Args:
-        config: Configuration à sauvegarder
-        config_path: Chemin vers le fichier de configuration (optionnel)
+        updates: Dictionnaire des mises à jour à appliquer.
         
     Returns:
-        bool: True si la sauvegarde a réussi, False sinon
+        Dict[str, Any]: La configuration mise à jour.
     """
-    if config_path is None:
-        config_path = DEFAULT_CONFIG_PATH
+    global _config_instance
     
-    # Assurer que le répertoire de configuration existe
-    ensure_config_dir()
+    if _config_instance is None:
+        _config_instance = load_config()
+    
+    # Mettre à jour la configuration
+    for key, value in updates.items():
+        if key in _config_instance:
+            _config_instance[key] = value
+    
+    return _config_instance
+
+def save_config(config_path: Optional[str] = None) -> bool:
+    """
+    Sauvegarde la configuration actuelle dans le fichier .env.
+    
+    Args:
+        config_path: Chemin optionnel vers un fichier de configuration spécifique.
+        
+    Returns:
+        bool: True si la sauvegarde a réussi, False sinon.
+    """
+    global _config_instance
+    
+    if _config_instance is None:
+        _config_instance = load_config()
+    
+    # Déterminer le chemin du fichier .env
+    if config_path is None:
+        # Rechercher le fichier .env dans le répertoire courant et les répertoires parents
+        current_dir = Path.cwd()
+        env_path = None
+        
+        # Rechercher dans le répertoire courant et jusqu'à 3 niveaux au-dessus
+        for i in range(4):
+            test_path = current_dir / ".env"
+            if test_path.exists():
+                env_path = test_path
+                break
+            current_dir = current_dir.parent
+        
+        if env_path is not None:
+            config_path = str(env_path)
+        else:
+            config_path = ".env"  # Créer le fichier dans le répertoire courant
     
     try:
-        # Créer une sauvegarde du fichier existant
+        # Lire le fichier .env existant
+        env_lines: Dict[str, str] = {}
         if os.path.exists(config_path):
-            backup_path = f"{config_path}.bak"
-            try:
-                with open(config_path, 'r', encoding='utf-8') as src:
-                    with open(backup_path, 'w', encoding='utf-8') as dst:
-                        dst.write(src.read())
-                logger.info(f"Sauvegarde de la configuration créée à {backup_path}")
-            except Exception as e:
-                logger.warning(f"Impossible de créer une sauvegarde de la configuration: {e}")
+            with open(config_path, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        key, value = line.split("=", 1)
+                        env_lines[key.strip()] = value.strip()
         
-        # Sauvegarder la nouvelle configuration
-        with open(config_path, 'w', encoding='utf-8') as f:
-            json.dump(config, f, indent=4)
+        # Mettre à jour les valeurs
+        for key, value in _config_instance.items():
+            env_lines[key] = str(value)
         
-        logger.info(f"Configuration sauvegardée à {config_path}")
+        # Écrire le fichier .env
+        with open(config_path, "w") as f:
+            f.write("# Configuration GBPBot\n")
+            f.write("# Généré automatiquement\n\n")
+            
+            # Écrire les variables d'environnement par sections
+            
+            # Configuration générale
+            f.write("# Configuration générale\n")
+            for key in ["DEBUG", "LOG_LEVEL", "ENVIRONMENT"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Configuration Solana
+            f.write("# Configuration Solana\n")
+            for key in ["SOLANA_RPC_URL", "SOLANA_PRIVATE_KEY"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Configuration AVAX
+            f.write("# Configuration AVAX\n")
+            for key in ["AVAX_RPC_URL", "AVAX_PRIVATE_KEY"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Configuration Sonic
+            f.write("# Configuration Sonic\n")
+            for key in ["SONIC_RPC_URL", "SONIC_PRIVATE_KEY"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Paramètres trading
+            f.write("# Paramètres trading\n")
+            for key in ["MAX_SLIPPAGE", "GAS_PRIORITY", "MAX_TRANSACTION_AMOUNT", 
+                       "ENABLE_SNIPING", "ENABLE_ARBITRAGE", "ENABLE_AUTO_MODE"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Sécurité
+            f.write("# Sécurité\n")
+            for key in ["REQUIRE_CONTRACT_ANALYSIS", "ENABLE_STOP_LOSS", 
+                       "DEFAULT_STOP_LOSS_PERCENTAGE"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Interface utilisateur
+            f.write("# Interface utilisateur\n")
+            for key in ["ENABLE_WEB_DASHBOARD", "WEB_DASHBOARD_PORT"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # IA et Machine Learning
+            f.write("# IA et Machine Learning\n")
+            for key in ["ENABLE_AI_ANALYSIS", "USE_LOCAL_MODELS", 
+                       "USE_OPENAI_API", "OPENAI_API_KEY"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+            f.write("\n")
+            
+            # Configuration avancée
+            f.write("# Configuration avancée\n")
+            for key in ["MEMPOOL_MONITORING", "MEV_PROTECTION", "ENABLE_ANTI_RUGPULL"]:
+                if key in env_lines:
+                    f.write(f"{key}={env_lines[key]}\n")
+        
+        logging.info(f"Configuration sauvegardée dans {config_path}")
         return True
+    
     except Exception as e:
-        logger.error(f"Erreur lors de la sauvegarde de la configuration: {e}")
+        logging.error(f"Erreur lors de la sauvegarde de la configuration: {e}")
         return False
 
-def deep_update(target: Dict[str, Any], source: Dict[str, Any]) -> Dict[str, Any]:
+def reset_config() -> Config:
     """
-    Met à jour récursivement un dictionnaire avec les valeurs d'un autre
+    Réinitialise la configuration aux valeurs par défaut.
     
-    Args:
-        target: Dictionnaire cible
-        source: Dictionnaire source
-        
     Returns:
-        Dict[str, Any]: Dictionnaire cible mis à jour
+        Dict[str, Any]: La configuration réinitialisée.
     """
-    for key, value in source.items():
-        if key in target and isinstance(target[key], dict) and isinstance(value, dict):
-            deep_update(target[key], value)
-        else:
-            target[key] = value
+    global _config_instance
     
-    return target
+    _config_instance = DEFAULT_CONFIG.copy()
+    
+    return _config_instance
 
-def get_config_value(config: Dict[str, Any], path: List[str], default: Any = None) -> Any:
-    """
-    Récupère une valeur dans la configuration en suivant un chemin
-    
-    Args:
-        config: Configuration
-        path: Chemin vers la valeur
-        default: Valeur par défaut si le chemin n'existe pas
-        
-    Returns:
-        Any: Valeur trouvée ou valeur par défaut
-    """
-    current = config
-    for key in path:
-        if key in current:
-            current = current[key]
-        else:
-            return default
-    
-    return current
-
-def set_config_value(config: Dict[str, Any], path: List[str], value: Any) -> Dict[str, Any]:
-    """
-    Définit une valeur dans la configuration en suivant un chemin
-    
-    Args:
-        config: Configuration
-        path: Chemin vers la valeur
-        value: Nouvelle valeur
-        
-    Returns:
-        Dict[str, Any]: Configuration mise à jour
-    """
-    if not path:
-        return config
-    
-    current = config
-    for i, key in enumerate(path):
-        if i == len(path) - 1:
-            current[key] = value
-        else:
-            if key not in current:
-                current[key] = {}
-            current = current[key]
-    
-    return config 
+# Initialiser la configuration au démarrage du module
+if _config_instance is None:
+    try:
+        _config_instance = load_config()
+    except Exception as e:
+        logging.error(f"Erreur lors du chargement de la configuration: {e}")
+        _config_instance = DEFAULT_CONFIG.copy() 
