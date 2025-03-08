@@ -8,6 +8,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![Version](https://img.shields.io/badge/version-0.1.0-green)
+![Security](https://img.shields.io/badge/security-codeql-green)
 
 GBPBot est un bot de trading avancé conçu pour maximiser les profits dans l'écosystème des MEME coins sur Solana, AVAX et Sonic. Il intègre des fonctionnalités d'arbitrage, de sniping et de MEV/frontrunning avec une optimisation continue basée sur l'intelligence artificielle.
 
@@ -209,6 +210,63 @@ Pour exécuter les tests:
 pytest -xvs tests/
 ```
 
+## 🔒 Sécurité et Qualité du Code
+
+GBPBot intègre des pratiques d'analyse de code automatisée pour garantir une qualité et une sécurité optimales. Nous avons mis en place plusieurs outils pour analyser en continu la qualité et la sécurité du code.
+
+### Analyse Automatisée du Code
+
+Nous utilisons les outils suivants pour maintenir la qualité et la sécurité du code :
+
+1. **CodeQL** - Analyse sémantique puissante pour détecter les vulnérabilités et les bugs
+2. **SonarQube** - Analyse approfondie de la qualité et de la sécurité du code
+3. **Dependabot** - Surveillance automatique des dépendances pour détecter les vulnérabilités
+4. **Bandit** - Détection des vulnérabilités spécifiques à Python
+5. **Safety** - Vérification des dépendances Python pour les vulnérabilités connues
+
+### Intégration CI/CD
+
+Notre pipeline d'intégration continue vérifie automatiquement la qualité et la sécurité du code à chaque commit ou pull request :
+
+- **Analyse statique** - Détection des bugs et des vulnérabilités
+- **Tests automatisés** - Vérification de la fonctionnalité correcte
+- **Couverture de code** - Suivi de la couverture des tests
+- **Vérification des dépendances** - Détection des versions obsolètes ou vulnérables
+
+### Exécuter l'Analyse Localement
+
+Les développeurs peuvent exécuter les mêmes analyses localement avant de soumettre leur code :
+
+Sous Linux/macOS :
+```bash
+chmod +x analyse_locale.sh
+./analyse_locale.sh
+```
+
+Sous Windows :
+```bash
+.\analyse_locale.ps1
+```
+
+Ces scripts exécutent une suite d'analyses comprenant Bandit, Pylint, Safety, et Ruff, générant des rapports détaillés que vous pouvez consulter.
+
+### Résultats de l'Analyse
+
+Les résultats des analyses sont disponibles :
+- Dans les rapports générés localement
+- Dans l'onglet "Security" du dépôt GitHub
+- Dans le dashboard Codiga connecté au projet
+- Dans le dashboard SonarQube connecté au projet
+
+### Bonnes Pratiques de Sécurité
+
+GBPBot implémente les meilleures pratiques de sécurité pour le trading de cryptomonnaies :
+- Détection des secrets et des clés privées dans le code
+- Vérification des contrats avant interaction
+- Protection contre les rug pulls et les honeypots
+- Validation des transactions avant exécution
+- Gestion sécurisée des clés privées
+
 ## 📝 Licence
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
@@ -224,6 +282,7 @@ Le trading de crypto-monnaies comporte des risques significatifs. N'investissez 
 - [x] Module de sniping de tokens
 - [x] Mode automatique avec ML
 - [x] Méthodes de lancement unifiées
+- [x] Intégration d'outils d'analyse de code et de sécurité
 - [ ] Interface web avancée
 - [ ] Support multicompte
 - [ ] Intégration de nouveaux DEX (Raydium v2, Uniswap v4)

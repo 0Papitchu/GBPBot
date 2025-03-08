@@ -1,0 +1,62 @@
+version: "1.0"
+
+# Configuration générale de l'analyse Codiga
+rulesets:
+  - python-security
+  - python-best-practices
+  - python-code-style
+  - python-performance
+
+# Configuration spécifique au projet GBPBot
+ignore:
+  - "venv/**"
+  - "venv_310/**"
+  - "venv_new/**"
+  - "env/**"
+  - "**/*.md"
+  - "logs/**"
+
+analysis:
+  # Plugins et analyseurs spécifiques
+  plugins:
+    - bandit
+    - pylint
+    - ruff
+    - safety
+  
+  # Configurations spécifiques à la blockchain et au trading
+  custom_checks:
+    # Vérifier la sécurité des opérations blockchain
+    - name: blockchain_security
+      pattern: "private_key|wallet_key|secret_key"
+      message: "Ne jamais stocker de clés privées en dur dans le code"
+      severity: "critical"
+      
+    # Vérifier les bonnes pratiques pour les transactions financières
+    - name: financial_transactions
+      pattern: "execute_trade|send_transaction|transfer_funds"
+      message: "Vérifier que toutes les transactions sont protégées par des vérifications de sécurité"
+      severity: "error"
+      
+    # Détection des points d'entrée potentiels pour les attaques
+    - name: injection_prevention
+      pattern: "eval\(|exec\(|subprocess\.call\(|subprocess\.Popen\("
+      message: "Éviter l'exécution de code dynamique pour prévenir les injections"
+      severity: "critical"
+      
+    # Vérification des erreurs de concurrence dans les appels asynchrones
+    - name: async_concurrency
+      pattern: "await.*await"
+      message: "Vérifier les patterns de concurrence dans les appels asynchrones"
+      severity: "warning"
+
+# Métriques de qualité
+metrics:
+  cyclomatic_complexity:
+    threshold: 15
+  maintainability_index:
+    threshold: 65
+  code_duplication:
+    threshold: 10
+  method_length:
+    threshold: 50 

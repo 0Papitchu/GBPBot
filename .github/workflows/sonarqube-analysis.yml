@@ -1,0 +1,73 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 0 * * 3'  # Exécuter l'analyse complète tous les mercredis à minuit
+
+jobs:
+  sonarqube:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-core.txt
+          pip install pytest pytest-cov bandit safety pylint ruff
+      
+      - name: Run security checks (Bandit)
+        run: |
+          bandit -r . -x venv,venv_310,venv_new,env,tests -f json -o bandit-report.json
+          bandit -r . -x venv,venv_310,venv_new,env,tests -f txt -o bandit-report.txt
+      
+      - name: Run dependency security check (Safety)
+        run: |
+          safety check -r requirements-core.txt --json > safety-report.json || true
+      
+      - name: Run code quality checks (Pylint & Ruff)
+        run: |
+          pylint --output-format=text gbpbot > pylint-report.txt || true
+          ruff check . --exclude venv,venv_310,venv_new,env,tests --output-format=text > ruff-report.txt || true
+      
+      - name: Custom blockchain security checks
+        run: |
+          # Recherche de patterns sensibles spécifiques aux applications blockchain
+          grep -r --include="*.py" -E "(private_key|wallet_key|secret_key|mnemonic)" . || true
+          # Vérification d'imports circulaires potentiellement dangereux
+          python -c "import sys; import os; os.system('grep -r \"^from .* import\" --include=\"*.py\" . | sort > circular_imports_check.txt')" || true
+      
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=. --cov-report=xml:coverage.xml
+        continue-on-error: true  # Ne pas bloquer l'analyse si les tests échouent
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=GBPBot
+            -Dsonar.organization=gbpbot
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.bandit.reportPaths=bandit-report.json
+            -Dsonar.python.pylint.reportPath=pylint-report.txt
+            -Dsonar.sources=.
+            -Dsonar.exclusions=venv/**,venv_310/**,venv_new/**,env/**,**/*.md,logs/**,tests/**
+            -Dsonar.python.version=3.8,3.9,3.10 

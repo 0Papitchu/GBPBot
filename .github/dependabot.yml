@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # Maintenir les dépendances Python
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    target-branch: "dev"
+    labels:
+      - "dependencies"
+      - "security"
+    # Configuration des mises à jour de sécurité
+    # Prioriser les mises à jour de sécurité
+    allow:
+      - dependency-type: "all"
+    ignore:
+      # Ignorer les mises à jour mineures qui ne sont pas liées à la sécurité
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    # Augmenter la portée des pull requests pour grouper les mises à jour de sécurité
+    groups:
+      security-patches:
+        dependency-type: "production"
+        update-types:
+          - "security"
+  
+  # Maintenir les actions GitHub
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "ci/cd"
+      - "dependencies" 

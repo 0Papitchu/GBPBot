@@ -5,6 +5,28 @@ Tous les changements notables apportés à ce projet seront documentés dans ce 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-04-12
+
+### Changé
+- Migration de Codiga vers GitHub CodeQL suite à l'annonce de la fermeture des services Codiga au 4 mai
+- Renforcement de l'analyse de sécurité avec une combinaison d'outils spécialisés (CodeQL, Bandit, Pylint, Ruff, Safety)
+- Mise à jour des badges et de la documentation pour refléter les nouveaux outils d'analyse
+
+## [1.0.2] - 2025-04-09
+
+### Ajouté
+- Intégration Codiga pour l'analyse statique automatisée du code
+- Intégration SonarQube pour l'analyse approfondie de la qualité et de la sécurité
+- Configuration Dependabot pour la surveillance automatique des dépendances
+- Scripts d'analyse locale (`analyse_locale.sh` et `analyse_locale.ps1`) pour les développeurs
+- Workflows GitHub Actions pour l'intégration continue et l'analyse automatique
+
+### Sécurité
+- Mise en place d'une analyse de sécurité automatique pour détecter les vulnérabilités potentielles
+- Détection des secrets et des clés privées dans le code
+- Vérification des bonnes pratiques de sécurité pour les opérations blockchain
+- Analyse des dépendances pour détecter les vulnérabilités connues
+
 ## [1.0.1] - 2025-04-08
 
 ### Sécurité

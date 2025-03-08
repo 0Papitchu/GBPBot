@@ -1,0 +1,35 @@
+name: "CodeQL Config GBPBot"
+
+queries:
+  # Inclure toutes les requêtes de sécurité et qualité
+  - uses: security-and-quality
+  # Ajouter des requêtes étendues pour une analyse approfondie
+  - uses: security-extended
+
+paths:
+  # Limiter l'analyse aux chemins pertinents
+  - gbpbot
+  - scripts
+  - modules
+  - core
+
+paths-ignore:
+  # Exclure les dossiers non pertinents
+  - venv
+  - venv_310
+  - venv_new
+  - env
+  - tests
+  - logs
+  - docs
+  - "**/*.md"
+  - "**/*.txt"
+
+# Configuration spécifique à Python
+python:
+  # Activer l'analyse de dépendances
+  setup-python-dependencies: true
+  # Inclure les tests dans l'analyse du code
+  include-tests: false
+  # Versions de Python à prendre en compte
+  python-version: 3.8, 3.9, 3.10, 3.11 
