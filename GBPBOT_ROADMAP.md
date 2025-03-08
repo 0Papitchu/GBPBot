@@ -18,6 +18,8 @@ Développer un système de trading automatisé ultra-rapide, furtif et intellige
 - ✅ Adaptation intelligente des stratégies en fonction des résultats passés
 - ✅ **Intégration d'IA pour l'analyse de marché et la prise de décision**
 - ✅ **Utilisation de modèles LLM pour améliorer la détection des scams**
+- ✅ **Analyse de code automatisée avec CodeQL pour la sécurité**
+- ✅ **Intégration continue avec SonarCloud pour la qualité du code**
 
 ## 📊 Architecture Système
 
@@ -551,3 +553,25 @@ Le GBPBot est conçu comme un système de trading privé, discret et hautement o
    - ✅ Interface CLI robuste
    - ✅ Interface web (Dashboard)
    - ✅ Interface Telegram sécurisée 
+
+## 🔒 Sécurité et Qualité du Code (NOUVEAU)
+
+### 1. Analyse Statique et Dynamique
+- ✅ **Intégration de CodeQL** pour l'analyse de sécurité automatisée
+- ✅ **Configuration SonarCloud** pour la qualité du code
+- ✅ Analyse hebdomadaire complète du code
+- ✅ Détection des vulnérabilités spécifiques aux applications blockchain
+- ✅ Vérification des dépendances avec Safety
+
+### 2. Bonnes Pratiques de Développement
+- ✅ Documentation complète des processus de sécurité
+- ✅ Guides d'utilisation pour les outils d'analyse
+- ✅ Intégration dans le workflow de développement
+- ✅ Alertes automatiques pour les problèmes critiques
+- ✅ Résolution proactive des vulnérabilités
+
+### 3. Prochaines Étapes
+- ⬜ Mise en place de tests de pénétration automatisés
+- ⬜ Audit de sécurité externe
+- ⬜ Certification de sécurité blockchain
+- ⬜ Programme de bug bounty 

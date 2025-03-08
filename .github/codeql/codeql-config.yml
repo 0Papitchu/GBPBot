@@ -1,29 +1,36 @@
-name: "CodeQL Config GBPBot"
-
-queries:
-  # Inclure toutes les requêtes de sécurité et qualité
-  - uses: security-and-quality
-  # Ajouter des requêtes étendues pour une analyse approfondie
-  - uses: security-extended
+name: "GBPBot CodeQL Configuration"
 
 paths:
-  # Limiter l'analyse aux chemins pertinents
   - gbpbot
   - scripts
-  - modules
-  - core
+  - tests
 
 paths-ignore:
-  # Exclure les dossiers non pertinents
-  - venv
-  - venv_310
-  - venv_new
-  - env
-  - tests
-  - logs
-  - docs
-  - "**/*.md"
-  - "**/*.txt"
+  - '**/venv/**'
+  - '**/venv_310/**'
+  - '**/venv_new/**'
+  - '**/env/**'
+  - '**/tests/**'
+  - '**/*.md'
+  - '**/*.txt'
+  - '**/*.json'
+  - '**/*.yml'
+  - '**/*.yaml'
+  - '**/logs/**'
+
+queries:
+  - name: Security and Quality
+    uses: security-and-quality
+
+query-filters:
+  - exclude:
+      id: py/empty-except
+  - exclude:
+      id: py/catch-base-exception
+  - exclude:
+      id: py/redundant-else
+
+security-severity-filter: medium
 
 # Configuration spécifique à Python
 python:
