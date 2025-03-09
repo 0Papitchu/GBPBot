@@ -1,4 +1,4 @@
-# Guide de Lancement du GBPBot
+# Guide de Lancement du GBPBot  
 
 Ce document explique les différentes méthodes pour lancer le GBPBot et ses composants.
 

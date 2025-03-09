@@ -154,4 +154,13 @@ Consultez le fichier `docstring_example.py` pour un exemple complet de documenta
 
 - [Documentation Sphinx](https://www.sphinx-doc.org/)
 - [Documentation du thème ReadTheDocs](https://sphinx-rtd-theme.readthedocs.io/)
-- [Guide des docstrings Google](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) 
+- [Guide des docstrings Google](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
+
+# Lancement du GBPBot - Guide simplifié
+
+## Commandes principales
+- Lancer le bot: `python gbpbot_cli_bridge.py`
+- Configurer le fichier .env: `python scripts/update_env.py`
+
+## Options supplémentaires
+Pour les options avancées, consultez le menu intégré au lancement du bot. 

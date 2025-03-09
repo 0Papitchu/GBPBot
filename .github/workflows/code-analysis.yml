@@ -1,0 +1,66 @@
+name: "Code Analysis"
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 0 * * 1'  # Exécuter l'analyse complète tous les lundis à minuit
+
+jobs:
+  python-analysis:
+    name: Python Security & Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements-core.txt ]; then pip install -r requirements-core.txt; fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install bandit pylint ruff safety
+      
+      - name: Run Bandit (Security Analysis)
+        run: |
+          mkdir -p reports
+          bandit -r gbpbot -x venv,venv_310,venv_new,env,tests -f json -o reports/bandit-report.json
+          bandit -r gbpbot -x venv,venv_310,venv_new,env,tests -f html -o reports/bandit-report.html
+      
+      - name: Run Pylint (Code Quality)
+        run: |
+          pylint --output-format=text gbpbot > reports/pylint-report.txt || true
+      
+      - name: Run Ruff (Fast Linter)
+        run: |
+          ruff check gbpbot --output-format=text > reports/ruff-report.txt || true
+      
+      - name: Run Safety (Dependency Check)
+        run: |
+          safety check -r requirements.txt --json > reports/safety-report.json || true
+          safety check -r requirements.txt --full-report > reports/safety-report.txt || true
+      
+      - name: Custom blockchain security checks
+        run: |
+          # Recherche de patterns sensibles spécifiques aux applications blockchain
+          mkdir -p reports/custom
+          grep -r --include="*.py" -E "(private_key|wallet_key|secret_key|mnemonic)" gbpbot > reports/custom/sensitive-patterns.txt || true
+          # Vérification d'imports circulaires potentiellement dangereux
+          python -c "import sys; import os; os.system('grep -r \"^from .* import\" --include=\"*.py\" gbpbot | sort > reports/custom/circular_imports_check.txt')" || true
+      
+      - name: Upload analysis reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: reports/
+          retention-days: 7 

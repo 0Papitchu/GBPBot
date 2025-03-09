@@ -30,6 +30,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-core.txt
           pip install pytest pytest-cov
+          pip install bandit
+          bandit -r gbpbot -f html -o bandit-report.html
+          pip install pylint ruff
+          pylint gbpbot
+          ruff check gbpbot
+          pip install safety
+          safety check -r requirements.txt
       
       - name: Run tests with coverage
         run: |

@@ -453,6 +453,248 @@ class CrossDEXArbitrageStrategy:
             }
         }
 
+# Ajouter une fonction pour calculer la rentabilité d'un arbitrage avec prise en compte de tous les frais
+async def calculate_arbitrage_profitability(
+    buy_dex_data: Dict[str, Any],
+    sell_dex_data: Dict[str, Any],
+    token_data: Dict[str, Any],
+    amount_in: float,
+    gas_price: Optional[float] = None,
+    slippage_tolerance: float = 0.5,
+    min_profit_threshold_usd: float = 1.0
+) -> Dict[str, Any]:
+    """
+    Calcule la rentabilité d'un arbitrage entre deux DEX avec prise en compte de tous les frais.
+    
+    Args:
+        buy_dex_data: Données du DEX d'achat
+        sell_dex_data: Données du DEX de vente
+        token_data: Données du token
+        amount_in: Montant d'entrée en SOL/AVAX/etc.
+        gas_price: Prix du gas (optionnel, sera estimé si non fourni)
+        slippage_tolerance: Tolérance de slippage en pourcentage
+        min_profit_threshold_usd: Seuil minimum de profit en USD
+        
+    Returns:
+        Dict[str, Any]: Résultats du calcul de rentabilité
+    """
+    try:
+        # Extraire les données nécessaires
+        buy_price = buy_dex_data["price"]
+        sell_price = sell_dex_data["price"]
+        buy_dex_name = buy_dex_data["dex_name"]
+        sell_dex_name = sell_dex_data["dex_name"]
+        
+        # Calculer les frais de trading
+        buy_fee_percent = buy_dex_data.get("fee_percent", 0.3)  # Par défaut 0.3% (comme Uniswap)
+        sell_fee_percent = sell_dex_data.get("fee_percent", 0.3)
+        
+        # Calculer l'impact de marché (simplification)
+        buy_liquidity = buy_dex_data.get("liquidity", 0)
+        sell_liquidity = sell_dex_data.get("liquidity", 0)
+        
+        # Estimer l'impact de marché en fonction de la liquidité
+        # Plus la liquidité est élevée, plus l'impact est faible
+        buy_market_impact_percent = min(5.0, (amount_in / buy_liquidity) * 100) if buy_liquidity > 0 else 5.0
+        sell_market_impact_percent = min(5.0, (amount_in / sell_liquidity) * 100) if sell_liquidity > 0 else 5.0
+        
+        # Ajuster les prix avec l'impact de marché et le slippage
+        effective_buy_price = buy_price * (1 + (buy_market_impact_percent + slippage_tolerance) / 100)
+        effective_sell_price = sell_price * (1 - (sell_market_impact_percent + slippage_tolerance) / 100)
+        
+        # Calculer le montant de tokens obtenu après l'achat
+        tokens_received = (amount_in / effective_buy_price) * (1 - buy_fee_percent / 100)
+        
+        # Calculer le montant de base obtenu après la vente
+        amount_out = tokens_received * effective_sell_price * (1 - sell_fee_percent / 100)
+        
+        # Estimer les frais de gas
+        if gas_price is None:
+            # Estimer le prix du gas en fonction de la blockchain
+            blockchain = token_data.get("blockchain", "solana").lower()
+            if blockchain == "solana":
+                gas_price = 0.000005  # SOL par transaction (estimation)
+            elif blockchain == "avalanche":
+                gas_price = 0.00005  # AVAX par transaction (estimation)
+            else:
+                gas_price = 0.0001  # Valeur par défaut
+        
+        # Calculer le coût total du gas (2 transactions: achat et vente)
+        gas_cost = gas_price * 2
+        
+        # Calculer le profit brut et net
+        profit_gross = amount_out - amount_in
+        profit_net = profit_gross - gas_cost
+        
+        # Calculer le ROI
+        roi_percent = (profit_net / amount_in) * 100 if amount_in > 0 else 0
+        
+        # Estimer la valeur en USD
+        usd_price = token_data.get("usd_price", 0)
+        if usd_price == 0:
+            # Essayer d'estimer à partir du prix en SOL/AVAX
+            base_usd_price = token_data.get("base_usd_price", 0)
+            usd_price = buy_price * base_usd_price
+        
+        profit_net_usd = profit_net * token_data.get("base_usd_price", 0)
+        
+        # Déterminer si l'arbitrage est rentable
+        is_profitable = profit_net > 0 and profit_net_usd >= min_profit_threshold_usd
+        
+        # Calculer le temps d'exécution estimé
+        execution_time_ms = 500  # Estimation par défaut
+        
+        # Prendre en compte la congestion du réseau
+        network_congestion = token_data.get("network_congestion", "normal")
+        if network_congestion == "high":
+            execution_time_ms *= 2
+        elif network_congestion == "low":
+            execution_time_ms *= 0.8
+        
+        # Résultats
+        return {
+            "is_profitable": is_profitable,
+            "profit_gross": profit_gross,
+            "profit_net": profit_net,
+            "profit_net_usd": profit_net_usd,
+            "roi_percent": roi_percent,
+            "gas_cost": gas_cost,
+            "execution_time_ms": execution_time_ms,
+            "buy_dex": buy_dex_name,
+            "sell_dex": sell_dex_name,
+            "effective_buy_price": effective_buy_price,
+            "effective_sell_price": effective_sell_price,
+            "tokens_received": tokens_received,
+            "amount_in": amount_in,
+            "amount_out": amount_out,
+            "buy_market_impact_percent": buy_market_impact_percent,
+            "sell_market_impact_percent": sell_market_impact_percent,
+            "buy_fee_percent": buy_fee_percent,
+            "sell_fee_percent": sell_fee_percent
+        }
+    
+    except Exception as e:
+        logger.error(f"Erreur lors du calcul de rentabilité: {str(e)}")
+        return {
+            "is_profitable": False,
+            "error": str(e)
+        }
+
+# Ajouter une fonction pour exécuter un arbitrage de manière atomique
+async def execute_atomic_arbitrage(
+    buy_dex_client,
+    sell_dex_client,
+    token_address: str,
+    base_token_address: str,
+    amount_in: float,
+    wallet_keypair,
+    slippage_tolerance: float = 0.5,
+    deadline_seconds: int = 60,
+    mev_optimizer = None
+) -> Dict[str, Any]:
+    """
+    Exécute un arbitrage de manière atomique entre deux DEX.
+    
+    Args:
+        buy_dex_client: Client du DEX d'achat
+        sell_dex_client: Client du DEX de vente
+        token_address: Adresse du token
+        base_token_address: Adresse du token de base (SOL, AVAX, etc.)
+        amount_in: Montant d'entrée en token de base
+        wallet_keypair: Keypair du wallet
+        slippage_tolerance: Tolérance de slippage en pourcentage
+        deadline_seconds: Délai d'expiration en secondes
+        mev_optimizer: Optimiseur MEV (optionnel)
+        
+    Returns:
+        Dict[str, Any]: Résultats de l'arbitrage
+    """
+    try:
+        # Créer une transaction atomique (toutes les opérations réussissent ou échouent ensemble)
+        # Note: L'implémentation exacte dépend de la blockchain et des DEX utilisés
+        
+        # Pour Solana, nous pouvons utiliser une seule transaction avec plusieurs instructions
+        if hasattr(buy_dex_client, "create_swap_instruction") and hasattr(sell_dex_client, "create_swap_instruction"):
+            # Créer une transaction Solana
+            from solana.transaction import Transaction
+            
+            # Créer la transaction
+            transaction = Transaction()
+            
+            # Ajouter l'instruction d'achat
+            buy_instruction = await buy_dex_client.create_swap_instruction(
+                wallet_public_key=wallet_keypair.public_key,
+                token_address=token_address,
+                base_token_address=base_token_address,
+                amount_in=amount_in,
+                slippage_tolerance=slippage_tolerance
+            )
+            transaction.add(buy_instruction)
+            
+            # Ajouter l'instruction de vente
+            # Note: Nous devons calculer le montant de tokens reçus après l'achat
+            # Ceci est une simplification, dans un cas réel, nous devrions utiliser des comptes éphémères
+            # ou d'autres mécanismes pour garantir l'atomicité
+            sell_instruction = await sell_dex_client.create_swap_instruction(
+                wallet_public_key=wallet_keypair.public_key,
+                token_address=token_address,
+                base_token_address=base_token_address,
+                amount_in=0,  # Sera calculé dynamiquement dans l'instruction
+                is_exact_out=True,
+                slippage_tolerance=slippage_tolerance
+            )
+            transaction.add(sell_instruction)
+            
+            # Ajouter une instruction de deadline pour éviter les transactions en attente trop longtemps
+            # Cette partie dépend de l'implémentation spécifique
+            
+            # Signer la transaction
+            transaction.sign(wallet_keypair)
+            
+            # Envoyer la transaction avec optimisation MEV si disponible
+            if mev_optimizer:
+                success, result = await mev_optimizer.send_transaction_via_jito(
+                    transaction=transaction,
+                    expected_profit=None  # Le profit attendu pourrait être calculé à partir de l'analyse de rentabilité
+                )
+            else:
+                # Envoyer la transaction normalement
+                # Cette partie dépend de l'implémentation spécifique
+                success, result = await buy_dex_client.connection.send_transaction(
+                    transaction,
+                    wallet_keypair
+                )
+            
+            if success:
+                return {
+                    "success": True,
+                    "transaction_id": result,
+                    "amount_in": amount_in,
+                    "buy_dex": buy_dex_client.dex_name,
+                    "sell_dex": sell_dex_client.dex_name
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": result
+                }
+        
+        # Pour d'autres blockchains, nous pourrions avoir besoin d'autres approches
+        # Par exemple, pour Ethereum/Avalanche, nous pourrions utiliser un contrat flash loan
+        else:
+            # Implémentation pour d'autres blockchains
+            # Cette partie dépend de l'implémentation spécifique
+            return {
+                "success": False,
+                "error": "Méthode non implémentée pour cette blockchain"
+            }
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de l'exécution de l'arbitrage atomique: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 # Fonction utilitaire pour créer facilement une instance de la stratégie
 def create_cross_dex_arbitrage_strategy(blockchain_clients: Dict[str, Any] = None, config: Dict = None) -> CrossDEXArbitrageStrategy:

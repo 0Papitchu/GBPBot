@@ -82,63 +82,106 @@ GBPBot est un bot de trading automatisé pour les crypto-monnaies, spécialisé 
 
 ### 3.1 Fichier .env
 
-Le fichier `.env` contient toutes les variables d'environnement nécessaires au fonctionnement du bot. Voici les principales variables à configurer:
+Le fichier `.env` contient toutes les variables d'environnement nécessaires au fonctionnement du bot. La configuration de l'environnement est une étape cruciale pour la sécurité et le bon fonctionnement du GBPBot.
 
-#### Connexion blockchain
+#### Types de fichiers d'environnement
 
+GBPBot utilise plusieurs types de fichiers d'environnement :
+
+- `.env` : Configuration principale utilisée par le bot
+- `.env.local` : Configuration locale avec vos données sensibles (non commité dans Git)
+- `.env.example` : Modèle de configuration sans données sensibles
+- `.env.backup_*` : Sauvegardes automatiques de votre configuration
+- `.env.optimized` : Configuration avec paramètres de performance optimisés
+
+#### Outils de gestion des fichiers d'environnement
+
+GBPBot fournit des outils pour gérer vos fichiers d'environnement :
+
+- **Windows** : Utilisez `configure_env.bat` à la racine du projet
+- **Linux/Mac** : Utilisez `python scripts/setup_env.py [commande]`
+
+Ces outils vous permettent de :
+- Créer des sauvegardes de votre `.env`
+- Initialiser `.env` à partir de `.env.local`
+- Valider vos configurations
+
+#### Configuration initiale
+
+Pour configurer correctement GBPBot, suivez ces étapes :
+
+1. Copiez le fichier d'exemple :
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Modifiez `.env.local` avec vos informations personnelles :
+   ```bash
+   # Sur Windows
+   notepad .env.local
+   # Sur Linux/Mac
+   nano .env.local
+   ```
+
+3. Utilisez l'outil de configuration pour générer `.env` :
+   ```bash
+   # Sur Windows
+   configure_env.bat
+   # Puis sélectionnez l'option 2
+   
+   # Sur Linux/Mac
+   python scripts/setup_env.py 2
+   ```
+
+#### Variables de configuration essentielles
+
+```ini
+# CONFIGURATION GÉNÉRALE
+BOT_MODE=manual                     # manual, auto, telegram
+DEFAULT_BLOCKCHAIN=solana           # avalanche, solana
+DEBUG_MODE=false                    # active les logs détaillés
+ENVIRONMENT=development             # development, production
+LOG_LEVEL=INFO                      # DEBUG, INFO, WARNING, ERROR
+
+# CONNEXION BLOCKCHAIN
+AVALANCHE_RPC_URL=https://api.avax.network/ext/bc/C/rpc
+SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+
+# WALLETS (INFORMATIONS SENSIBLES)
+PRIVATE_KEY=your_private_key_here   # Clé privée de votre wallet
+WALLET_ADDRESS=your_address_here    # Adresse de votre wallet
+
+# CONFIGURATION TELEGRAM
+TELEGRAM_BOT_TOKEN=your_token_here  # Token du bot Telegram
+TELEGRAM_CHAT_ID=your_chat_id       # ID pour recevoir les notifications
+TELEGRAM_AUTHORIZED_USERS=user_id   # ID des utilisateurs autorisés à contrôler le bot
+
+# CONFIGURATION API
+BINANCE_API_KEY=your_api_key        # Clé API Binance
+BINANCE_API_SECRET=your_api_secret  # Secret API Binance
+
+# PARAMÈTRES DE TRADING
+MAX_SLIPPAGE=2.0                    # % max de slippage accepté
+MAX_TRADE_AMOUNT_USD=500            # Montant max par trade en USD
 ```
-# Fournisseurs Web3
-WEB3_PROVIDER_URI=https://mainnet.infura.io/v3/your-api-key
-WEB3_PROVIDER_URI_TESTNET=https://goerli.infura.io/v3/your-api-key
 
-# Wallet
-WALLET_PRIVATE_KEY=your-private-key
-WALLET_ADDRESS=your-wallet-address
-```
+#### Protection des données sensibles
 
-⚠️ **IMPORTANT**: Ne partagez jamais votre clé privée. Assurez-vous que le fichier `.env` est sécurisé et n'est pas versionné.
+⚠️ **IMPORTANT** : Les fichiers `.env` contiennent des informations sensibles et ne doivent jamais être partagés ou publiés.
 
-#### Configuration du bot
+Bonnes pratiques de sécurité :
+1. Utilisez toujours `.env.local` pour vos données sensibles
+2. N'incluez jamais `.env` ou `.env.local` dans vos dépôts Git
+3. Effectuez des sauvegardes régulières avec l'outil de configuration
+4. Utilisez des clés privées dédiées pour le bot, différentes de vos wallets principaux
+5. Limitez l'accès au bot Telegram en configurant `TELEGRAM_AUTHORIZED_USERS`
 
-```
-# Mode de fonctionnement
-SIMULATION_MODE=true
-IS_TESTNET=false
+#### Documentation détaillée
 
-# Limites
-MAX_TRADES_PER_DAY=10
-MAX_GAS_PER_TRADE=0.01
-STOP_LOSS_PERCENTAGE=10
-TAKE_PROFIT_PERCENTAGE=20
-```
-
-#### Configuration de l'API
-
-```
-# API Server
-API_HOST=127.0.0.1
-API_PORT=5000
-API_KEY=your-api-key
-API_IP_WHITELIST=127.0.0.1,192.168.1.100
-ENABLE_HTTPS=true
-```
-
-#### Alertes
-
-```
-# Alertes
-ENABLE_EMAIL_ALERTS=true
-EMAIL_FROM=alerts@gbpbot.com
-EMAIL_TO=your-email@example.com
-EMAIL_SMTP_SERVER=smtp.gmail.com
-EMAIL_SMTP_PORT=587
-EMAIL_SMTP_USER=your-email@gmail.com
-EMAIL_SMTP_PASSWORD=your-password
-
-ENABLE_TELEGRAM_ALERTS=true
-TELEGRAM_BOT_TOKEN=your-bot-token
-TELEGRAM_CHAT_ID=your-chat-id
-```
+Pour plus d'informations sur la gestion des fichiers d'environnement, consultez :
+- `docs/ENVIRONMENT_MANAGEMENT.md` : Guide complet de gestion des environnements
+- `docs/TELEGRAM_INTERFACE.md` : Configuration détaillée de l'interface Telegram
+- `docs/TROUBLESHOOTING.md` : Résolution des problèmes liés à la configuration
 
 ### 3.2 Configuration des stratégies
 

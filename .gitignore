@@ -76,7 +76,16 @@ credentials.yaml
 secrets.json
 *.key
 api_keys.json
-*.env
+# Fichiers d'environnement (contiennent des informations sensibles)
+.env
+.env.*
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.backup*
+.env.optimized
+!.env.example
 .coverage
 htmlcov/
 .pytest_cache/

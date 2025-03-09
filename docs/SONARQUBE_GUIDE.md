@@ -1,191 +1,215 @@
-# Guide d'Utilisation de SonarCloud pour GBPBot
-
-Ce guide explique comment configurer et utiliser SonarCloud pour l'analyse de code du projet GBPBot.
-
-## Table des Matières
-
-1. [Introduction](#introduction)
-2. [Configuration de SonarCloud](#configuration-de-sonarcloud)
-3. [Analyse Locale](#analyse-locale)
-4. [Interprétation des Résultats](#interprétation-des-résultats)
-5. [Résolution des Problèmes Courants](#résolution-des-problèmes-courants)
-6. [Bonnes Pratiques](#bonnes-pratiques)
+# Guide d'utilisation de SonarQube pour GBPBot
 
 ## Introduction
 
-SonarCloud est une plateforme d'analyse de code en ligne qui permet de détecter les bugs, les vulnérabilités et les problèmes de qualité de code. Pour GBPBot, nous utilisons SonarCloud pour maintenir un haut niveau de qualité et de sécurité, particulièrement important pour une application financière manipulant des cryptomonnaies.
+SonarQube est un outil puissant d'analyse de qualité de code qui permet de détecter les bugs, vulnérabilités, code smells et autres problèmes de qualité. Ce guide explique comment configurer et utiliser SonarQube Community Edition avec le projet GBPBot.
 
-### Avantages de SonarCloud pour GBPBot
+## Installation et configuration
 
-- **Détection des vulnérabilités spécifiques aux applications blockchain**
-- **Analyse continue à chaque commit et pull request**
-- **Suivi de la dette technique et de la qualité du code**
-- **Intégration avec GitHub pour une visibilité directe des problèmes**
-- **Vérification des Quality Gates pour maintenir des standards élevés**
+### 1. Installation de SonarQube Community Edition
 
-## Configuration de SonarCloud
+1. **Téléchargement**:
+   - Téléchargez SonarQube Community Edition depuis [le site officiel](https://www.sonarqube.org/downloads/)
+   - Extrayez l'archive dans un répertoire de votre choix
 
-### 1. Création d'un Compte SonarCloud
+2. **Démarrage du serveur**:
+   - **Windows**: Exécutez `<sonarqube_home>\bin\windows-x86-64\StartSonar.bat`
+   - **Linux/macOS**: Exécutez `<sonarqube_home>/bin/[OS]/sonar.sh start`
+   - Attendez que le serveur démarre (cela peut prendre quelques minutes)
+   - Accédez à l'interface web à l'adresse: http://localhost:9000
 
-1. Rendez-vous sur [SonarCloud](https://sonarcloud.io/)
-2. Connectez-vous avec votre compte GitHub
-3. Autorisez SonarCloud à accéder à vos dépôts
+3. **Première connexion**:
+   - Identifiants par défaut: admin/admin
+   - Vous serez invité à changer le mot de passe lors de la première connexion
 
-### 2. Configuration du Projet
+### 2. Installation de SonarScanner
 
-1. Dans SonarCloud, cliquez sur "+" puis "Analyze new project"
-2. Sélectionnez le dépôt GBPBot
-3. Suivez les instructions pour configurer le projet
-4. Notez votre token d'authentification SonarCloud
+Pour faciliter l'installation et la configuration de SonarScanner, GBPBot inclut des scripts d'installation automatisés:
 
-### 3. Configuration des Secrets GitHub
+- **Windows**: Exécutez `.\scripts\setup_sonarqube.ps1`
+- **Linux/macOS**: Exécutez `./scripts/setup_sonarqube.sh`
 
-Pour que l'analyse fonctionne dans GitHub Actions, vous devez configurer les secrets suivants:
+Ces scripts:
+1. Téléchargent et installent SonarScanner
+2. Créent un fichier de configuration `sonar-project.properties`
+3. Créent un script d'analyse facile à utiliser
 
-1. Allez dans les paramètres de votre dépôt GitHub
-2. Cliquez sur "Secrets and variables" puis "Actions"
-3. Ajoutez les secrets suivants:
-   - `SONAR_TOKEN`: Votre token d'authentification SonarCloud
-   - `GITHUB_TOKEN`: Automatiquement fourni par GitHub Actions
+Si vous préférez une installation manuelle:
 
-## Analyse Locale
+1. **Téléchargement**:
+   - Téléchargez SonarScanner depuis [le site officiel](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
+   - Extrayez l'archive dans un répertoire de votre choix
 
-Pour exécuter une analyse SonarCloud localement avant de soumettre votre code:
-
-### Prérequis
-
-1. Installez SonarScanner:
-   - Windows: `choco install sonarscanner-msbuild-net46`
-   - macOS: `brew install sonar-scanner`
-   - Linux: [Instructions d'installation](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
-
-2. Installez les dépendances d'analyse:
-   ```bash
-   pip install pytest pytest-cov pylint bandit
+2. **Configuration**:
+   - Créez un fichier `sonar-project.properties` à la racine du projet avec le contenu suivant:
+   ```properties
+   sonar.projectKey=GBPBot
+   sonar.projectName=GBPBot
+   sonar.projectVersion=1.0
+   sonar.sources=gbpbot
+   sonar.python.coverage.reportPaths=coverage.xml
+   sonar.exclusions=**/*.pyc,**/__pycache__/**,**/venv/**,**/tests/**,**/*.md,logs/**
+   sonar.sourceEncoding=UTF-8
+   sonar.python.version=3.8,3.9,3.10,3.11
+   sonar.host.url=http://localhost:9000
    ```
 
-### Exécution de l'Analyse
+## Exécution de l'analyse
 
-#### Méthode 1: Scripts d'Analyse Fournis
+### 1. Génération d'un token d'authentification
 
-Utilisez les scripts d'analyse locale fournis avec GBPBot:
+1. Connectez-vous à l'interface web de SonarQube (http://localhost:9000)
+2. Allez dans **Administration > Security > Users**
+3. Cliquez sur votre nom d'utilisateur
+4. Dans l'onglet **Tokens**, générez un nouveau token
+5. Copiez le token généré (il ne sera affiché qu'une seule fois)
 
-- Windows:
-  ```powershell
-  .\analyse_locale.ps1
-  ```
+### 2. Lancement de l'analyse
 
-- Linux/macOS:
-  ```bash
-  ./analyse_locale.sh
-  ```
+#### Utilisation des scripts automatisés
 
-#### Méthode 2: Analyse SonarCloud Manuelle
+- **Windows**: Exécutez `.\run_sonar_analysis.bat`
+- **Linux/macOS**: Exécutez `./run_sonar_analysis.sh`
 
-1. Générez les rapports de couverture et d'analyse:
-   ```bash
-   pytest --cov=gbpbot --cov-report=xml:coverage.xml
-   pylint gbpbot --output-format=text:pylint-report.txt
-   bandit -r gbpbot -f json -o bandit-report.json
-   ```
+Ces scripts vous demanderont votre token d'authentification et lanceront l'analyse.
 
-2. Exécutez SonarScanner:
-   ```bash
-   sonar-scanner \
-     -Dsonar.projectKey=GBPBot \
-     -Dsonar.organization=gbpbot \
-     -Dsonar.sources=. \
-     -Dsonar.host.url=https://sonarcloud.io \
-     -Dsonar.login=votre_token_sonarcloud
-   ```
+#### Lancement manuel
 
-## Interprétation des Résultats
+```bash
+# Windows
+<chemin_vers_sonar_scanner>\bin\sonar-scanner.bat -D sonar.login=VOTRE_TOKEN
 
-### Dashboard SonarCloud
+# Linux/macOS
+<chemin_vers_sonar_scanner>/bin/sonar-scanner -D sonar.login=VOTRE_TOKEN
+```
 
-Après l'analyse, consultez le dashboard SonarCloud pour voir:
+### 3. Génération de rapports de couverture de code
 
-1. **Quality Gate**: Indique si votre code répond aux standards de qualité définis
-2. **Bugs et Vulnérabilités**: Problèmes de sécurité et bugs détectés
-3. **Code Smells**: Problèmes de maintenabilité et de lisibilité
-4. **Couverture de Code**: Pourcentage de code couvert par les tests
-5. **Duplication**: Code dupliqué qui pourrait être refactorisé
+Pour inclure la couverture de code dans l'analyse, exécutez les tests avec pytest-cov avant l'analyse SonarQube:
 
-### Métriques Spécifiques à GBPBot
+```bash
+pytest --cov=gbpbot --cov-report=xml:coverage.xml
+```
 
-Pour GBPBot, portez une attention particulière à:
+## Interprétation des résultats
 
-1. **Vulnérabilités de Sécurité Blockchain**: Problèmes liés à la manipulation de clés privées et transactions
-2. **Gestion des Erreurs**: Vérifiez que toutes les exceptions sont correctement gérées
-3. **Validation des Entrées**: Assurez-vous que toutes les entrées utilisateur sont validées
-4. **Performance**: Identifiez les goulots d'étranglement potentiels dans le code
+Une fois l'analyse terminée, accédez à http://localhost:9000/dashboard?id=GBPBot pour consulter les résultats.
 
-## Résolution des Problèmes Courants
+### 1. Vue d'ensemble
 
-### Problèmes d'Analyse
+La page d'accueil du projet affiche:
+- **Quality Gate**: Indique si le projet passe les critères de qualité définis
+- **Bugs**: Problèmes qui peuvent causer des comportements incorrects
+- **Vulnerabilities**: Failles de sécurité potentielles
+- **Code Smells**: Problèmes de maintenabilité du code
+- **Coverage**: Pourcentage de code couvert par les tests
+- **Duplications**: Code dupliqué dans le projet
 
-1. **L'analyse ne démarre pas**:
-   - Vérifiez que les secrets GitHub sont correctement configurés
-   - Assurez-vous que le workflow GitHub Actions est activé
+### 2. Exploration des problèmes
 
-2. **Erreurs de couverture de code**:
-   - Vérifiez que les tests s'exécutent correctement
-   - Assurez-vous que le chemin du rapport de couverture est correct
+Cliquez sur chaque catégorie pour explorer les problèmes en détail:
 
-3. **Quality Gate en échec**:
-   - Examinez les problèmes signalés et corrigez-les
-   - Si nécessaire, ajustez les seuils de qualité dans SonarCloud
+- **Issues**: Liste tous les problèmes détectés avec leur sévérité et localisation
+- **Measures**: Métriques détaillées sur la qualité du code
+- **Code**: Vue du code source avec les problèmes surlignés
 
-### Problèmes Spécifiques à GBPBot
+### 3. Filtrage et tri
 
-1. **Faux positifs sur les clés privées**:
-   - Utilisez les annotations SonarQube pour marquer les faux positifs
-   - Assurez-vous que les clés de test sont clairement identifiées
+Vous pouvez filtrer les problèmes par:
+- **Sévérité**: Blocker, Critical, Major, Minor, Info
+- **Type**: Bug, Vulnerability, Code Smell
+- **Tag**: Security, Performance, Reliability, etc.
+- **Status**: Open, Confirmed, Resolved, etc.
 
-2. **Problèmes avec les imports circulaires**:
-   - Refactorisez le code pour éliminer les dépendances circulaires
-   - Utilisez l'import dynamique pour résoudre les problèmes persistants
+## Intégration avec les autres outils d'analyse
 
-## Bonnes Pratiques
+SonarQube peut être utilisé en complément des autres outils d'analyse déjà configurés pour GBPBot:
 
-### Pour les Développeurs GBPBot
+1. **Bandit**: Analyse de sécurité spécifique à Python
+2. **Pylint**: Analyse de qualité du code Python
+3. **Ruff**: Linter Python ultra-rapide
+4. **Safety**: Vérification des vulnérabilités dans les dépendances
 
-1. **Exécutez l'analyse locale avant de soumettre du code**:
-   ```bash
-   ./analyse_locale.sh  # ou .\analyse_locale.ps1 sur Windows
-   ```
+Pour une analyse complète, exécutez d'abord les scripts d'analyse de sécurité, puis l'analyse SonarQube:
 
-2. **Corrigez les problèmes de sécurité en priorité**:
-   - Vulnérabilités liées aux clés privées
-   - Validation des transactions
-   - Protection contre les injections
+```bash
+# Windows
+.\scripts\run_security_analysis.ps1
+.\run_sonar_analysis.bat
 
-3. **Maintenez une couverture de code élevée**:
-   - Écrivez des tests pour toutes les nouvelles fonctionnalités
-   - Mettez à jour les tests existants lors de modifications
+# Linux/macOS
+./scripts/run_security_analysis.sh
+./run_sonar_analysis.sh
+```
 
-4. **Documentez les décisions d'architecture**:
-   - Expliquez pourquoi certains choix ont été faits
-   - Documentez les compromis de sécurité si nécessaire
+## Configuration avancée
 
-### Règles Spécifiques pour le Code Blockchain
+### 1. Personnalisation des règles
 
-1. **Validation des Transactions**:
-   - Toujours simuler les transactions avant de les exécuter
-   - Vérifier les résultats attendus
+1. Connectez-vous à l'interface web de SonarQube
+2. Allez dans **Quality Profiles**
+3. Sélectionnez le profil Python
+4. Cliquez sur **Copy** pour créer une copie personnalisée
+5. Activez/désactivez les règles selon vos besoins
+6. Définissez ce profil comme profil par défaut
 
-2. **Gestion des Clés Privées**:
-   - Ne jamais hardcoder les clés privées
-   - Utiliser des variables d'environnement ou un gestionnaire de secrets
+### 2. Personnalisation des Quality Gates
 
-3. **Protection contre les Attaques**:
-   - Implémenter des protections contre le frontrunning
-   - Valider les prix avant d'exécuter des transactions
+1. Connectez-vous à l'interface web de SonarQube
+2. Allez dans **Quality Gates**
+3. Cliquez sur **Create**
+4. Définissez les conditions pour passer/échouer l'analyse
+5. Définissez cette Quality Gate comme défaut
 
-4. **Gestion des Erreurs RPC**:
-   - Implémenter des mécanismes de retry avec backoff exponentiel
-   - Gérer les timeouts et les erreurs de connexion
+### 3. Exclusion de fichiers spécifiques
 
----
+Pour exclure des fichiers ou répertoires supplémentaires, modifiez le fichier `sonar-project.properties`:
 
-Pour toute question ou suggestion concernant ce guide, n'hésitez pas à ouvrir une issue sur le dépôt GitHub. 
+```properties
+# Exclusions supplémentaires
+sonar.exclusions=**/*.pyc,**/__pycache__/**,**/venv/**,**/tests/**,**/*.md,logs/**,gbpbot/legacy/**
+```
+
+## Résolution des problèmes courants
+
+### 1. Erreur de connexion au serveur
+
+**Problème**: SonarScanner ne peut pas se connecter au serveur SonarQube.
+
+**Solution**:
+- Vérifiez que le serveur SonarQube est en cours d'exécution
+- Vérifiez l'URL du serveur dans `sonar-project.properties`
+- Vérifiez que le port 9000 n'est pas bloqué par un pare-feu
+
+### 2. Erreur d'authentification
+
+**Problème**: SonarScanner ne peut pas s'authentifier auprès du serveur.
+
+**Solution**:
+- Vérifiez que le token est correct
+- Générez un nouveau token si nécessaire
+- Vérifiez que l'utilisateur associé au token a les permissions nécessaires
+
+### 3. Analyse incomplète
+
+**Problème**: Certains fichiers ne sont pas analysés.
+
+**Solution**:
+- Vérifiez les exclusions dans `sonar-project.properties`
+- Vérifiez que les fichiers sont dans le répertoire spécifié par `sonar.sources`
+- Vérifiez les logs d'analyse pour des erreurs spécifiques
+
+## Ressources supplémentaires
+
+- [Documentation officielle de SonarQube](https://docs.sonarqube.org/)
+- [Documentation de SonarScanner](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
+- [Règles Python dans SonarQube](https://rules.sonarsource.com/python/)
+- [Bonnes pratiques d'analyse](https://docs.sonarqube.org/latest/analysis/analysis-parameters/)
+
+## Support
+
+Si vous rencontrez des problèmes avec SonarQube, veuillez ouvrir une issue sur GitHub en incluant:
+1. Le message d'erreur complet
+2. Les étapes pour reproduire le problème
+3. Les logs pertinents
+4. La version de SonarQube et SonarScanner utilisée 

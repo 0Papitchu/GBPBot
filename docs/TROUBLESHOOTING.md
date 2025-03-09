@@ -416,6 +416,138 @@ Le résultat devrait montrer des versions égales ou supérieures à celles reco
 - Si vous utilisez des environnements de développement et de production séparés, assurez-vous de mettre à jour les deux.
 - Ces mises à jour sont critiques pour la sécurité de votre système et devraient être appliquées dès que possible.
 
+## Problèmes de Configuration d'Environnement
+
+### Erreurs avec les fichiers .env
+
+#### Fichier .env introuvable
+
+**Symptôme** : Erreur "Could not find a .env file" ou "Configuration file not found"
+
+**Solution** :
+```bash
+# Vérifiez si le fichier .env existe à la racine du projet
+ls -la .env
+
+# Si le fichier n'existe pas, créez-le à partir du modèle
+cp .env.example .env.local
+# Puis modifiez .env.local avec vos informations
+nano .env.local
+
+# Utilisez l'outil de configuration pour générer .env
+python scripts/setup_env.py 2
+# OU sous Windows
+configure_env.bat
+# Puis sélectionnez l'option 2
+```
+
+#### Variables d'environnement non chargées
+
+**Symptôme** : Erreur "Key not found in environment" ou "Configuration parameter X is required"
+
+**Solution** :
+```bash
+# Validez votre fichier .env
+python scripts/setup_env.py 3
+# OU sous Windows
+configure_env.bat
+# Puis sélectionnez l'option 3
+
+# Assurez-vous que le format des variables est correct (sans espaces autour du =)
+# Exemple correct: VARIABLE=valeur
+# Exemple incorrect: VARIABLE = valeur
+```
+
+#### Conflit entre plusieurs fichiers .env
+
+**Symptôme** : Comportement inconsistant du bot, paramètres qui semblent changer entre les lancements
+
+**Solution** :
+- Identifiez quel fichier .env est effectivement utilisé:
+```bash
+# Renommez temporairement le fichier .env principal
+mv .env .env.temp
+# Lancez le bot pour voir s'il cherche un autre fichier
+./start_gbpbot.bat
+```
+- Consolidez tous vos paramètres dans un seul fichier .env
+- Supprimez ou renommez les autres fichiers .env pour éviter la confusion
+
+#### Variables sensibles exposées dans Git
+
+**Symptôme** : Vous avez accidentellement commité des informations sensibles
+
+**Solution** :
+```bash
+# Créez immédiatement une sauvegarde de vos clés actuelles
+python scripts/setup_env.py 1
+
+# Retirez le fichier du suivi Git sans le supprimer
+git rm --cached .env
+git rm --cached .env.*
+
+# Mettez à jour votre .gitignore
+echo ".env*" >> .gitignore
+echo "!.env.example" >> .gitignore
+
+# Commitez ces changements
+git commit -m "Remove sensitive files and update .gitignore"
+
+# Changez immédiatement vos clés API et mots de passe
+# Mettez à jour vos fichiers .env.local avec les nouvelles informations
+```
+
+## Problèmes avec l'Interface Telegram
+
+### Bot Telegram non connecté
+
+**Symptôme** : Le bot ne répond pas aux commandes sur Telegram
+
+**Solution** :
+```bash
+# Vérifiez que le token est correctement configuré
+grep TELEGRAM_BOT_TOKEN .env
+
+# Vérifiez les logs du bot pour des erreurs de connexion
+tail -f logs/telegram_bot.log
+
+# Assurez-vous que le bot est démarré
+ps aux | grep telegram_bot
+# OU sous Windows
+tasklist | findstr "python"
+
+# Redémarrez le bot
+./stop_gbpbot.bat
+./start_gbpbot.bat
+```
+
+### Problèmes d'autorisation Telegram
+
+**Symptôme** : Le bot répond "Non autorisé" ou ne répond pas du tout à certains utilisateurs
+
+**Solution** :
+```bash
+# Vérifiez la configuration des utilisateurs autorisés
+grep TELEGRAM_AUTHORIZED_USERS .env
+
+# Ajoutez votre ID utilisateur Telegram
+# (Obtenez-le en envoyant un message à @userinfobot)
+# Modifiez votre fichier .env :
+# TELEGRAM_AUTHORIZED_USERS=123456789,987654321
+```
+
+### Erreur "Bot cannot initiate conversation"
+
+**Symptôme** : Le bot ne peut pas vous envoyer de messages ou notifications
+
+**Solution** :
+- Cette erreur se produit car Telegram ne permet pas aux bots d'initier des conversations
+- Vous devez d'abord envoyer un message au bot:
+  1. Ouvrez Telegram et trouvez votre bot (@votre_bot)
+  2. Envoyez la commande `/start`
+  3. Le bot devrait maintenant pouvoir vous envoyer des messages
+- Vérifiez également que `TELEGRAM_CHAT_ID` est correctement configuré dans votre .env
+
 ---
 
 Si vous rencontrez un problème qui n'est pas couvert dans ce guide, veuillez :

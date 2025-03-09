@@ -13,7 +13,7 @@ import argparse
 import logging
 import time
 import json
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Union, cast
 
 # Configurer le logging
 logging.basicConfig(
@@ -25,7 +25,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("gbpbot.cli")
 
-# Importer les modules GBPBot
+# Importer les modules GBPBot de manière sécurisée
 try:
     from gbpbot.core import config
     from gbpbot import resource_monitor
@@ -53,88 +53,112 @@ Tapez 'quit' ou 'exit' pour quitter.
     prompt = "gbpbot> "
     
     def __init__(self):
-        """Initialisation de l'interface en ligne de commande"""
+        """Initialisation de l'interface CLI"""
         super().__init__()
-        self.resource_monitor_active = False
         
         # Charger la configuration
-        self.config = config.config_manager
+        self.config = {}
+        try:
+            # Vérifier si config possède la méthode load_config
+            if hasattr(config, 'load_config'):
+                self.config = config.load_config()
+            elif hasattr(config, 'config_manager'):
+                self.config = config.config_manager
+            else:
+                logger.warning("Module config incomplet, utilisation d'une configuration par défaut")
+        except Exception as e:
+            logger.warning(f"Impossible de charger la configuration: {str(e)}")
         
         # Définir les stratégies disponibles
         self.available_strategies = [
-            "sniping",
             "arbitrage",
-            "monitor"
+            "sniping",
+            "scalping",
+            "mev"
         ]
         
-        # État actuel
+        # Initialiser les stratégies actives
         self.active_strategies = {}
         
-    def emptyline(self):
+        # Initialiser l'état du moniteur de ressources
+        self.resource_monitor_active = False
+        
+    def emptyline(self) -> bool:
         """Ne rien faire quand l'utilisateur appuie sur Entrée sans rien saisir"""
-        pass
+        return False
         
     def do_exit(self, arg):
-        """Quitter l'interface en ligne de commande"""
+        """Quitter l'application"""
+        print("Arrêt des services en cours...")
         self._stop_all_services()
-        logger.info("Fermeture de GBPBot...")
+        print("Au revoir!")
         return True
-        
+    
     def do_quit(self, arg):
-        """Quitter l'interface en ligne de commande"""
+        """Quitter l'application (alias de exit)"""
         return self.do_exit(arg)
-        
+    
     def do_EOF(self, arg):
-        """Quitter l'interface en ligne de commande (Ctrl+D)"""
-        print()
+        """Quitter l'application (Ctrl+D)"""
+        print()  # Ajouter une ligne vide
         return self.do_exit(arg)
-        
+    
     def do_status(self, arg):
         """Afficher l'état actuel du système"""
-        print("\n=== État du système ===")
+        print("\nÉtat du système:")
+        print("----------------")
         
-        # Afficher l'état des ressources si le moniteur est actif
-        if resource_monitor.get_current_state():
-            state = resource_monitor.get_current_state()
-            print(f"CPU: {state['cpu_usage']:.1f}% (seuil: {resource_monitor.resource_monitor.cpu_threshold}%)")
-            print(f"Mémoire: {state['memory_usage']:.1f}% (seuil: {resource_monitor.resource_monitor.memory_threshold}%)")
-            print(f"Disque: {state['disk_usage']:.1f}% (seuil: {resource_monitor.resource_monitor.disk_threshold}%)")
+        # Afficher l'état des ressources
+        print("\nUtilisation des ressources:")
+        try:
+            if hasattr(resource_monitor, 'get_current_state'):
+                state = resource_monitor.get_current_state()
+                
+                # Récupérer les seuils de manière sécurisée
+                cpu_threshold = 80  # Valeur par défaut
+                memory_threshold = 80  # Valeur par défaut
+                disk_threshold = 80  # Valeur par défaut
+                
+                # Différentes méthodes possibles pour obtenir les seuils
+                if hasattr(resource_monitor, 'get_thresholds'):
+                    thresholds = resource_monitor.get_thresholds()
+                    cpu_threshold = thresholds.get('cpu', 80)
+                    memory_threshold = thresholds.get('memory', 80)
+                    disk_threshold = thresholds.get('disk', 80)
+                elif hasattr(resource_monitor, 'resource_monitor') and hasattr(resource_monitor.resource_monitor, 'cpu_threshold'):
+                    # Ancienne structure
+                    cpu_threshold = resource_monitor.resource_monitor.cpu_threshold
+                    memory_threshold = resource_monitor.resource_monitor.memory_threshold
+                    disk_threshold = resource_monitor.resource_monitor.disk_threshold
+                
+                print(f"CPU: {state['cpu_usage']:.1f}% (seuil: {cpu_threshold}%)")
+                print(f"Mémoire: {state['memory_usage']:.1f}% (seuil: {memory_threshold}%)")
+                print(f"Disque: {state['disk_usage']:.1f}% (seuil: {disk_threshold}%)")
+            else:
+                print("Informations sur les ressources non disponibles")
+        except Exception as e:
+            print(f"Erreur lors de la récupération des ressources: {str(e)}")
             
         # Afficher les stratégies actives
         if self.active_strategies:
-            print("\n=== Stratégies actives ===")
+            print("\nStratégies actives:")
             for name, info in self.active_strategies.items():
                 status = info.get("status", "inconnu")
                 start_time = info.get("start_time", 0)
-                duration = time.time() - start_time
-                print(f"{name}: {status}, actif depuis {self._format_duration(duration)}")
+                duration = self._format_duration(time.time() - start_time)
+                print(f"- {name}: {status} (en cours depuis {duration})")
         else:
             print("\nAucune stratégie active")
-            
-        # Afficher la configuration actuelle
-        print("\n=== Configuration ===")
-        print(f"Mode de performance: {self.config.get_performance_mode()}")
         
-        # Afficher les endpoints RPC préférés
-        rpc_endpoints = self.config.get_rpc_endpoints("solana")
-        if rpc_endpoints:
-            print("\n=== Endpoints RPC (Solana) ===")
-            for endpoint in rpc_endpoints:
-                print(f"{endpoint.get('name', 'inconnu')}: {endpoint.get('url', 'inconnu')} (priorité: {endpoint.get('priority', 0)})")
-                
-        # Afficher les DEX préférés
-        preferred_dex = self.config.get_preferred_dex()
-        if preferred_dex:
-            print("\n=== DEX préférés ===")
-            for dex in preferred_dex:
-                print(f"{dex.get('name', 'inconnu')} (priorité: {dex.get('priority', 0)})")
-                
-        print("\n=== Limites de ressources ===")
-        resource_limits = self.config.get_resource_limits()
-        for key, value in resource_limits.items():
-            print(f"{key}: {value}")
-            
-        print()
+        # Afficher les connexions blockchain
+        print("\nConnexions blockchain:")
+        # TODO: Implémenter la vérification des connexions blockchain
+        print("- Solana: Non connecté")
+        print("- Avalanche: Non connecté")
+        print("- Ethereum: Non connecté")
+        
+        print("\n")
+        return False
         
     def do_start(self, arg):
         """
@@ -280,7 +304,7 @@ Tapez 'quit' ou 'exit' pour quitter.
         
         if action == "show":
             print("\n=== Configuration ===")
-            print(json.dumps(self.config.config, indent=2))
+            print(json.dumps(self.config, indent=2))
             
         elif action == "set" and len(args) >= 3:
             key = args[1]
@@ -299,7 +323,7 @@ Tapez 'quit' ou 'exit' pour quitter.
             except Exception:
                 pass
                 
-            self.config.set(key, value)
+            self.config[key] = value
             logger.info(f"Configuration mise à jour: {key} = {value}")
             
         elif action == "save":
