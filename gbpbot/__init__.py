@@ -1,21 +1,40 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GBPBot - Trading Bot pour MEME Coins
-====================================
+GBPBot - Trading Bot pour opérations d'arbitrage, sniping et MEV
+===============================================================
 
-Un bot de trading ultra-rapide, furtif et intelligent pour le trading de MEME coins 
-sur Solana, AVAX et Sonic, avec scalping automatique, arbitrage entre pools, 
-sniping des nouveaux tokens et MEV/Frontrunning.
+Système de trading automatisé pour Avalanche, Solana et autres blockchains,
+avec des fonctionnalités d'arbitrage, sniping de tokens et MEV.
 
 Copyright (c) 2023-2024 GBPBot Team
 """
 
-__version__ = "1.0.0"
+import os
+import sys
+from pathlib import Path
+
+# Vérifier si le répertoire principal existe dans le sys.path
+base_dir = Path(__file__).parent.parent.absolute()
+if str(base_dir) not in sys.path:
+    sys.path.insert(0, str(base_dir))
+
+# Charger le module de démarrage
+try:
+    from gbpbot.boot import boot
+    
+    # Initialiser l'environnement
+    boot()
+except ImportError:
+    # En cas d'erreur, ne pas bloquer l'import
+    print("Avertissement: Le module de démarrage n'a pas pu être chargé.")
+    print("Les variables d'environnement peuvent ne pas être correctement initialisées.")
+
+# Version du package
+__version__ = "0.9.0"
 __author__ = "GBPBot Team"
 __email__ = "contact@gbpbot.com"
 
-import os
 import logging
 from pathlib import Path
 

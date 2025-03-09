@@ -72,20 +72,22 @@ temp/
 .cache/
 cache/
 config.local.yaml
+config/wallets.json
 credentials.yaml
 secrets.json
 *.key
 api_keys.json
+!config/wallets.example.json
 # Fichiers d'environnement (contiennent des informations sensibles)
 .env
 .env.*
+!.env.example
 .env.local
 .env.*.local
 .env.development
 .env.production
 .env.backup*
 .env.optimized
-!.env.example
 .coverage
 htmlcov/
 .pytest_cache/

@@ -7,6 +7,9 @@ from dataclasses import dataclass
 import json
 from pathlib import Path
 
+# Importer notre nouveau chargeur de wallets
+from gbpbot.utils.wallet_loader import get_wallets
+
 @dataclass
 class WalletConfig:
     """Configuration for a wallet"""
@@ -60,14 +63,14 @@ class StealthMode:
         self._load_wallets()
     
     def _load_wallets(self):
-        """Load wallet configurations from file"""
+        """Charger les wallets depuis le système sécurisé"""
         try:
-            if not self.config_path.exists():
-                logger.warning(f"Wallet config not found at {self.config_path}")
-                return
+            # Utiliser notre nouveau chargeur de wallets
+            wallet_data = get_wallets()
             
-            with open(self.config_path) as f:
-                wallet_data = json.load(f)
+            if not wallet_data:
+                logger.warning(f"Aucun wallet valide trouvé via le chargeur sécurisé")
+                return
             
             for wallet in wallet_data:
                 self.wallets[wallet["address"]] = WalletConfig(
@@ -82,10 +85,10 @@ class StealthMode:
                     transaction_count=0
                 )
             
-            logger.info(f"Loaded {len(self.wallets)} wallets")
+            logger.info(f"Chargé {len(self.wallets)} wallets avec le système sécurisé")
             
         except Exception as e:
-            logger.error(f"Error loading wallet config: {str(e)}")
+            logger.error(f"Erreur lors du chargement des wallets: {str(e)}")
     
     async def get_active_wallet(self, chain: str) -> Optional[WalletConfig]:
         """

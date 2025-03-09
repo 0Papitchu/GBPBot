@@ -1,0 +1,12 @@
+[
+    {
+        "address": "VOTRE_ADRESSE_AVALANCHE",
+        "private_key": "VOTRE_CLE_PRIVEE_AVALANCHE",
+        "chain": "avax"
+    },
+    {
+        "address": "VOTRE_ADRESSE_SOLANA",
+        "private_key": "VOTRE_CLE_PRIVEE_SOLANA",
+        "chain": "sol"
+    }
+] 

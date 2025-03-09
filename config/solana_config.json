@@ -34,7 +34,7 @@
             "retry_delay": 0.5
         },
         "wallet": {
-            "private_key": "YOUR_PRIVATE_KEY_HERE",
+            "private_key": "VOTRE_CLE_PRIVEE_SOLANA_PRINCIPALE",
             "use_burner_wallets": true,
             "burner_wallet_count": 5,
             "autorotate": true,

@@ -1,12 +1,17 @@
 [
     {
-        "address": "0x788DA3A1BF420293e069248bE4499f8CB5336584",
-        "private_key": "8267a965d6dc2e709045d8917ced11a9c84cd0de76b1350693326bbc134f8cdd",
+        "address": "${AVAX_WALLET_ADDRESS}",
+        "private_key": "${AVAX_WALLET_PRIVATE_KEY}",
         "chain": "avax"
     },
     {
-        "address": "5phpHyqT4Gch5UuJS8jxXnrGDHC3yYH9uF4PVtn3V9cV",
-        "private_key": "4qSJL3jqBym3Y3eegn8wiUiWFiroMUzVgFeN1ReNLEotEftis3jwdLidup8uwNUfP2igVk3Lnkfs2TysDh3537gD",
+        "address": "${SOLANA_WALLET_ADDRESS}",
+        "private_key": "${SOLANA_WALLET_PRIVATE_KEY}",
+        "chain": "sol"
+    },
+    {
+        "address": "${SOLANA_WALLET_2_ADDRESS}",
+        "private_key": "${SOLANA_WALLET_2_PRIVATE_KEY}",
         "chain": "sol"
     }
 ] 
