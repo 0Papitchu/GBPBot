@@ -1,6 +1,6 @@
 # Documentation Technique GBPBot
 
-> **Note de mise à jour**: Cette documentation technique a été mise à jour le 04/03/2024 pour correspondre exactement à l'implémentation actuelle du code source. Les noms de méthodes et leurs signatures ont été vérifiés et corrigés pour refléter fidèlement le code source.
+> **Note de mise à jour**: Cette documentation technique a été mise à jour le 10/03/2024 pour correspondre exactement à l'implémentation actuelle du code source, incluant les nouveaux modules de monitoring et de gestion des wallets.
 
 ## Table des matières
 
@@ -13,6 +13,8 @@
    - [2.5 API Server](#25-api-server)
    - [2.6 Web Dashboard](#26-web-dashboard)
    - [2.7 Interface CLI](#27-interface-cli)
+   - [2.8 Monitoring](#28-monitoring)
+   - [2.9 Wallet Manager](#29-wallet-manager)
 3. [Points d'entrée et scripts de lancement](#3-points-dentrée-et-scripts-de-lancement)
 4. [Flux de données](#4-flux-de-données)
 5. [API Reference](#5-api-reference)
@@ -304,6 +306,101 @@ L'interface CLI (Command Line Interface) fournit une interface utilisateur en li
 - Sauvegarde et chargement automatique des configurations
 - Affichage en temps réel des performances et des statistiques
 - Contrôle du bot pendant l'exécution (pause, arrêt, etc.)
+
+### 2.8 Monitoring
+
+Le système de monitoring permet de surveiller les performances du GBPBot et les ressources système, avec deux modules principaux: SystemMonitor et PerformanceMonitor.
+
+```
+┌─────────────────────┐      ┌─────────────────────┐
+│                     │      │                     │
+│  SystemMonitor      │      │  PerformanceMonitor │
+│  - CPU, RAM, Disk   │      │  - Trading Stats    │
+│  - Network          │      │  - ROI, Win Rate    │
+│  - Process          │      │  - Trade History    │
+│                     │      │                     │
+└─────────┬───────────┘      └──────────┬──────────┘
+          │                              │
+          │         ┌───────────────┐    │
+          └─────────► Alertes       ◄────┘
+                    │ Notifications │
+                    └───────┬───────┘
+                            │
+                    ┌───────▼───────┐
+                    │               │
+                    │  Interface    │
+                    │  Telegram     │
+                    │               │
+                    └───────────────┘
+```
+
+#### 2.8.1 SystemMonitor
+
+Le module SystemMonitor surveille les ressources système utilisées par le GBPBot.
+
+| Méthode | Description | Paramètres | Retour |
+|---------|-------------|------------|--------|
+| `__init__` | Initialise le moniteur système | - | - |
+| `start_monitoring` | Démarre la surveillance des ressources système | `interval: float = 5.0` | `bool` |
+| `stop_monitoring` | Arrête la surveillance des ressources système | - | `bool` |
+| `collect_metrics` | Collecte toutes les métriques système | - | `None` |
+| `get_metrics` | Récupère toutes les métriques système | - | `Dict[str, Any]` |
+| `get_system_info` | Récupère les informations système de base | - | `Dict[str, Any]` |
+| `get_system_usage` | Récupère un résumé de l'utilisation système | - | `Dict[str, float]` |
+| `optimize_system` | Suggère des optimisations système | - | `Dict[str, Any]` |
+| `set_threshold` | Définit un seuil pour une métrique | `metric_name: str, threshold: float` | `bool` |
+| `register_alert_callback` | Enregistre un callback pour les alertes | `callback: Callable` | `None` |
+| `save_report` | Sauvegarde un rapport des métriques système | `filename: Optional[str] = None` | `Optional[str]` |
+
+#### 2.8.2 PerformanceMonitor
+
+Le module PerformanceMonitor suit les performances de trading du GBPBot.
+
+| Méthode | Description | Paramètres | Retour |
+|---------|-------------|------------|--------|
+| `__init__` | Initialise le moniteur de performance | - | - |
+| `add_trade` | Ajoute une nouvelle transaction | `trade: TradeRecord` | `bool` |
+| `update_trade` | Met à jour une transaction | `trade_id: str, **kwargs` | `bool` |
+| `close_trade` | Ferme une transaction | `trade_id: str, exit_price: float, timestamp_end: Optional[datetime] = None` | `bool` |
+| `get_trade` | Récupère une transaction | `trade_id: str` | `Optional[TradeRecord]` |
+| `get_all_trades` | Récupère toutes les transactions | - | `List[TradeRecord]` |
+| `get_open_trades` | Récupère les transactions ouvertes | - | `List[TradeRecord]` |
+| `get_closed_trades` | Récupère les transactions fermées | - | `List[TradeRecord]` |
+| `get_stats` | Calcule les statistiques de performance | `hours: int = 24` | `Dict[str, Any]` |
+| `get_period_stats` | Calcule les stats pour une période | `start_time: datetime, end_time: Optional[datetime] = None` | `Dict[str, Any]` |
+
+### 2.9 Wallet Manager
+
+Le module WalletManager fournit une gestion centralisée des wallets sur différentes blockchains.
+
+```
+┌─────────────────────────────────────────────────┐
+│                                                 │
+│                 WalletManager                   │
+│                                                 │
+├─────────────────┬───────────────┬───────────────┤
+│                 │               │               │
+│  Solana Wallets │  AVAX Wallets │ Sonic Wallets │
+│                 │               │               │
+└─────────────────┴───────────────┴───────────────┘
+```
+
+#### 2.9.1 WalletManager
+
+| Méthode | Description | Paramètres | Retour |
+|---------|-------------|------------|--------|
+| `__init__` | Initialise le gestionnaire de wallets | - | - |
+| `add_wallet` | Ajoute un nouveau wallet | `wallet_config: WalletConfig` | `str` |
+| `remove_wallet` | Supprime un wallet | `wallet_id: str` | `bool` |
+| `get_wallet` | Récupère un wallet | `wallet_id: str` | `Optional[WalletConfig]` |
+| `get_wallet_by_address` | Récupère un wallet par adresse | `address: str, blockchain: Optional[str] = None` | `Optional[WalletConfig]` |
+| `get_wallets_for_blockchain` | Récupère tous les wallets pour une blockchain | `blockchain: str` | `List[WalletConfig]` |
+| `get_default_wallet` | Récupère le wallet par défaut | `blockchain: str` | `Optional[WalletConfig]` |
+| `set_default_wallet` | Définit un wallet par défaut | `wallet_id: str` | `bool` |
+| `get_balances` | Récupère les balances | `blockchain: Optional[str] = None` | `Dict[str, Dict[str, float]]` |
+| `create_solana_wallet` | Crée un nouveau wallet Solana | `label: Optional[str] = None` | `Optional[str]` |
+| `create_evm_wallet` | Crée un nouveau wallet EVM | `blockchain: str, label: Optional[str] = None` | `Optional[str]` |
+| `import_wallet_from_private_key` | Importe un wallet | `blockchain: str, private_key: str, label: Optional[str] = None` | `Optional[str]` |
 
 ---
 
@@ -599,20 +696,84 @@ Les clés privées et les clés API sont stockées dans un fichier `.env` qui n'
 
 ### 7.1 Monitoring
 
-Le module `monitor_production.py` surveille l'état de santé du bot en production.
+Le système de monitoring du GBPBot comporte maintenant deux composants principaux:
 
-#### Méthodes clés
+1. **Monitoring Système**: Surveille les ressources système utilisées par le GBPBot (CPU, mémoire, disque, réseau).
+2. **Monitoring de Performance**: Suit les résultats des trades et calcule les métriques de performance.
+
+#### 7.1.1 Système de Monitoring Unifié
+
+Le module `gbpbot.monitoring` fournit une interface unifiée pour tous les types de monitoring:
 
 | Méthode | Description | Paramètres | Retour |
 |---------|-------------|------------|--------|
-| `start_monitoring` | Démarre la surveillance | - | - |
-| `_check_health` | Vérifie l'état de santé | - | - |
-| `_check_system_resources` | Vérifie les ressources système | - | - |
-| `_check_api_server` | Vérifie l'état du serveur API | - | `bool` |
-| `_check_dashboard` | Vérifie l'état du dashboard | - | `bool` |
-| `_check_module` | Vérifie l'état d'un module | `module_name` | `bool` |
-| `_restart_service` | Redémarre un service | `service_name` | `bool` |
-| `_send_alert` | Envoie une alerte | `message` | - |
+| `initialize_monitoring` | Initialise tous les moniteurs | `check_interval: float = 5.0, auto_start: bool = True` | `None` |
+| `get_system_monitor` | Obtient l'instance du SystemMonitor | - | `SystemMonitor` |
+| `get_performance_monitor` | Obtient l'instance du PerformanceMonitor | - | `PerformanceMonitor` |
+
+#### 7.1.2 Configuration du Monitoring
+
+Le monitoring du système peut être configuré via des seuils d'alerte:
+
+```python
+from gbpbot.monitoring import get_system_monitor
+
+# Obtenir l'instance du moniteur système
+system_monitor = get_system_monitor()
+
+# Démarrer le monitoring avec un intervalle personnalisé
+system_monitor.start_monitoring(interval=10.0)  # 10 secondes
+
+# Configurer les seuils d'alerte
+system_monitor.set_all_thresholds(
+    cpu_percent=85.0,  # Alerte à 85% d'utilisation CPU
+    memory_percent=80.0,  # Alerte à 80% d'utilisation mémoire
+    disk_percent=90.0  # Alerte à 90% d'utilisation disque
+)
+
+# Enregistrer un callback d'alerte
+def alert_handler(metric_name, value, threshold):
+    print(f"ALERTE: {metric_name} = {value:.2f} (seuil: {threshold:.2f})")
+
+system_monitor.register_alert_callback(alert_handler)
+```
+
+#### 7.1.3 Utilisation du Monitoring de Performance
+
+Le monitoring de performance permet de suivre les résultats des trades:
+
+```python
+from gbpbot.monitoring import get_performance_monitor
+from datetime import datetime
+
+# Obtenir l'instance du moniteur de performance
+performance_monitor = get_performance_monitor()
+
+# Ajouter une transaction
+from gbpbot.monitoring.performance_monitor import TradeRecord
+
+trade = TradeRecord(
+    trade_id="tx123",
+    token_symbol="SOL",
+    blockchain="solana",
+    entry_price=100.0,
+    amount=1.0,
+    strategy="sniping"
+)
+
+performance_monitor.add_trade(trade)
+
+# Fermer une transaction
+performance_monitor.close_trade(
+    trade_id="tx123",
+    exit_price=120.0
+)
+
+# Obtenir des statistiques
+stats = performance_monitor.get_stats(hours=24)
+print(f"Win rate: {stats['win_rate']:.2f}%")
+print(f"Profit total: {stats['profit_total']:.2f}")
+```
 
 ### 7.2 Alertes
 

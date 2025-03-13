@@ -12,12 +12,14 @@ import logging
 import sys
 import os
 import time
+import json
 from typing import Dict, List, Optional, Any, Union
 
 from gbpbot.core.blockchain.base import BlockchainClientFactory
 from gbpbot.utils.config import get_config
 from gbpbot.utils.environment import print_environment_report, check_environment_ready
 from gbpbot.utils.exceptions import GBPBotError, ConfigurationError
+from gbpbot.ai.agent_manager import create_agent_manager
 
 
 class GBPBot:
@@ -569,4 +571,49 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())
+
+# Callback pour demander l'approbation utilisateur
+async def request_user_approval(operation: str, params: Dict[str, Any]) -> bool:
+    # En mode CLI
+    print(f"\n[APPROBATION REQUISE] {operation}")
+    print("Paramètres:", json.dumps(params, indent=2))
+    response = input("Approuver (o/n)? ").lower()
+    return response in ["o", "oui", "y", "yes"]
+
+# Création de l'agent avec callback d'approbation
+agent_manager = create_agent_manager(
+    autonomy_level="hybrid",  # "semi_autonomous", "autonomous" ou "hybrid"
+    max_decision_amount=0.1,  # 0.1 ETH/SOL/etc. maximum sans approbation
+    require_approval_callback=request_user_approval
+)
+
+# Exemple d'utilisation dans un menu
+async def menu_agent_ia():
+    print("\n=== Menu Agent IA ===")
+    print("1. Analyse du marché et recommandation")
+    print("2. Recherche d'opportunités d'arbitrage")
+    print("3. Détection et sniping de nouveaux tokens")
+    print("4. Mode autonome (24h)")
+    print("5. Retour")
+    
+    choice = input("Votre choix: ")
+    
+    if choice == "1":
+        result = await agent_manager.run_agent("Analyse le marché crypto actuel et recommande les 3 meilleures opportunités de trading.")
+        print(result.get("result", "Erreur lors de l'analyse"))
+    elif choice == "2":
+        result = await agent_manager.run_agent("Trouve les meilleures opportunités d'arbitrage entre DEX sur Solana avec au moins 2% de profit potentiel.")
+        print(result.get("result", "Erreur lors de la recherche d'arbitrage"))
+    elif choice == "3":
+        result = await agent_manager.run_agent("Détecte et analyse les nouveaux tokens sur Solana ayant une liquidité d'au moins 10K$, et prépare une stratégie de sniping optimale.")
+        print(result.get("result", "Erreur lors de la détection"))
+    elif choice == "4":
+        # Lancer l'agent en mode autonome (exemple simplifié)
+        print("Mode autonome activé pour 24h. Utiliser Ctrl+C pour arrêter.")
+        try:
+            while True:
+                await agent_manager.run_agent("Surveille le marché et exécute automatiquement les meilleures opportunités de profit.")
+                await asyncio.sleep(300)  # 5 minutes entre chaque cycle
+        except KeyboardInterrupt:
+            print("Mode autonome arrêté par l'utilisateur") 

@@ -81,3 +81,129 @@ Traceback (most recent call last):
   File "C:\GBPBot\gbpbot\start.py", line 41, in main
     from gbpbot.core.rpc.rpc_manager import rpc_manager
 ModuleNotFoundError: No module named 'gbpbot'
+2025-03-09 23:04:33,924 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-09 23:04:33,925 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-09 23:04:33,928 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-09 23:04:33,931 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-09 23:04:53,439 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-09 23:04:53,439 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-09 23:04:53,443 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-09 23:04:53,446 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-09 23:08:19,379 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-09 23:08:19,379 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-09 23:08:19,384 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-09 23:08:19,386 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-09 23:08:19,454 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-09 23:08:19,454 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-09 23:08:19,535 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-09 23:08:19,536 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-09 23:08:19,612 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-09 23:08:19,613 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-09 23:08:20,295 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-09 23:12:53,260 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-09 23:12:53,261 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-09 23:12:53,267 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-09 23:12:53,270 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-09 23:12:53,349 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-09 23:12:53,350 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-09 23:12:53,359 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-09 23:12:53,360 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-09 23:12:53,427 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-09 23:12:53,428 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-09 23:12:54,000 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-09 23:13:56,235 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-09 23:13:56,235 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-09 23:13:56,239 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-09 23:13:56,242 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-09 23:13:56,277 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-09 23:13:56,277 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-09 23:13:56,286 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-09 23:13:56,287 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-09 23:13:56,358 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-09 23:13:56,358 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-09 23:13:56,941 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-09 23:13:57,701 - gbpbot.optimization.hardware - WARNING - torch n'est pas installé, certaines optimisations GPU ne seront pas disponibles
+2025-03-09 23:13:57,787 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002D4B6C5AF50>
+2025-03-09 23:14:40,750 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-09 23:14:40,751 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-09 23:14:40,755 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-09 23:14:40,758 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-09 23:14:40,786 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-09 23:14:40,786 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-09 23:14:40,797 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-09 23:14:40,797 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-09 23:14:40,889 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-09 23:14:40,889 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-09 23:14:41,477 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-09 23:14:42,257 - gbpbot.optimization.hardware - WARNING - torch n'est pas installé, certaines optimisations GPU ne seront pas disponibles
+2025-03-09 23:14:42,343 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000015AA363C590>
+2025-03-13 21:09:28,460 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-13 21:09:28,461 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-13 21:09:28,465 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-13 21:09:28,467 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-13 21:09:28,633 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-13 21:09:28,633 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-13 21:09:28,710 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-13 21:09:28,710 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-13 21:09:29,111 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-13 21:09:29,111 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-13 21:09:30,098 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-13 21:14:54,912 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-13 21:14:54,912 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-13 21:14:54,916 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-13 21:14:54,918 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-13 21:14:54,996 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-13 21:14:54,997 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-13 21:14:55,006 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-13 21:14:55,007 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-13 21:14:55,073 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-13 21:14:55,073 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-13 21:14:55,622 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-13 21:14:56,644 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-13 21:14:56,644 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-13 21:14:56,648 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-13 21:14:56,651 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-13 21:14:56,719 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-13 21:14:56,720 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-13 21:14:56,729 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-13 21:14:56,730 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-13 21:14:56,799 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-13 21:14:56,799 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-13 21:14:57,309 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-13 21:14:58,234 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-13 21:14:58,234 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-13 21:14:58,237 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-13 21:14:58,239 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-13 21:14:58,305 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-13 21:14:58,305 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-13 21:14:58,317 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-13 21:14:58,317 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-13 21:14:58,379 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-13 21:14:58,379 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-13 21:14:58,890 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-13 21:26:23,654 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-13 21:26:23,654 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-13 21:26:23,658 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-13 21:26:23,660 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-13 21:26:23,727 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-13 21:26:23,727 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-13 21:26:23,737 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-13 21:26:23,737 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-13 21:26:23,805 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-13 21:26:23,806 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-13 21:26:24,333 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-13 21:26:25,025 - gbpbot.optimization.hardware - WARNING - torch n'est pas installé, certaines optimisations GPU ne seront pas disponibles
+2025-03-13 21:26:37,153 - Boot - INFO - Système de logging initialisé au niveau INFO                      # DEBUG, INFO, WARNING, ERROR
+2025-03-13 21:26:37,154 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env.local
+2025-03-13 21:26:37,158 - Boot - INFO - Chargement des variables d'environnement depuis C:\GBPBot\.env
+2025-03-13 21:26:37,161 - Boot - INFO - GBPBot initialisé avec succès!
+2025-03-13 21:26:37,234 - gbpbot.adapters - INFO - Les adaptateurs Solana Web3.js ont été chargés avec succès.
+2025-03-13 21:26:37,234 - gbpbot.utils.solana_imports - INFO - Adaptateur Solana Web3.js importé avec succès
+2025-03-13 21:26:37,242 - gbpbot.utils.solana_imports - INFO - Package solders importé avec succès
+2025-03-13 21:26:37,243 - gbpbot.utils.solana_imports - WARNING - Impossible d'importer le package anchorpy: No module named 'anchorpy'
+2025-03-13 21:26:37,304 - GBPBot_AI - WARNING - PyTorch n'est pas disponible. Certaines fonctionnalités d'IA seront limitées.
+2025-03-13 21:26:37,305 - GBPBot_AI - WARNING - ONNX Runtime n'est pas disponible. Les modèles légers seront plus lents.
+2025-03-13 21:26:37,821 - GBPBot_AI - WARNING - LLaMA n'est pas disponible. L'analyse locale sera limitée.
+2025-03-13 21:26:38,499 - gbpbot.optimization.hardware - WARNING - torch n'est pas installé, certaines optimisations GPU ne seront pas disponibles

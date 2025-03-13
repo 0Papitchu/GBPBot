@@ -1,5 +1,24 @@
 # Intégration de Sonic dans GBPBot
 
+> **IMPORTANT** : Ce document est obsolète et a été remplacé par un guide unifié plus complet.
+> 
+> Veuillez consulter [SONIC_GUIDE.md](SONIC_GUIDE.md) pour la documentation à jour sur l'intégration Sonic.
+
+---
+
+## Redirection
+
+Cette documentation a été consolidée avec `SONIC_CLIENT.md` et `sonic_client_guide.md` en un seul guide complet.
+
+Le nouveau document unifié contient :
+- Une architecture détaillée des composants Sonic
+- Un guide complet de configuration et d'utilisation
+- Des exemples pratiques de sniping et d'arbitrage
+- Des conseils de dépannage et bonnes pratiques
+- Des modèles de code pour l'intégration avec d'autres modules
+
+**Merci de vous référer au nouveau guide : [SONIC_GUIDE.md](SONIC_GUIDE.md)**
+
 ## Résumé du développement
 
 L'expansion de GBPBot pour prendre en charge l'écosystème Sonic/Fantom a été réalisée avec succès. Cette intégration permet désormais aux utilisateurs de GBPBot d'étendre leurs opérations de trading de memecoins à une blockchain supplémentaire, augmentant ainsi les opportunités de profit et la diversification.

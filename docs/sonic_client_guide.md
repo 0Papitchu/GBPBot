@@ -1,6 +1,23 @@
 # Guide d'utilisation du SonicBlockchainClient
 
-Ce guide fournit une documentation complète pour utiliser le `SonicBlockchainClient` dans vos applications. Ce client permet d'interagir avec la blockchain Sonic en facilitant les opérations courantes comme la récupération d'informations sur les tokens, l'exécution de swaps, l'analyse de contrats et le suivi des nouveaux tokens.
+> **IMPORTANT** : Ce document est obsolète et a été remplacé par un guide unifié plus complet.
+> 
+> Veuillez consulter [SONIC_GUIDE.md](SONIC_GUIDE.md) pour la documentation à jour sur l'intégration Sonic.
+
+---
+
+## Redirection
+
+Cette documentation a été consolidée avec `SONIC_CLIENT.md` et `SONIC_INTEGRATION.md` en un seul guide complet.
+
+Le nouveau document unifié contient :
+- Une architecture détaillée des composants Sonic
+- Un guide complet de configuration et d'utilisation
+- Des exemples pratiques de sniping et d'arbitrage
+- Des conseils de dépannage et bonnes pratiques
+- Des modèles de code pour l'intégration avec d'autres modules
+
+**Merci de vous référer au nouveau guide : [SONIC_GUIDE.md](SONIC_GUIDE.md)**
 
 ## Table des matières
 

@@ -1,0 +1,128 @@
+# Configuration Claude 3.7 pour GBPBot
+# Ce fichier contient les paramètres pour l'intégration Claude 3.7
+
+# Configuration de l'API
+api:
+  api_key: ${CLAUDE_API_KEY}  # Défini dans .env
+  base_url: "https://api.anthropic.com/"
+  version: "2023-06-01"
+  timeout: 60  # Timeout en secondes pour les requêtes API
+
+# Configuration du modèle
+model:
+  name: ${CLAUDE_MODEL}  # Défini dans .env (claude-3-7-sonnet-20240229 par défaut)
+  max_tokens: 4096  # Réponse maximale en tokens
+  temperature: 0.7  # De 0 (déterministe) à 1 (créatif)
+  top_p: 0.95  # Réduit l'espace de recherche aux tokens représentant la probabilité top_p
+  top_k: 50  # Réduit l'espace de recherche aux top_k tokens les plus probables
+
+# Paramètres des fonctions d'analyse
+analysis:
+  token_analysis:
+    prompt_template: |
+      Tu es un expert en analyse de crypto-monnaies et tokens sur la blockchain. 
+      Analyse les données suivantes sur un token et fournis une évaluation complète:
+      
+      Données du token: {token_data}
+      
+      Fournis une évaluation avec:
+      1. Score de risque (0-100, 0 étant extrêmement risqué)
+      2. Évaluation de la liquidité (faible/moyenne/élevée)
+      3. Risque de rug pull (faible/moyen/élevé)
+      4. Potentiel de croissance à court terme (faible/moyen/élevé)
+      5. Drapeau rouge détectés (liste)
+      6. Recommandation (acheter/surveiller/éviter)
+      
+      Réponds uniquement au format JSON suivant:
+      {
+        "score": <score de 0 à 100>,
+        "analysis": {
+          "liquidity": "<faible/moyenne/élevée>",
+          "rug_pull_risk": "<faible/moyen/élevé>",
+          "growth_potential": "<faible/moyen/élevé>",
+          "red_flags": [<liste de drapeaux rouges>]
+        },
+        "recommendation": "<acheter/surveiller/éviter>",
+        "confidence": <niveau de confiance de 0 à 100>,
+        "reasoning": "<explication de l'analyse>"
+      }
+    max_tokens: 1500
+    temperature: 0.3
+
+  arbitrage_optimization:
+    prompt_template: |
+      Tu es un expert en trading algorithmique et arbitrage sur les DEX. 
+      Analyse cette opportunité d'arbitrage et optimise les paramètres d'exécution:
+      
+      Opportunité: {opportunity_data}
+      
+      Fournis une évaluation avec:
+      1. Un jugement sur la qualité de l'opportunité
+      2. Des suggestions d'optimisation du slippage
+      3. Une prédiction du profit réel (après impact de marché)
+      4. Des recommandations pour maximiser la probabilité de succès
+      
+      Réponds uniquement au format JSON suivant:
+      {
+        "is_optimized": true,
+        "predicted_profit_percentage": <pourcentage>,
+        "suggested_slippage": <pourcentage>,
+        "suggested_amount": <montant optionnel>,
+        "optimization_reason": "<raison de l'optimisation>",
+        "confidence": <niveau de confiance de 0 à 100>,
+        "execute_quickly": <true/false>,
+        "risks": [<liste des risques identifiés>]
+      }
+    max_tokens: 1000
+    temperature: 0.2
+
+  strategy_optimization:
+    prompt_template: |
+      Tu es un expert en stratégies de trading automatisé et d'arbitrage sur les DEX.
+      Analyse ces données historiques de performance et suggère des optimisations:
+      
+      Données historiques: {historical_data}
+      
+      Fournis des suggestions d'optimisation de stratégie sous forme de liste.
+      Chaque suggestion doit inclure:
+      1. Type d'optimisation (threshold, slippage, amount, pair_selection)
+      2. Valeur recommandée
+      3. Raison de la recommandation
+      4. Impact attendu
+      
+      Réponds uniquement au format JSON suivant:
+      [
+        {
+          "type": "<type d'optimisation>",
+          "value": <valeur recommandée>,
+          "reason": "<raison de la recommandation>",
+          "expected_impact": "<impact attendu>"
+        },
+        ...
+      ]
+    max_tokens: 2000
+    temperature: 0.4
+
+# Paramètres de mise en forme des réponses
+response_formatting:
+  structured_only: true  # Force uniquement des réponses structurées (JSON)
+  compress_response: false  # Compresse les réponses pour économiser des tokens
+  beautify_json: true  # Formatage JSON pour meilleure lisibilité
+
+# Paramètres de mise en cache
+caching:
+  enabled: true
+  ttl: 3600  # Durée de vie du cache en secondes (1 heure)
+  max_size: 1000  # Nombre maximal d'entrées dans le cache
+
+# Paramètres de rate limiting
+rate_limiting:
+  max_requests_per_minute: 20
+  retry_attempts: 3
+  retry_delay: 2  # Secondes entre les tentatives
+
+# Logging et monitoring
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  include_prompts: false  # Si true, log les prompts envoyés (attention aux données sensibles)
+  include_responses: false  # Si true, log les réponses reçues 

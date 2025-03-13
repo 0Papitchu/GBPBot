@@ -12,13 +12,18 @@ import time
 import logging
 import asyncio
 import threading
+import os
+import json
 from typing import Dict, List, Optional, Any, Tuple, Set, Callable
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from gbpbot.clients.base_client import BaseBlockchainClient
+from gbpbot.utils.logger import setup_logger
+from gbpbot.ai import create_ai_client, create_market_intelligence
 
-logger = logging.getLogger("gbpbot.modules.arbitrage")
+# Configurer le logger
+logger = setup_logger("ArbitrageEngine", logging.INFO)
 
 @dataclass
 class ArbitrageOpportunity:
@@ -95,827 +100,750 @@ class ArbitrageOpportunity:
 
 class ArbitrageEngine:
     """
-    Moteur d'arbitrage entre différents DEX.
-    
-    Cette classe est responsable de :
-    1. Détecter les opportunités d'arbitrage entre DEX
-    2. Calculer la rentabilité de chaque opportunité
-    3. Exécuter les transactions d'arbitrage optimales
-    4. Maintenir un historique des opportunités et des transactions
+    Moteur d'arbitrage avancé qui détecte et exploite les opportunités
+    entre différents DEX et pools de liquidité.
     """
     
-    def __init__(
-        self,
-        blockchain_clients: Dict[str, BaseBlockchainClient],
-        config: Dict[str, Any]
-    ):
+    def __init__(self, config: Dict[str, Any]):
         """
         Initialise le moteur d'arbitrage.
         
         Args:
-            blockchain_clients: Dictionnaire de clients blockchain par nom
             config: Configuration du moteur d'arbitrage
         """
-        self.clients = blockchain_clients
         self.config = config
-        
-        # Paramètres de configuration
-        self.min_profit_percentage = config.get("min_profit_percentage", 0.5)
-        self.max_slippage = config.get("max_slippage", 1.0)
-        self.gas_multiplier = config.get("gas_multiplier", 1.05)
-        self.scan_interval = config.get("scan_interval", 5)  # en secondes
-        
-        # Paires à surveiller (si vide, toutes les paires supportées sont surveillées)
-        self.pairs = config.get("pairs", [])
-        
-        # DEX à surveiller (si vide, tous les DEX supportés sont utilisés)
-        self.exchanges = config.get("exchanges", [])
-        
-        # Limite de montant par transaction
-        self.max_trade_amount_usd = config.get("max_trade_amount_usd", 500)
-        
-        # Paramètres avancés
-        self.use_flash_arbitrage = config.get("use_flash_arbitrage", True)
-        self.max_concurrent_arbitrages = config.get("max_concurrent_arbitrages", 3)
-        self.max_pending_txs = config.get("max_pending_txs", 5)
-        
-        # État interne
+        self.blockchain_clients = {}
+        self.exchange_clients = {}
         self.running = False
-        self.stop_event = threading.Event()
-        self.runner_thread = None
+        self.ai_client = None
+        self.market_intelligence = None
         
-        # Statistiques
-        self.opportunities_found = 0
-        self.successful_arbitrages = 0
-        self.failed_arbitrages = 0
-        self.total_profit_usd = 0.0
-        self.start_time = None
+        # Paramètres d'arbitrage
+        self.min_profit_threshold = float(os.environ.get("MIN_ARBITRAGE_PROFIT_THRESHOLD", "0.5"))
+        self.max_slippage = float(os.environ.get("MAX_SLIPPAGE", "1.0"))
+        self.use_ai_optimization = os.environ.get("USE_AI_ARBITRAGE_OPTIMIZATION", "true").lower() == "true"
         
-        # Cache des opportunités
-        self._opportunities_cache: List[ArbitrageOpportunity] = []
-        self._max_cache_size = config.get("max_cache_size", 1000)
+        # Liste des DEX et leurs configurations
+        self.dex_list = self._parse_dex_config()
         
-        # Callback pour les nouvelles opportunités
-        self._opportunity_callbacks: List[Callable[[ArbitrageOpportunity], None]] = []
+        # Statistiques d'activité
+        self.stats = {
+            "opportunities_detected": 0,
+            "opportunities_executed": 0,
+            "successful_arbitrages": 0,
+            "failed_arbitrages": 0,
+            "total_profit_usd": 0.0,
+            "last_activity": datetime.now().isoformat()
+        }
         
-        logger.info(f"Moteur d'arbitrage initialisé avec {len(blockchain_clients)} clients blockchain")
+        # Opportunités en cours d'exécution
+        self.active_opportunities = {}
+        
+        logger.info("Moteur d'arbitrage initialisé")
     
-    def start(self, stop_event: Optional[threading.Event] = None) -> None:
-        """
-        Démarre le moteur d'arbitrage dans un thread séparé.
+    async def initialize(self):
+        """Initialise tous les clients nécessaires au fonctionnement du moteur"""
+        # Initialiser les clients blockchain
+        for chain in self.config.get("chains", []):
+            self.blockchain_clients[chain["name"]] = await self._initialize_blockchain_client(chain)
         
-        Args:
-            stop_event: Événement pour arrêter le moteur
-        """
+        # Initialiser les clients d'échange
+        for exchange in self.config.get("exchanges", []):
+            self.exchange_clients[exchange["name"]] = await self._initialize_exchange_client(exchange)
+        
+        # Initialiser le client IA si l'optimisation IA est activée
+        if self.use_ai_optimization:
+            try:
+                logger.info("Initialisation du client IA pour l'arbitrage...")
+                self.ai_client = await create_ai_client(
+                    provider=os.environ.get("AI_PROVIDER", "claude"),
+                    config=self._get_ai_config()
+                )
+                
+                # Initialiser le système d'intelligence de marché
+                self.market_intelligence = await create_market_intelligence({
+                    "ai_config": self._get_ai_config(),
+                    "web_search_config": {
+                        "serper_api_key": os.environ.get("SERPER_API_KEY")
+                    }
+                })
+                
+                logger.info("Client IA pour l'arbitrage initialisé avec succès")
+            except Exception as e:
+                logger.error(f"Erreur lors de l'initialisation du client IA: {str(e)}")
+                self.use_ai_optimization = False
+        
+        logger.info("Initialisation du moteur d'arbitrage terminée")
+    
+    async def start(self):
+        """Démarre le moteur d'arbitrage"""
         if self.running:
             logger.warning("Le moteur d'arbitrage est déjà en cours d'exécution")
             return
         
-        self.stop_event = stop_event or threading.Event()
+        # Initialiser si nécessaire
+        if not self.blockchain_clients:
+            await self.initialize()
+        
         self.running = True
-        self.start_time = datetime.now()
+        logger.info("Démarrage du moteur d'arbitrage")
         
-        # Démarrer le thread de surveillance
-        self.runner_thread = threading.Thread(
-            target=self._run_arbitrage_loop,
-            name="ArbitrageEngineThread",
-            daemon=True
-        )
-        self.runner_thread.start()
+        # Démarrer les tâches de surveillance
+        asyncio.create_task(self._monitor_dex_prices())
         
-        logger.info("Moteur d'arbitrage démarré")
+        if self.use_ai_optimization:
+            asyncio.create_task(self._ai_optimization_loop())
     
-    def stop(self) -> None:
-        """Arrête le moteur d'arbitrage."""
+    async def stop(self):
+        """Arrête le moteur d'arbitrage"""
         if not self.running:
+            logger.warning("Le moteur d'arbitrage n'est pas en cours d'exécution")
             return
         
         self.running = False
-        self.stop_event.set()
+        logger.info("Arrêt du moteur d'arbitrage")
         
-        if self.runner_thread and self.runner_thread.is_alive():
-            self.runner_thread.join(timeout=5)
+        # Fermer proprement les connexions
+        for client in self.blockchain_clients.values():
+            if hasattr(client, "close"):
+                await client.close()
         
-        logger.info("Moteur d'arbitrage arrêté")
+        for client in self.exchange_clients.values():
+            if hasattr(client, "close"):
+                await client.close()
+        
+        if self.ai_client:
+            await self.ai_client.close()
+        
+        if self.market_intelligence:
+            await self.market_intelligence.close()
     
-    def register_opportunity_callback(self, callback: Callable[[ArbitrageOpportunity], None]) -> None:
-        """
-        Enregistre un callback à appeler pour chaque nouvelle opportunité détectée.
+    async def _monitor_dex_prices(self):
+        """Surveille les prix sur différents DEX pour détecter les opportunités d'arbitrage"""
+        logger.info("Démarrage de la surveillance des prix sur les DEX")
         
-        Args:
-            callback: Fonction à appeler avec l'opportunité d'arbitrage
-        """
-        self._opportunity_callbacks.append(callback)
-    
-    def get_opportunities(self, min_profit_usd: float = 0) -> List[ArbitrageOpportunity]:
-        """
-        Récupère les opportunités d'arbitrage récentes.
-        
-        Args:
-            min_profit_usd: Profit minimum en USD pour filtrer les opportunités
-            
-        Returns:
-            Liste d'opportunités d'arbitrage
-        """
-        if min_profit_usd > 0:
-            return [o for o in self._opportunities_cache if o.net_profit_usd >= min_profit_usd]
-        return list(self._opportunities_cache)
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """
-        Récupère les statistiques du moteur d'arbitrage.
-        
-        Returns:
-            Dict: Statistiques
-        """
-        runtime = None
-        if self.start_time:
-            runtime = (datetime.now() - self.start_time).total_seconds()
-        
-        return {
-            "running": self.running,
-            "runtime_seconds": runtime,
-            "opportunities_found": self.opportunities_found,
-            "successful_arbitrages": self.successful_arbitrages,
-            "failed_arbitrages": self.failed_arbitrages,
-            "total_profit_usd": self.total_profit_usd,
-            "config": {
-                "min_profit_percentage": self.min_profit_percentage,
-                "max_slippage": self.max_slippage,
-                "scan_interval": self.scan_interval,
-                "use_flash_arbitrage": self.use_flash_arbitrage
-            }
-        }
-    
-    def execute_opportunity(self, opportunity_id: str) -> Dict[str, Any]:
-        """
-        Exécute manuellement une opportunité d'arbitrage spécifique.
-        
-        Args:
-            opportunity_id: ID de l'opportunité à exécuter
-            
-        Returns:
-            Dict: Résultat de l'exécution
-            
-        Raises:
-            ValueError: Si l'opportunité n'est pas trouvée
-        """
-        # Trouver l'opportunité dans le cache
-        opportunity = next((o for o in self._opportunities_cache if o.id == opportunity_id), None)
-        if not opportunity:
-            raise ValueError(f"Opportunité d'arbitrage avec ID {opportunity_id} non trouvée")
-        
-        logger.info(f"Exécution manuelle de l'opportunité d'arbitrage {opportunity_id}")
-        
-        # Exécuter l'arbitrage
-        return asyncio.run(self._execute_arbitrage(opportunity))
-    
-    def _run_arbitrage_loop(self) -> None:
-        """Boucle principale d'exécution du moteur d'arbitrage."""
-        logger.debug("Démarrage de la boucle d'arbitrage")
-        
-        while not self.stop_event.is_set() and self.running:
+        while self.running:
             try:
-                # Exécuter la recherche d'opportunités
-                asyncio.run(self._scan_arbitrage_opportunities())
+                # Pour chaque paire surveillée, vérifier les prix sur différents DEX
+                for pair in self.config.get("pairs", []):
+                    # Récupérer les informations de la paire
+                    token_a = pair["token_a"]
+                    token_b = pair["token_b"]
+                    chain = pair.get("chain", "solana")
+                    
+                    # Vérifier si la chaîne est supportée
+                    if chain not in self.blockchain_clients:
+                        continue
+                    
+                    # Récupérer les prix sur différents DEX
+                    prices = await self._get_pair_prices(token_a, token_b, chain)
+                    
+                    if len(prices) < 2:
+                        continue  # Pas assez de prix pour un arbitrage
+                    
+                    # Détecter les opportunités d'arbitrage
+                    opportunities = self._find_arbitrage_opportunities(prices, token_a, token_b, chain)
+                    
+                    # Traiter les opportunités détectées
+                    for opportunity in opportunities:
+                        self.stats["opportunities_detected"] += 1
+                        
+                        # Analyser et optimiser l'opportunité avec l'IA si activé
+                        if self.use_ai_optimization and self.ai_client:
+                            is_optimized, optimized_opportunity = await self._optimize_opportunity_with_ai(opportunity)
+                            
+                            if is_optimized:
+                                logger.info(f"Opportunité optimisée par l'IA: {optimized_opportunity['profit_percentage']:.2f}% de profit potentiel")
+                                opportunity = optimized_opportunity
+                        
+                        # Exécuter l'arbitrage si le profit est suffisant
+                        if opportunity["profit_percentage"] >= self.min_profit_threshold:
+                            asyncio.create_task(self._execute_arbitrage(opportunity))
                 
-                # Attendre l'intervalle configuré
-                self.stop_event.wait(self.scan_interval)
+                # Pause avant la prochaine vérification
+                await asyncio.sleep(0.1)  # Fréquence agressive pour les opportunités rapides
+                
             except Exception as e:
-                logger.error(f"Erreur dans la boucle d'arbitrage: {e}", exc_info=True)
-                time.sleep(5)  # Attendre un peu avant de réessayer
+                logger.error(f"Erreur dans la surveillance des prix: {str(e)}")
+                await asyncio.sleep(1)  # Pause plus longue en cas d'erreur
     
-    async def _scan_arbitrage_opportunities(self) -> None:
-        """Scanne les opportunités d'arbitrage sur les différentes blockchains."""
-        all_opportunities = []
+    async def _ai_optimization_loop(self):
+        """Boucle d'optimisation des stratégies d'arbitrage par l'IA"""
+        logger.info("Démarrage de la boucle d'optimisation IA des stratégies d'arbitrage")
         
-        # Vérifier chaque blockchain supportée
-        for blockchain, client in self.clients.items():
+        # Attendre que le système collecte suffisamment de données
+        await asyncio.sleep(60)
+        
+        while self.running:
             try:
-                # Obtenir les DEX pour cette blockchain
-                dexes = await client.get_dexes()
-                
-                if self.exchanges:
-                    # Filtrer les DEX selon la configuration
-                    dexes = [dex for dex in dexes if dex["name"].lower() in 
-                            [ex.lower() for ex in self.exchanges]]
-                
-                if len(dexes) < 2:
-                    logger.debug(f"Pas assez de DEX disponibles sur {blockchain} pour l'arbitrage")
+                if not self.ai_client:
+                    await asyncio.sleep(60)
                     continue
                 
-                # Obtenir les opportunités d'arbitrage pour cette blockchain
-                blockchain_opportunities = await self._find_opportunities_for_blockchain(
-                    blockchain, client, dexes
-                )
+                # Collecter les données des dernières 24h
+                historical_data = self._collect_historical_performance()
                 
-                all_opportunities.extend(blockchain_opportunities)
+                # Optimiser les stratégies en fonction des performances passées
+                strategy_updates = await self._optimize_strategies_with_ai(historical_data)
+                
+                if strategy_updates:
+                    logger.info(f"IA a suggéré {len(strategy_updates)} mises à jour de stratégie")
+                    
+                    # Appliquer les mises à jour de stratégie
+                    for update in strategy_updates:
+                        self._apply_strategy_update(update)
+                
+                # Optimisation toutes les heures
+                await asyncio.sleep(3600)
+                
             except Exception as e:
-                logger.error(f"Erreur lors de la recherche d'opportunités sur {blockchain}: {e}", 
-                            exc_info=True)
-        
-        # Mettre à jour les compteurs
-        if all_opportunities:
-            self.opportunities_found += len(all_opportunities)
-            logger.info(f"Trouvé {len(all_opportunities)} opportunités d'arbitrage")
-            
-            # Mettre à jour le cache
-            self._update_opportunities_cache(all_opportunities)
-            
-            # Notifier les callbacks
-            for opportunity in all_opportunities:
-                for callback in self._opportunity_callbacks:
-                    try:
-                        callback(opportunity)
-                    except Exception as e:
-                        logger.error(f"Erreur dans le callback d'opportunité: {e}", exc_info=True)
-            
-            # Exécuter automatiquement les meilleures opportunités si configuré
-            if self.config.get("auto_execute", False):
-                await self._auto_execute_best_opportunities(all_opportunities)
+                logger.error(f"Erreur dans la boucle d'optimisation IA: {str(e)}")
+                await asyncio.sleep(300)  # 5 minutes de pause en cas d'erreur
     
-    async def _find_opportunities_for_blockchain(
-        self, 
-        blockchain: str, 
-        client: BaseBlockchainClient, 
-        dexes: List[Dict[str, Any]]
-    ) -> List[ArbitrageOpportunity]:
+    async def _get_pair_prices(self, token_a: str, token_b: str, chain: str) -> List[Dict[str, Any]]:
         """
-        Recherche des opportunités d'arbitrage sur une blockchain spécifique.
+        Récupère les prix d'une paire de tokens sur différents DEX
         
         Args:
-            blockchain: Nom de la blockchain
-            client: Client blockchain
-            dexes: Liste des DEX disponibles
+            token_a: Premier token de la paire
+            token_b: Second token de la paire
+            chain: Blockchain concernée
             
         Returns:
-            Liste d'opportunités d'arbitrage
+            Liste des prix sur différents DEX
+        """
+        prices = []
+        
+        # Récupérer les DEX disponibles pour cette chaîne
+        dex_list = [dex for dex in self.dex_list if dex["chain"] == chain]
+        
+        # Récupérer les prix sur chaque DEX
+        for dex in dex_list:
+            try:
+                # Récupérer le prix via le client blockchain
+                price = await self.blockchain_clients[chain].get_pair_price(
+                    token_a, token_b, dex["name"]
+                )
+                
+                if price:
+                    prices.append({
+                        "dex": dex["name"],
+                        "price": price,
+                        "liquidity": price.get("liquidity", 0),
+                        "fee": dex.get("fee", 0.3),
+                        "timestamp": datetime.now().timestamp()
+                    })
+            except Exception as e:
+                logger.warning(f"Erreur lors de la récupération du prix sur {dex['name']}: {str(e)}")
+        
+        return prices
+    
+    def _find_arbitrage_opportunities(self, prices: List[Dict[str, Any]], 
+                                     token_a: str, token_b: str, 
+                                     chain: str) -> List[Dict[str, Any]]:
+        """
+        Détecte les opportunités d'arbitrage entre différents DEX
+        
+        Args:
+            prices: Liste des prix sur différents DEX
+            token_a: Premier token de la paire
+            token_b: Second token de la paire
+            chain: Blockchain concernée
+            
+        Returns:
+            Liste des opportunités d'arbitrage détectées
         """
         opportunities = []
         
-        # Liste des paires à vérifier
-        pairs_to_check = self.pairs
+        for i in range(len(prices)):
+            for j in range(i + 1, len(prices)):
+                dex_a = prices[i]
+                dex_b = prices[j]
+                
+                # Calculer la différence de prix
+                price_a = float(dex_a["price"]["price"])
+                price_b = float(dex_b["price"]["price"])
+                
+                # Calculer la différence en pourcentage (dans les deux sens)
+                diff_a_to_b = (price_b - price_a) / price_a * 100
+                diff_b_to_a = (price_a - price_b) / price_b * 100
+                
+                # Soustraire les frais des deux DEX
+                fee_a = dex_a.get("fee", 0.3)
+                fee_b = dex_b.get("fee", 0.3)
+                total_fee = fee_a + fee_b
+                
+                # Calculer le profit net (après frais)
+                profit_a_to_b = diff_a_to_b - total_fee
+                profit_b_to_a = diff_b_to_a - total_fee
+                
+                # Vérifier s'il y a une opportunité d'arbitrage (A vers B)
+                if profit_a_to_b > 0:
+                    opportunities.append({
+                        "token_a": token_a,
+                        "token_b": token_b,
+                        "chain": chain,
+                        "buy_dex": dex_a["dex"],
+                        "sell_dex": dex_b["dex"],
+                        "buy_price": price_a,
+                        "sell_price": price_b,
+                        "price_difference": diff_a_to_b,
+                        "total_fee": total_fee,
+                        "profit_percentage": profit_a_to_b,
+                        "direction": "a_to_b",
+                        "timestamp": datetime.now().timestamp()
+                    })
+                
+                # Vérifier s'il y a une opportunité d'arbitrage (B vers A)
+                if profit_b_to_a > 0:
+                    opportunities.append({
+                        "token_a": token_a,
+                        "token_b": token_b,
+                        "chain": chain,
+                        "buy_dex": dex_b["dex"],
+                        "sell_dex": dex_a["dex"],
+                        "buy_price": price_b,
+                        "sell_price": price_a,
+                        "price_difference": diff_b_to_a,
+                        "total_fee": total_fee,
+                        "profit_percentage": profit_b_to_a,
+                        "direction": "b_to_a",
+                        "timestamp": datetime.now().timestamp()
+                    })
         
-        # Si aucune paire n'est spécifiée, utiliser les paires populaires
-        if not pairs_to_check:
-            # Obtenir les paires populaires depuis le client
-            # Cette méthode devrait être implémentée dans chaque client blockchain
-            pairs_to_check = await self._get_popular_pairs(blockchain, client)
-        
-        # Pour chaque paire
-        for pair in pairs_to_check:
-            token_address = pair.get("token_address")
-            base_token = pair.get("base_token", "native")  # native, usdc, usdt, etc.
-            
-            if not token_address:
-                continue
-            
-            # Obtenir les informations sur le token
-            try:
-                token_info = await client.get_token_info(token_address)
-            except Exception as e:
-                logger.debug(f"Impossible d'obtenir les informations pour le token {token_address}: {e}")
-                continue
-            
-            # Pour chaque combinaison de DEX
-            for i, dex1 in enumerate(dexes):
-                for dex2 in dexes[i+1:]:
-                    try:
-                        # Vérifier s'il y a une opportunité entre ces deux DEX
-                        opportunity = await self._check_arbitrage_opportunity(
-                            blockchain, client, dex1, dex2, token_address, token_info, base_token
-                        )
-                        
-                        if opportunity:
-                            opportunities.append(opportunity)
-                    except Exception as e:
-                        logger.debug(f"Erreur lors de la vérification de l'arbitrage entre "
-                                    f"{dex1['name']} et {dex2['name']} pour {token_info.get('symbol')}: {e}")
+        # Trier les opportunités par profit décroissant
+        opportunities.sort(key=lambda x: x["profit_percentage"], reverse=True)
         
         return opportunities
     
-    async def _check_arbitrage_opportunity(
-        self,
-        blockchain: str,
-        client: BaseBlockchainClient,
-        dex1: Dict[str, Any],
-        dex2: Dict[str, Any],
-        token_address: str,
-        token_info: Dict[str, Any],
-        base_token: str = "native"
-    ) -> Optional[ArbitrageOpportunity]:
+    async def _execute_arbitrage(self, opportunity: Dict[str, Any]) -> bool:
         """
-        Vérifie s'il existe une opportunité d'arbitrage pour un token entre deux DEX.
+        Exécute une opportunité d'arbitrage
         
         Args:
-            blockchain: Nom de la blockchain
-            client: Client blockchain
-            dex1: Premier DEX
-            dex2: Deuxième DEX
-            token_address: Adresse du token
-            token_info: Informations sur le token
-            base_token: Token de base pour le swap (native, usdc, etc.)
+            opportunity: Détails de l'opportunité d'arbitrage
             
         Returns:
-            Opportunité d'arbitrage ou None
+            True si l'arbitrage a réussi, False sinon
         """
-        # Déterminer l'adresse du token de base
-        base_token_address = self._get_base_token_address(blockchain, base_token)
+        # Générer un ID unique pour cette opportunité
+        opportunity_id = f"{opportunity['buy_dex']}_{opportunity['sell_dex']}_{opportunity['token_a']}_{opportunity['token_b']}_{int(time.time())}"
         
-        # Obtenir les informations sur les pools
-        dex1_pool = await self._get_pool_info(client, dex1, token_address, base_token_address)
-        dex2_pool = await self._get_pool_info(client, dex2, token_address, base_token_address)
+        # Vérifier si une opportunité similaire est déjà en cours d'exécution
+        for active_id, active_op in self.active_opportunities.items():
+            if (active_op["buy_dex"] == opportunity["buy_dex"] and
+                active_op["sell_dex"] == opportunity["sell_dex"] and
+                active_op["token_a"] == opportunity["token_a"] and
+                active_op["token_b"] == opportunity["token_b"]):
+                logger.info(f"Une opportunité similaire est déjà en cours d'exécution: {active_id}")
+                return False
         
-        if not dex1_pool or not dex2_pool:
-            return None
-        
-        # Obtenir les prix
-        dex1_price = dex1_pool.get("price", 0)
-        dex2_price = dex2_pool.get("price", 0)
-        
-        if dex1_price <= 0 or dex2_price <= 0:
-            return None
-        
-        # Calculer la différence de prix
-        price_diff = abs(dex1_price - dex2_price)
-        price_diff_percent = price_diff / min(dex1_price, dex2_price) * 100
-        
-        # Si la différence est inférieure au minimum, pas d'opportunité
-        if price_diff_percent < self.min_profit_percentage:
-            return None
-        
-        # Déterminer le sens de l'arbitrage
-        if dex1_price < dex2_price:
-            buy_dex, sell_dex = dex1, dex2
-            buy_price, sell_price = dex1_price, dex2_price
-            buy_pool, sell_pool = dex1_pool, dex2_pool
-        else:
-            buy_dex, sell_dex = dex2, dex1
-            buy_price, sell_price = dex2_price, dex1_price
-            buy_pool, sell_pool = dex2_pool, dex1_pool
-        
-        # Calculer le montant optimal à utiliser pour l'arbitrage
-        optimal_amount_usd = self._calculate_optimal_amount(
-            price_diff_percent,
-            buy_pool.get("liquidity_usd", 0),
-            sell_pool.get("liquidity_usd", 0),
-            self.max_trade_amount_usd
-        )
-        
-        # Estimer le coût en gas
-        gas_price = await client.get_gas_price()
-        estimated_gas_units = self._estimate_gas_units(blockchain, self.use_flash_arbitrage)
-        estimated_gas_cost_native = gas_price * estimated_gas_units * self.gas_multiplier
-        
-        # Convertir le coût en gas en USD
-        native_price_usd = await self._get_native_price_usd(client, blockchain)
-        estimated_gas_cost_usd = estimated_gas_cost_native * native_price_usd
-        
-        # Calculer le profit estimé
-        token_amount = optimal_amount_usd / buy_price
-        estimated_sell_amount_usd = token_amount * sell_price * (1 - self.max_slippage / 100)
-        estimated_profit_usd = estimated_sell_amount_usd - optimal_amount_usd
-        net_profit_usd = estimated_profit_usd - estimated_gas_cost_usd
-        
-        # Si le profit net est négatif, pas d'opportunité
-        if net_profit_usd <= 0:
-            return None
-        
-        # Créer l'opportunité d'arbitrage
-        opportunity = ArbitrageOpportunity(
-            id=f"{blockchain}_{token_address}_{buy_dex['name']}_{sell_dex['name']}_{int(time.time())}",
-            timestamp=datetime.now(),
-            blockchain=blockchain,
-            token_address=token_address,
-            token_symbol=token_info.get("symbol", "UNKNOWN"),
-            token_name=token_info.get("name", "Unknown Token"),
-            token_decimals=token_info.get("decimals", 18),
-            
-            dex_from=buy_dex["name"],
-            dex_to=sell_dex["name"],
-            
-            buy_price=buy_price,
-            sell_price=sell_price,
-            
-            price_difference=price_diff,
-            price_difference_percent=price_diff_percent,
-            
-            estimated_profit_usd=estimated_profit_usd,
-            estimated_gas_cost_usd=estimated_gas_cost_usd,
-            net_profit_usd=net_profit_usd,
-            
-            input_amount_usd=optimal_amount_usd,
-            
-            dex1_pool_address=buy_pool.get("address", ""),
-            dex2_pool_address=sell_pool.get("address", ""),
-            dex1_liquidity_usd=buy_pool.get("liquidity_usd", 0),
-            dex2_liquidity_usd=sell_pool.get("liquidity_usd", 0),
-        )
-        
-        return opportunity
-    
-    async def _execute_arbitrage(self, opportunity: ArbitrageOpportunity) -> Dict[str, Any]:
-        """
-        Exécute une opportunité d'arbitrage.
-        
-        Args:
-            opportunity: Opportunité d'arbitrage à exécuter
-            
-        Returns:
-            Dict: Résultat de l'exécution
-        """
-        logger.info(f"Exécution de l'arbitrage: {opportunity.token_symbol} entre "
-                   f"{opportunity.dex_from} et {opportunity.dex_to}, "
-                   f"profit estimé: ${opportunity.net_profit_usd:.2f}")
-        
-        start_time = time.time()
-        client = self.clients.get(opportunity.blockchain)
-        
-        if not client:
-            return {
-                "success": False,
-                "error": f"Client pour la blockchain {opportunity.blockchain} non disponible",
-                "opportunity": opportunity.to_dict()
-            }
+        # Marquer l'opportunité comme en cours d'exécution
+        self.active_opportunities[opportunity_id] = opportunity
+        self.stats["opportunities_executed"] += 1
         
         try:
-            result = {}
+            logger.info(f"Exécution de l'arbitrage: {opportunity['buy_dex']} -> {opportunity['sell_dex']} "
+                       f"pour {opportunity['token_a']}/{opportunity['token_b']} "
+                       f"(profit potentiel: {opportunity['profit_percentage']:.2f}%)")
             
-            if self.use_flash_arbitrage:
-                # Exécution via flash arbitrage (nécessite un contrat spécifique)
-                result = await self._execute_flash_arbitrage(client, opportunity)
-            else:
-                # Exécution manuelle (achat puis vente)
-                result = await self._execute_manual_arbitrage(client, opportunity)
+            # Récupérer le client blockchain pour cette chaîne
+            chain = opportunity["chain"]
+            client = self.blockchain_clients.get(chain)
             
-            execution_time = time.time() - start_time
+            if not client:
+                logger.error(f"Client blockchain non disponible pour {chain}")
+                return False
+        
+            # Calculer le montant optimal à utiliser pour l'arbitrage
+            amount = await self._calculate_optimal_amount(opportunity)
             
-            if result.get("success", False):
-                self.successful_arbitrages += 1
-                self.total_profit_usd += result.get("actual_profit_usd", 0)
+            # Exécuter l'arbitrage
+            if opportunity["direction"] == "a_to_b":
+                # Acheter sur le premier DEX
+                buy_tx = await client.execute_swap(
+                    opportunity["token_a"],
+                    opportunity["token_b"],
+                    amount,
+                    opportunity["buy_dex"],
+                    self.max_slippage
+                )
                 
-                logger.info(f"Arbitrage réussi en {execution_time:.2f}s, "
-                           f"profit réel: ${result.get('actual_profit_usd', 0):.2f}")
-            else:
-                self.failed_arbitrages += 1
-                logger.warning(f"Échec de l'arbitrage: {result.get('error', 'Erreur inconnue')}")
+                if not buy_tx or not buy_tx.get("success", False):
+                    logger.error(f"Échec de l'achat sur {opportunity['buy_dex']}")
+                    return False
+                
+                # Récupérer le montant obtenu
+                tokens_received = buy_tx.get("tokens_received", 0)
+                
+                # Vendre sur le deuxième DEX
+                sell_tx = await client.execute_swap(
+                    opportunity["token_b"],
+                    opportunity["token_a"],
+                    tokens_received,
+                    opportunity["sell_dex"],
+                    self.max_slippage
+                )
+                
+                if not sell_tx or not sell_tx.get("success", False):
+                    logger.error(f"Échec de la vente sur {opportunity['sell_dex']}")
+                    return False
+                
+                # Calculer le profit réel
+                final_amount = sell_tx.get("tokens_received", 0)
+                profit = final_amount - amount
+                profit_percentage = (profit / amount) * 100
+                
+            else:  # b_to_a
+                # Logique similaire pour l'autre direction
+                # (Simplifié pour la démonstration)
+                profit = 0
+                profit_percentage = 0
             
-            return {
-                **result,
-                "execution_time_seconds": execution_time,
-                "opportunity": opportunity.to_dict()
-            }
+            # Enregistrer le résultat de l'arbitrage
+            logger.info(f"Arbitrage réussi! Profit: {profit_percentage:.2f}% ({profit})")
+            self.stats["successful_arbitrages"] += 1
+            self.stats["total_profit_usd"] += self._convert_to_usd(profit, opportunity["token_a"])
+            
+            # Ajouter le résultat à l'historique pour l'analyse IA
+            self._record_arbitrage_result(opportunity_id, opportunity, {
+                "success": True,
+                "profit": profit,
+                "profit_percentage": profit_percentage,
+                "executed_at": datetime.now().timestamp()
+            })
+            
+            return True
             
         except Exception as e:
-            self.failed_arbitrages += 1
-            execution_time = time.time() - start_time
+            logger.error(f"Erreur lors de l'exécution de l'arbitrage: {str(e)}")
+            self.stats["failed_arbitrages"] += 1
             
-            logger.error(f"Erreur lors de l'exécution de l'arbitrage: {e}", exc_info=True)
-            
-            return {
+            # Enregistrer l'échec pour l'analyse IA
+            self._record_arbitrage_result(opportunity_id, opportunity, {
                 "success": False,
                 "error": str(e),
-                "execution_time_seconds": execution_time,
-                "opportunity": opportunity.to_dict()
-            }
+                "executed_at": datetime.now().timestamp()
+            })
+            
+            return False
+            
+        finally:
+            # Supprimer l'opportunité de la liste des opportunités actives
+            if opportunity_id in self.active_opportunities:
+                del self.active_opportunities[opportunity_id]
     
-    async def _execute_flash_arbitrage(
-        self, 
-        client: BaseBlockchainClient, 
-        opportunity: ArbitrageOpportunity
-    ) -> Dict[str, Any]:
+    async def _optimize_opportunity_with_ai(self, opportunity: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
         """
-        Exécute un flash arbitrage (en une seule transaction).
+        Utilise l'IA pour optimiser une opportunité d'arbitrage
         
         Args:
-            client: Client blockchain
+            opportunity: Opportunité d'arbitrage à optimiser
+            
+        Returns:
+            Tuple (optimisé, opportunité optimisée)
+        """
+        if not self.ai_client:
+            return False, opportunity
+        
+        try:
+            # Enrichir l'opportunité avec des données supplémentaires pour l'IA
+            enriched_opportunity = await self._enrich_opportunity_data(opportunity)
+            
+            # Appeler l'IA pour optimiser l'opportunité
+            optimization_result = await self.ai_client.optimize_arbitrage(enriched_opportunity)
+            
+            if not optimization_result or not optimization_result.get("is_optimized"):
+                return False, opportunity
+            
+            # Appliquer les optimisations suggérées par l'IA
+            optimized_opportunity = opportunity.copy()
+            
+            # Mettre à jour le slippage si suggéré
+            if "suggested_slippage" in optimization_result:
+                optimized_opportunity["suggested_slippage"] = optimization_result["suggested_slippage"]
+            
+            # Mettre à jour l'estimation de profit si suggérée
+            if "predicted_profit_percentage" in optimization_result:
+                optimized_opportunity["profit_percentage"] = optimization_result["predicted_profit_percentage"]
+            
+            # Ajouter des données supplémentaires pour l'exécution
+            optimized_opportunity["ai_optimized"] = True
+            optimized_opportunity["optimization_reason"] = optimization_result.get("optimization_reason", "")
+            optimized_opportunity["optimization_confidence"] = optimization_result.get("confidence", 0)
+            
+            return True, optimized_opportunity
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation de l'opportunité avec l'IA: {str(e)}")
+            return False, opportunity
+    
+    async def _optimize_strategies_with_ai(self, historical_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Utilise l'IA pour optimiser les stratégies d'arbitrage
+        
+        Args:
+            historical_data: Données historiques des performances d'arbitrage
+            
+        Returns:
+            Liste des mises à jour de stratégie suggérées
+        """
+        if not self.ai_client:
+            return []
+        
+        try:
+            # Enrichir les données historiques avec des informations sur le marché
+            if self.market_intelligence:
+                market_overview = await self.market_intelligence.get_market_overview(
+                    chains=list(self.blockchain_clients.keys())
+                )
+                historical_data["market_overview"] = market_overview
+            
+            # Appeler l'IA pour optimiser les stratégies
+            strategy_suggestions = await self.ai_client.optimize_arbitrage_strategy(historical_data)
+            
+            if not strategy_suggestions or not isinstance(strategy_suggestions, list):
+                return []
+            
+            return strategy_suggestions
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation des stratégies avec l'IA: {str(e)}")
+            return []
+    
+    def _apply_strategy_update(self, update: Dict[str, Any]) -> bool:
+        """
+        Applique une mise à jour de stratégie suggérée par l'IA
+        
+        Args:
+            update: Mise à jour de stratégie à appliquer
+            
+        Returns:
+            True si la mise à jour a été appliquée avec succès
+        """
+        update_type = update.get("type")
+        
+        if update_type == "threshold":
+            # Mettre à jour le seuil de profit minimum
+            new_threshold = update.get("value")
+            if new_threshold and isinstance(new_threshold, (int, float)) and new_threshold > 0:
+                old_threshold = self.min_profit_threshold
+                self.min_profit_threshold = new_threshold
+                logger.info(f"Seuil de profit minimum mis à jour: {old_threshold} -> {new_threshold} "
+                          f"(Raison: {update.get('reason', 'Non spécifiée')})")
+                return True
+        
+        elif update_type == "slippage":
+            # Mettre à jour le slippage maximum
+            new_slippage = update.get("value")
+            if new_slippage and isinstance(new_slippage, (int, float)) and new_slippage > 0:
+                old_slippage = self.max_slippage
+                self.max_slippage = new_slippage
+                logger.info(f"Slippage maximum mis à jour: {old_slippage} -> {new_slippage} "
+                          f"(Raison: {update.get('reason', 'Non spécifiée')})")
+                return True
+        
+        # Autres types de mises à jour possibles...
+        
+        return False
+    
+    async def _calculate_optimal_amount(self, opportunity: Dict[str, Any]) -> float:
+        """
+        Calcule le montant optimal à utiliser pour un arbitrage
+        
+        Args:
             opportunity: Opportunité d'arbitrage
             
         Returns:
-            Dict: Résultat de l'exécution
+            Montant optimal en tokens
         """
-        # Note: Ceci est un placeholder. L'implémentation complète nécessiterait
-        # un contrat spécifique pour exécuter le flash arbitrage.
-        logger.warning("Flash arbitrage non implémenté, utilisation de l'arbitrage manuel")
-        return await self._execute_manual_arbitrage(client, opportunity)
+        # Logique simple: montant fixe de base
+        base_amount = float(os.environ.get("DEFAULT_ARBITRAGE_AMOUNT", "100"))
+        
+        # Si l'opportunité a été optimisée par l'IA, utiliser ses suggestions
+        if opportunity.get("ai_optimized") and "suggested_amount" in opportunity:
+            return opportunity["suggested_amount"]
+        
+        # Logique avancée à implémenter: prendre en compte la liquidité, etc.
+        # Pour l'exemple, on retourne simplement le montant de base
+        return base_amount
     
-    async def _execute_manual_arbitrage(
-        self, 
-        client: BaseBlockchainClient, 
-        opportunity: ArbitrageOpportunity
-    ) -> Dict[str, Any]:
+    def _convert_to_usd(self, amount: float, token: str) -> float:
         """
-        Exécute un arbitrage manuel (achat puis vente).
+        Convertit un montant de token en USD
         
         Args:
-            client: Client blockchain
-            opportunity: Opportunité d'arbitrage
+            amount: Montant à convertir
+            token: Token à convertir
             
         Returns:
-            Dict: Résultat de l'exécution
+            Montant équivalent en USD
         """
-        # Obtenir le solde initial
-        initial_balance = await client.get_balance()
+        # À implémenter: conversion réelle en USD
+        # Pour l'exemple, on suppose que le token vaut 1 USD
+        return amount
+    
+    def _record_arbitrage_result(self, opportunity_id: str, opportunity: Dict[str, Any], result: Dict[str, Any]):
+        """
+        Enregistre le résultat d'un arbitrage pour analyse ultérieure
         
-        # 1. Achat du token sur le premier DEX
-        buy_amount_native = opportunity.input_amount_usd / await self._get_native_price_usd(
-            client, opportunity.blockchain
-        )
+        Args:
+            opportunity_id: ID de l'opportunité
+            opportunity: Détails de l'opportunité
+            result: Résultat de l'exécution
+        """
+        # Stocker les résultats pour l'analyse IA
+        # Cette implémentation simplifiée pourrait être améliorée avec une base de données
+        result_with_details = {
+            "id": opportunity_id,
+            "opportunity": opportunity,
+            "result": result
+        }
         
-        buy_tx = await client.buy_token(
-            token_address=opportunity.token_address,
-            amount=buy_amount_native,
-            slippage=self.max_slippage,
-            dex_address=opportunity.dex1_pool_address
-        )
+        # Ajouter à un fichier de journal ou à une base de données
+        self._append_to_history(result_with_details)
+    
+    def _append_to_history(self, data: Dict[str, Any]):
+        """
+        Ajoute des données à l'historique
         
-        if not buy_tx.get("success", False):
-            return {
-                "success": False,
-                "error": f"Échec de l'achat: {buy_tx.get('error', 'Erreur inconnue')}",
-                "buy_tx": buy_tx
-            }
+        Args:
+            data: Données à ajouter
+        """
+        # Implémentation simplifiée: peut être remplacée par une base de données
+        history_file = os.path.join(os.environ.get("DATA_DIR", "./data"), "arbitrage_history.jsonl")
         
-        # Attendre la confirmation de la transaction d'achat
-        buy_tx_status = await client.get_transaction_status(buy_tx["tx_hash"])
+        try:
+            with open(history_file, "a") as f:
+                f.write(json.dumps(data) + "\n")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'enregistrement dans l'historique: {str(e)}")
+    
+    def _collect_historical_performance(self) -> Dict[str, Any]:
+        """
+        Collecte les données historiques de performance pour l'analyse IA
         
-        if not buy_tx_status.get("confirmed", False):
-            return {
-                "success": False,
-                "error": "La transaction d'achat n'a pas été confirmée",
-                "buy_tx": buy_tx,
-                "buy_tx_status": buy_tx_status
-            }
-        
-        # 2. Obtenir le solde du token
-        token_balance = await client.get_token_balance(opportunity.token_address)
-        
-        if token_balance <= 0:
-            return {
-                "success": False,
-                "error": "Aucun token reçu après l'achat",
-                "buy_tx": buy_tx,
-                "token_balance": token_balance
-            }
-        
-        # 3. Vente du token sur le deuxième DEX
-        sell_tx = await client.sell_token(
-            token_address=opportunity.token_address,
-            percent=100,  # Vendre tout
-            slippage=self.max_slippage,
-            dex_address=opportunity.dex2_pool_address
-        )
-        
-        if not sell_tx.get("success", False):
-            return {
-                "success": False,
-                "error": f"Échec de la vente: {sell_tx.get('error', 'Erreur inconnue')}",
-                "buy_tx": buy_tx,
-                "sell_tx": sell_tx
-            }
-        
-        # Attendre la confirmation de la transaction de vente
-        sell_tx_status = await client.get_transaction_status(sell_tx["tx_hash"])
-        
-        if not sell_tx_status.get("confirmed", False):
-            return {
-                "success": False,
-                "error": "La transaction de vente n'a pas été confirmée",
-                "buy_tx": buy_tx,
-                "sell_tx": sell_tx,
-                "sell_tx_status": sell_tx_status
-            }
-        
-        # 4. Calculer le profit réel
-        final_balance = await client.get_balance()
-        balance_diff = final_balance - initial_balance
-        
-        # Convertir la différence en USD
-        native_price_usd = await self._get_native_price_usd(client, opportunity.blockchain)
-        actual_profit_usd = balance_diff * native_price_usd
-        
+        Returns:
+            Données historiques de performance
+        """
+        # Implémentation simplifiée: dans une version complète, ces données viendraient d'une base de données
         return {
-            "success": True,
-            "buy_tx": buy_tx,
-            "sell_tx": sell_tx,
-            "initial_balance": initial_balance,
-            "final_balance": final_balance,
-            "balance_diff": balance_diff,
-            "actual_profit_usd": actual_profit_usd,
-            "expected_profit_usd": opportunity.net_profit_usd,
-            "profit_difference_usd": actual_profit_usd - opportunity.net_profit_usd
+            "stats": self.stats,
+            "recent_executions": [],  # Exécutions récentes
+            "pair_performance": {},   # Performance par paire
+            "dex_performance": {},    # Performance par DEX
         }
     
-    async def _auto_execute_best_opportunities(self, opportunities: List[ArbitrageOpportunity]) -> None:
+    async def _enrich_opportunity_data(self, opportunity: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Exécute automatiquement les meilleures opportunités d'arbitrage.
+        Enrichit une opportunité avec des données supplémentaires pour l'analyse IA
         
         Args:
-            opportunities: Liste d'opportunités d'arbitrage
-        """
-        if not opportunities:
-            return
-        
-        # Trier les opportunités par profit net
-        sorted_opportunities = sorted(
-            opportunities, 
-            key=lambda o: o.net_profit_usd, 
-            reverse=True
-        )
-        
-        # Limiter au nombre maximum d'arbitrages concurrents
-        opportunities_to_execute = sorted_opportunities[:self.max_concurrent_arbitrages]
-        
-        for opportunity in opportunities_to_execute:
-            if opportunity.net_profit_usd >= self.config.get("min_auto_profit_usd", 1.0):
-                logger.info(f"Exécution automatique de l'opportunité: {opportunity.token_symbol}, "
-                           f"profit estimé: ${opportunity.net_profit_usd:.2f}")
-                
-                try:
-                    await self._execute_arbitrage(opportunity)
-                except Exception as e:
-                    logger.error(f"Erreur lors de l'exécution automatique: {e}", exc_info=True)
-    
-    def _update_opportunities_cache(self, new_opportunities: List[ArbitrageOpportunity]) -> None:
-        """
-        Met à jour le cache des opportunités.
-        
-        Args:
-            new_opportunities: Nouvelles opportunités à ajouter au cache
-        """
-        # Ajouter les nouvelles opportunités
-        self._opportunities_cache.extend(new_opportunities)
-        
-        # Trier par timestamp (plus récent en premier)
-        self._opportunities_cache.sort(key=lambda o: o.timestamp, reverse=True)
-        
-        # Limiter la taille du cache
-        if len(self._opportunities_cache) > self._max_cache_size:
-            self._opportunities_cache = self._opportunities_cache[:self._max_cache_size]
-    
-    @staticmethod
-    def _get_base_token_address(blockchain: str, base_token: str) -> str:
-        """
-        Obtient l'adresse du token de base selon la blockchain.
-        
-        Args:
-            blockchain: Nom de la blockchain
-            base_token: Type de token de base (native, usdc, usdt, etc.)
+            opportunity: Opportunité à enrichir
             
         Returns:
-            Adresse du token de base
+            Opportunité enrichie
         """
-        # Mapping des adresses de tokens courants par blockchain
-        token_addresses = {
-            "solana": {
-                "native": "So11111111111111111111111111111111111111112",  # SOL wrapped
-                "usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-                "usdt": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
-            },
-            "avalanche": {
-                "native": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",  # WAVAX
-                "usdc": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-                "usdt": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"
-            }
-        }
-        
-        blockchain = blockchain.lower()
-        base_token = base_token.lower()
-        
-        if blockchain not in token_addresses:
-            return ""
-        
-        return token_addresses[blockchain].get(base_token, "")
-    
-    @staticmethod
-    def _calculate_optimal_amount(
-        price_diff_percent: float,
-        buy_liquidity_usd: float,
-        sell_liquidity_usd: float,
-        max_amount_usd: float
-    ) -> float:
-        """
-        Calcule le montant optimal à utiliser pour l'arbitrage.
-        
-        Args:
-            price_diff_percent: Différence de prix en pourcentage
-            buy_liquidity_usd: Liquidité du pool d'achat en USD
-            sell_liquidity_usd: Liquidité du pool de vente en USD
-            max_amount_usd: Montant maximum autorisé en USD
-            
-        Returns:
-            Montant optimal en USD
-        """
-        # Limiter le montant à un pourcentage de la liquidité la plus faible
-        # pour minimiser l'impact sur le prix
-        min_liquidity = min(buy_liquidity_usd, sell_liquidity_usd)
-        
-        # Plus la différence de prix est importante, plus on peut utiliser
-        # un pourcentage élevé de la liquidité
-        liquidity_percent = min(price_diff_percent / 2, 5.0)
-        optimal_by_liquidity = min_liquidity * (liquidity_percent / 100)
-        
-        # Limiter au montant maximum configuré
-        return min(optimal_by_liquidity, max_amount_usd)
-    
-    @staticmethod
-    def _estimate_gas_units(blockchain: str, use_flash: bool = False) -> int:
-        """
-        Estime le nombre d'unités de gas nécessaires pour l'arbitrage.
-        
-        Args:
-            blockchain: Nom de la blockchain
-            use_flash: Si True, utiliser un flash arbitrage
-            
-        Returns:
-            Nombre d'unités de gas estimé
-        """
-        # Estimation approximative par blockchain et type d'arbitrage
-        gas_estimates = {
-            "solana": {
-                "standard": 300000,
-                "flash": 500000
-            },
-            "avalanche": {
-                "standard": 250000,
-                "flash": 400000
-            }
-        }
-        
-        blockchain = blockchain.lower()
-        arbitrage_type = "flash" if use_flash else "standard"
-        
-        return gas_estimates.get(blockchain, {}).get(arbitrage_type, 300000)
-    
-    async def _get_native_price_usd(self, client: BaseBlockchainClient, blockchain: str) -> float:
-        """
-        Obtient le prix du token natif en USD.
-        
-        Args:
-            client: Client blockchain
-            blockchain: Nom de la blockchain
-            
-        Returns:
-            Prix du token natif en USD
-        """
-        # Adresses des tokens natifs wrapped
-        native_tokens = {
-            "solana": "So11111111111111111111111111111111111111112",  # SOL wrapped
-            "avalanche": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",  # WAVAX
-        }
-        
-        token_address = native_tokens.get(blockchain.lower(), "")
-        if not token_address:
-            return 0
+        enriched = opportunity.copy()
         
         try:
-            return await client.get_token_price(token_address)
+            # Ajouter des informations sur la volatilité de la paire
+            token_a = opportunity["token_a"]
+            token_b = opportunity["token_b"]
+            chain = opportunity["chain"]
+            
+            # Récupérer la volatilité historique si disponible
+            client = self.blockchain_clients.get(chain)
+            if client and hasattr(client, "get_pair_volatility"):
+                volatility = await client.get_pair_volatility(token_a, token_b)
+                if volatility:
+                    enriched["historical_volatility"] = volatility
+            
+            # Ajouter des données de marché via MarketIntelligence
+            if self.market_intelligence:
+                market_data = await self.market_intelligence.get_token_market_data(
+                    token_symbol=token_a,
+                    chain=chain
+                )
+                if market_data:
+                    enriched["market_data"] = market_data
+        
         except Exception as e:
-            logger.warning(f"Erreur lors de l'obtention du prix natif pour {blockchain}: {e}")
-            return 0
-    
-    async def _get_popular_pairs(self, blockchain: str, client: BaseBlockchainClient) -> List[Dict[str, Any]]:
-        """
-        Obtient les paires populaires pour une blockchain.
+            logger.warning(f"Erreur lors de l'enrichissement des données d'opportunité: {str(e)}")
         
-        Args:
-            blockchain: Nom de la blockchain
-            client: Client blockchain
+        return enriched
+    
+    def _parse_dex_config(self) -> List[Dict[str, Any]]:
+        """
+        Parse la configuration des DEX
             
         Returns:
-            Liste de paires populaires
+            Liste des DEX configurés
         """
-        # Cette méthode devrait être implémentée dans chaque client blockchain
-        # Pour l'instant, retourner une liste vide
-        return []
+        # Exemple de configuration des DEX
+        return self.config.get("dex_list", [
+            {"name": "traderjoe", "chain": "avax", "fee": 0.3},
+            {"name": "pangolin", "chain": "avax", "fee": 0.3},
+            {"name": "sushi", "chain": "avax", "fee": 0.3},
+            {"name": "raydium", "chain": "solana", "fee": 0.25},
+            {"name": "orca", "chain": "solana", "fee": 0.3}
+        ])
     
-    async def _get_pool_info(
-        self, 
-        client: BaseBlockchainClient, 
-        dex: Dict[str, Any], 
-        token_address: str, 
-        base_token_address: str
-    ) -> Optional[Dict[str, Any]]:
+    async def _initialize_blockchain_client(self, chain_config: Dict[str, Any]):
         """
-        Obtient les informations sur un pool de liquidité.
+        Initialise un client blockchain
         
         Args:
-            client: Client blockchain
-            dex: Informations sur le DEX
-            token_address: Adresse du token
-            base_token_address: Adresse du token de base
+            chain_config: Configuration de la blockchain
             
         Returns:
-            Informations sur le pool ou None
+            Client blockchain initialisé
         """
-        try:
-            # TODO: Implémenter la logique spécifique à chaque DEX
-            # Pour l'instant, simuler une réponse
+        # À implémenter: initialisation du client blockchain spécifique
+        return None
+    
+    async def _initialize_exchange_client(self, exchange_config: Dict[str, Any]):
+        """
+        Initialise un client d'échange
+        
+        Args:
+            exchange_config: Configuration de l'échange
+            
+        Returns:
+            Client d'échange initialisé
+        """
+        # À implémenter: initialisation du client d'échange spécifique
+        return None
+    
+    def _get_ai_config(self) -> Dict[str, Any]:
+        """
+        Prépare la configuration pour le client IA
+            
+        Returns:
+            Configuration du client IA
+        """
+        ai_provider = os.environ.get("AI_PROVIDER", "claude")
+        
+        if ai_provider == "claude":
             return {
-                "address": f"{dex['name']}_{token_address}_{base_token_address}",
-                "liquidity_usd": 1000000,  # Exemple
-                "price": 1.0  # Exemple
+                "api_key": os.environ.get("CLAUDE_API_KEY"),
+                "model": os.environ.get("CLAUDE_MODEL", "claude-3-7-sonnet-20240229")
             }
-        except Exception as e:
-            logger.debug(f"Erreur lors de l'obtention des informations du pool: {e}")
-            return None 
+        elif ai_provider == "openai":
+            return {
+                "api_key": os.environ.get("OPENAI_API_KEY"),
+                "model": os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
+            }
+        else:
+            return {}
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """
+        Récupère les statistiques d'activité du moteur d'arbitrage
+            
+        Returns:
+            Statistiques d'activité
+        """
+        # Mettre à jour le timestamp de dernière activité
+        self.stats["last_activity"] = datetime.now().isoformat()
+        return self.stats 

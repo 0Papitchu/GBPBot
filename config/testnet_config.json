@@ -1,0 +1,15 @@
+{
+    "blockchain": "avax",
+    "testnet": true,
+    "min_profit_threshold": 0.002,
+    "min_sandwich_profit_threshold": 0.005,
+    "max_gas_price_gwei": 100.0,
+    "gas_boost_percentage": 10.0,
+    "monitoring_duration_seconds": 30,
+    "simulation_only": true,
+    "pairs_to_monitor": [
+        {"token0": "WAVAX", "token1": "USDC"},
+        {"token0": "WAVAX", "token1": "USDT"},
+        {"token0": "JOE", "token1": "USDC"}
+    ]
+}

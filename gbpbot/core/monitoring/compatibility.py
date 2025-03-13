@@ -13,9 +13,29 @@ en arrière-plan, permettant ainsi d'éviter de casser le code existant.
 import logging
 from typing import Dict, Any, Optional, List, Union
 
+# Classe temporaire pour éviter l'importation cyclique
+class HardwareOptimizerCompat:
+    @staticmethod
+    def get_instance():
+        return None
+
+def get_hardware_optimizer_compat():
+    return None
+
+# Classe temporaire pour éviter l'importation cyclique
+class HardwareOptimizerCompat:
+    @staticmethod
+    def get_instance():
+        return None
+
+def get_hardware_optimizer_compat():
+    return None
+
 from gbpbot.core.monitoring import SystemMonitor, get_system_monitor
-from gbpbot.core.optimization import (
-    get_hardware_optimizer, HardwareOptimizer,
+# Temporairement commenté pour éviter l'importation cyclique
+# # Temporairement commenté pour éviter l'importation cyclique
+# from gbpbot.core.optimization import (
+    get_hardware_optimizer, # # HardwareOptimizer,
     OptimizationResult, OptimizationConfig
 )
 

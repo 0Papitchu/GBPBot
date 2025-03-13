@@ -1,5 +1,24 @@
 # Intelligence Artificielle dans GBPBot 🤖
 
+> **IMPORTANT** : Ce document est obsolète et a été remplacé par un guide unifié plus complet.
+> 
+> Veuillez consulter [AI_README.md](AI_README.md) pour la documentation à jour sur l'intégration de l'IA.
+
+---
+
+## Redirection
+
+Cette documentation a été consolidée avec `AI_INTEGRATION.md`, `AI_INTEGRATION_GUIDE.md` et `AI_TRADING_INTEGRATION.md` en un guide complet.
+
+Le nouveau document unifié contient :
+- Une vue d'ensemble des capacités d'IA dans GBPBot
+- Un guide complet de configuration des modèles d'IA
+- Des exemples pratiques d'utilisation de l'IA pour le trading
+- Des conseils de dépannage et bonnes pratiques
+- Des modèles de code pour l'intégration avec d'autres modules
+
+**Merci de vous référer au nouveau guide : [AI_README.md](AI_README.md)**
+
 ## Introduction
 
 L'intégration de l'intelligence artificielle (IA) dans GBPBot représente une avancée majeure dans notre système de trading automatisé. En exploitant la puissance des grands modèles de langage (LLMs) et du machine learning, GBPBot est désormais capable d'analyser les marchés de cryptomonnaies avec une profondeur et une précision inégalées.

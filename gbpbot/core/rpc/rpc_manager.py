@@ -105,7 +105,7 @@ class RPCManager:
         self.connection_pool_optimization_task = None  # Ne pas créer la tâche immédiatement
         
         # Planifier la tâche de rafraîchissement de session
-        self.session_refresh_task = asyncio.create_task(self._periodic_session_refresh())
+        self.session_refresh_task = None  # Ne pas créer la tâche immédiatement
         
         logger.info(f"Gestionnaire RPC initialisé avec {sum(len(networks) for networks in self.providers.values())} chaînes/réseaux configurés")
 
@@ -212,51 +212,24 @@ class RPCManager:
             logger.error(f"Erreur lors de la recréation de la session RPC: {str(e)}")
 
     def _init_session(self):
-        """
-        Initialise la session HTTP pour les appels RPC
-        """
+        """Initialise la session HTTP pour les appels RPC."""
         try:
-            # Déterminer la limite de connexions optimale
-            connection_limit = self.config.get("connection_limit", 20)
+            # Configuration des limites de connexions
+            conn_limit = self.config.get("connection_limit", 20)
+            timeout = aiohttp.ClientTimeout(total=self.config.get("timeout", 10))
             
-            # Utiliser les valeurs du moniteur de ressources si disponible
-            if resource_monitor:
-                try:
-                    optimization_values = resource_monitor.get_optimization_values()
-                    if "connection_pool_size" in optimization_values:
-                        connection_limit = optimization_values["connection_pool_size"]
-                except Exception as e:
-                    logger.warning(f"Impossible de récupérer les valeurs d'optimisation: {e}")
-            
-            # Créer le connecteur TCP avec les paramètres optimisés
-            connector = aiohttp.TCPConnector(
-                limit=connection_limit,
-                limit_per_host=self.config.get("max_connections_per_host", max(2, connection_limit // 4)),
-                ttl_dns_cache=self.config.get("dns_cache_ttl", 300),
-                verify_ssl=self.config.get("verify_ssl", True),
-                keepalive_timeout=60.0,  # Maintenir les connexions ouvertes plus longtemps
-                force_close=self.config.get("force_close", False),
-                enable_cleanup_closed=True,  # Nettoyage automatique des connexions fermées
-            )
-            
-            # Créer la session aiohttp avec les timeouts appropriés
-            timeout = aiohttp.ClientTimeout(
-                total=self.config.get("timeout", 10),
-                connect=self.config.get("connect_timeout", 5),
-                sock_connect=self.config.get("sock_connect_timeout", 5),
-                sock_read=self.config.get("sock_read_timeout", 5)
-            )
-            
-            # Créer la session
+            # Création de la session
             self.session = aiohttp.ClientSession(
-                connector=connector,
                 timeout=timeout,
-                headers={"Content-Type": "application/json"}
+                connector=aiohttp.TCPConnector(
+                    limit=conn_limit,
+                    ssl=False
+                )
             )
-            
-            logger.info(f"Session RPC initialisée (limite de connexions: {connection_limit}, par hôte: {self.config.get('max_connections_per_host', max(2, connection_limit // 4))})")
+            logger.info(f"Session HTTP initialisée avec une limite de {conn_limit} connexions")
         except Exception as e:
             logger.error(f"Erreur lors de l'initialisation de la session RPC: {str(e)}")
+            self.session = None
     
     async def _ensure_session(self):
         """
@@ -1206,6 +1179,32 @@ class RPCManager:
         if not self.connection_pool_optimization_task:
             self.connection_pool_optimization_task = asyncio.create_task(self._connection_pool_optimizer())
             logger.debug("Tâche d'optimisation du pool de connexions démarrée")
+
+    async def start(self):
+        """Démarre le gestionnaire RPC et initialise les sessions"""
+        # Initialiser la session de manière asynchrone
+        await self._ensure_session()
+        """
+        Démarre le gestionnaire RPC et initialise les tâches asynchrones.
+        
+        Returns:
+            self: L'instance RPCManager pour permettre le chaînage
+        """
+        # Initialiser la session si nécessaire
+        if not hasattr(self, 'session') or self.session is None:
+            await self._init_session()
+        
+        # Créer la tâche de rafraîchissement si nécessaire
+        if self.session_refresh_task is None:
+            self.session_refresh_task = asyncio.create_task(self._periodic_session_refresh())
+            logger.info("Tâche de rafraîchissement de session créée")
+        
+        # Démarrer la tâche d'optimisation du pool de connexions
+        if hasattr(self, 'connection_pool_optimization_task') and self.connection_pool_optimization_task is None:
+            await self.start_optimization_task()
+        
+        logger.info("RPCManager démarré avec succès")
+        return self
 
 # Créer une instance singleton du gestionnaire RPC
 rpc_manager = RPCManager() 

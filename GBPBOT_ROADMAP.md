@@ -571,7 +571,7 @@ Le GBPBot est conçu comme un système de trading privé, discret et hautement o
 - ✅ Résolution proactive des vulnérabilités
 
 ### 3. Prochaines Étapes
-- ⬜ Mise en place de tests de pénétration automatisés
+- ✅ Mise en place de tests de pénétration automatisés
 - ⬜ Audit de sécurité externe
 - ⬜ Certification de sécurité blockchain
 - ⬜ Programme de bug bounty 

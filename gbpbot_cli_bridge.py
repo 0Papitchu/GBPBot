@@ -68,22 +68,23 @@ def install_dependencies():
     print_colored("Choisissez une option d'installation:", "CYAN")
     print_colored("1. Installation minimale (strict minimum pour lancer l'interface)", "CYAN")
     print_colored("2. Installation standard (pour la plupart des fonctionnalités)", "CYAN") 
-    print_colored("3. Installation du package gbpbot (résout les problèmes d'import)", "CYAN")
-    print_colored("4. Retour au menu principal", "CYAN")
+    print_colored("3. Installation complète (incluant l'Agent IA et toutes les dépendances)", "CYAN")
+    print_colored("4. Installation du package gbpbot (résout les problèmes d'import)", "CYAN")
+    print_colored("5. Retour au menu principal", "CYAN")
     
     print("\n")
     option = input("Votre choix: ")
     
-    if option == "4":
+    if option == "5":
         return False
     
-    if option not in ["1", "2", "3"]:
+    if option not in ["1", "2", "3", "4"]:
         print_colored("Option invalide!", "RED")
         input("\nAppuyez sur Entrée pour continuer...")
         return False
     
-    # Option 3: Installer le package gbpbot en mode développement
-    if option == "3":
+    # Option 4: Installer le package gbpbot en mode développement
+    if option == "4":
         print_colored("\nInstallation du package GBPBot en mode développement...", "BLUE")
         print_colored("Cette opération va installer le package directement depuis le dossier courant.", "CYAN")
         print_colored("Cela résoudra les problèmes d'importation de modules.", "CYAN")
@@ -138,7 +139,7 @@ def install_dependencies():
             "base58"
         ]
         desc = "minimale"
-    else:  # option 2
+    elif option == "2":
         # Installation standard
         essential_deps = [
             "python-dotenv", 
@@ -166,6 +167,33 @@ def install_dependencies():
             "asyncio"
         ]
         desc = "standard"
+    else:  # option 3 - Installation complète
+        # Vérifier si requirements.txt existe
+        if os.path.exists("requirements.txt"):
+            print_colored("\nInstallation des dépendances principales depuis requirements.txt...", "BLUE")
+            try:
+                result = subprocess.call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+                if result == 0:
+                    print_colored("Dépendances principales installées avec succès!", "GREEN")
+                else:
+                    print_colored("Échec de l'installation de certaines dépendances principales.", "YELLOW")
+            except Exception as e:
+                print_colored(f"Erreur lors de l'installation des dépendances principales: {str(e)}", "RED")
+        
+        # Vérifier si requirements-agent.txt existe
+        if os.path.exists("requirements-agent.txt"):
+            print_colored("\nInstallation des dépendances de l'Agent IA depuis requirements-agent.txt...", "BLUE")
+            try:
+                result = subprocess.call([sys.executable, "-m", "pip", "install", "-r", "requirements-agent.txt"])
+                if result == 0:
+                    print_colored("Dépendances de l'Agent IA installées avec succès!", "GREEN")
+                else:
+                    print_colored("Échec de l'installation de certaines dépendances de l'Agent IA.", "YELLOW")
+            except Exception as e:
+                print_colored(f"Erreur lors de l'installation des dépendances de l'Agent IA: {str(e)}", "RED")
+        
+        input("\nAppuyez sur Entrée pour continuer...")
+        return True
     
     print_colored(f"\nInstallation {desc} des dépendances...", "BLUE")
     print_colored("Cette opération va installer les packages Python nécessaires au fonctionnement du GBPBot.", "CYAN")
@@ -198,25 +226,27 @@ def install_dependencies():
                         print_colored(f"✓ {package} maintenant installé et importé avec succès", "GREEN")
                     except ImportError:
                         print_colored(f"⚠ Impossible d'importer {module_name} malgré l'installation", "RED")
-            except subprocess.CalledProcessError:
-                print_colored(f"⚠ Impossible d'installer {package}", "RED")
+            except Exception as e:
+                print_colored(f"Erreur lors de l'installation de {package}: {e}", "RED")
         
-        # Étape 2 : installer le reste des packages
-        remaining_packages = [p for p in essential_deps if p not in critical_packages]
-        if remaining_packages:
-            print_colored("\nInstallation des packages additionnels...", "BLUE")
-            for package in remaining_packages:
-                try:
-                    subprocess.call([sys.executable, "-m", "pip", "install", package, "--no-deps"])
-                    print_colored(f"✓ {package} installé", "GREEN")
-                except subprocess.CalledProcessError:
-                    print_colored(f"⚠ Échec de l'installation de {package}", "YELLOW")
+        # Étape 2 : installer les autres packages
+        other_packages = [p for p in essential_deps if p not in critical_packages]
+        if other_packages:
+            print_colored("\nInstallation des dépendances secondaires...", "BLUE")
+            try:
+                for package in other_packages:
+                    print_colored(f"Installation de {package}...", "CYAN")
+                    try:
+                        subprocess.call([sys.executable, "-m", "pip", "install", package])
+                    except Exception as e:
+                        print_colored(f"Erreur lors de l'installation de {package}: {e}", "YELLOW")
+            except Exception as e:
+                print_colored(f"Erreur lors de l'installation des dépendances secondaires: {e}", "RED")
         
         print_colored("\nInstallation des dépendances terminée!", "GREEN")
-        print_colored("Certains packages peuvent nécessiter une installation manuelle supplémentaire.", "YELLOW")
         return True
     except Exception as e:
-        print_colored(f"\nErreur lors de l'installation: {e}", "RED")
+        print_colored(f"Erreur lors de l'installation des dépendances: {e}", "RED")
         return False
 
 def setup_env_file():
@@ -790,9 +820,94 @@ globals()["HardwareOptimizerCompat"] = HardwareOptimizerCompat
         
         return False
 
+def check_and_install_missing_dependencies():
+    """Vérifie et installe automatiquement les dépendances manquantes"""
+    print_colored("Vérification des dépendances essentielles...", "BLUE")
+    
+    # Liste des dépendances critiques à vérifier
+    critical_modules = [
+        "dotenv", "web3", "solana", "rich", "loguru", 
+        "asyncio", "websockets", "pandas", "numpy"
+    ]
+    
+    # Vérifier les dépendances de l'Agent IA si requirements-agent.txt existe
+    agent_dependencies_needed = False
+    if os.path.exists("requirements-agent.txt"):
+        print_colored("Vérification des dépendances de l'Agent IA...", "BLUE")
+        try:
+            with open("requirements-agent.txt", "r") as f:
+                agent_deps = [line.strip().split(">=")[0].split("==")[0] for line in f if line.strip() and not line.startswith("#")]
+            
+            for module in agent_deps:
+                try:
+                    importlib.import_module(module)
+                except ImportError:
+                    agent_dependencies_needed = True
+                    break
+        except Exception as e:
+            print_colored(f"Erreur lors de la vérification des dépendances de l'Agent IA: {str(e)}", "RED")
+    
+    # Vérifier les dépendances principales
+    missing_modules = []
+    for module in critical_modules:
+        try:
+            importlib.import_module(module)
+        except ImportError:
+            missing_modules.append(module)
+    
+    # Si des dépendances sont manquantes ou si les dépendances de l'Agent IA sont nécessaires
+    if missing_modules or agent_dependencies_needed:
+        print_colored("Certaines dépendances sont manquantes. Installation automatique...", "YELLOW")
+        
+        if missing_modules:
+            print_colored(f"Modules manquants: {', '.join(missing_modules)}", "YELLOW")
+            
+            # Installer les dépendances principales
+            try:
+                if os.path.exists("requirements.txt"):
+                    subprocess.call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+                else:
+                    for module in missing_modules:
+                        subprocess.call([sys.executable, "-m", "pip", "install", module])
+            except Exception as e:
+                print_colored(f"Erreur lors de l'installation des dépendances principales: {str(e)}", "RED")
+                return False
+        
+        # Installer les dépendances de l'Agent IA si nécessaire
+        if agent_dependencies_needed:
+            print_colored("Installation des dépendances de l'Agent IA...", "YELLOW")
+            try:
+                subprocess.call([sys.executable, "-m", "pip", "install", "-r", "requirements-agent.txt"])
+            except Exception as e:
+                print_colored(f"Erreur lors de l'installation des dépendances de l'Agent IA: {str(e)}", "RED")
+                print_colored("Le mode Agent IA pourrait ne pas fonctionner correctement.", "YELLOW")
+        
+        print_colored("Installation des dépendances terminée.", "GREEN")
+        
+        # Vérifier à nouveau
+        still_missing = []
+        for module in critical_modules:
+            try:
+                importlib.import_module(module)
+            except ImportError:
+                still_missing.append(module)
+        
+        if still_missing:
+            print_colored(f"Attention: certains modules sont toujours manquants: {', '.join(still_missing)}", "RED")
+            print_colored("Utilisez l'option 'Installer les dépendances' du menu principal pour une installation complète.", "YELLOW")
+            input("\nAppuyez sur Entrée pour continuer...")
+            return False
+    else:
+        print_colored("Toutes les dépendances essentielles sont installées.", "GREEN")
+    
+    return True
+
 def main():
     """Fonction principale"""
     try:
+        # Vérifier et installer automatiquement les dépendances manquantes au démarrage
+        check_and_install_missing_dependencies()
+        
         while True:
             choice = show_menu()
             

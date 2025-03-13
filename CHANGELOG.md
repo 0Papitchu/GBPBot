@@ -5,79 +5,120 @@ Tous les changements notables apportés à ce projet seront documentés dans ce 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.4] - 2025-04-15
+## [0.7.0] - 2024-03-12
 
 ### Ajouté
-- Intégration SonarQube pour l'analyse approfondie de la qualité et de la sécurité du code
-- Scripts d'analyse locale pour Windows (`analyse_locale.ps1`) et Linux/macOS (`analyse_locale.sh`)
-- Configuration personnalisée pour la détection des vulnérabilités spécifiques aux applications blockchain
-- Workflow GitHub Actions pour l'analyse automatique du code à chaque commit et pull request
-- Vérification automatique des Quality Gates SonarQube dans le pipeline CI/CD
+- Nouvelle interface unifiée (`unified_interface.py`) pour simplifier l'accès à tous les modules
+  - Architecture asynchrone compatible avec le reste du code
+  - Intégration transparente avec l'interface CLI existante
+  - Support du mapping des modules et modes d'exécution
+  - Gestion améliorée des configurations
+- Amélioration de la documentation et mise à jour de la roadmap
 
-### Changé
-- Migration de Codiga vers GitHub CodeQL suite à l'annonce de la fermeture des services Codiga au 4 mai
-- Renforcement de l'analyse de sécurité avec une combinaison d'outils spécialisés (CodeQL, Bandit, Pylint, Ruff, Safety)
-- Mise à jour des badges et de la documentation pour refléter les nouveaux outils d'analyse
+### Amélioré
+- Structure du projet pour une meilleure organisation des modules
+- Support complet des opérations asynchrones dans toute l'application
+- Documentation technique avec les dernières avancées
+- Processus de démarrage et de configuration des modules
 
-## [1.0.3] - 2025-04-12
-
-### Changé
-- Migration de Codiga vers GitHub CodeQL suite à l'annonce de la fermeture des services Codiga au 4 mai
-- Renforcement de l'analyse de sécurité avec une combinaison d'outils spécialisés (CodeQL, Bandit, Pylint, Ruff, Safety)
-- Mise à jour des badges et de la documentation pour refléter les nouveaux outils d'analyse
-
-## [1.0.2] - 2025-04-09
+## [0.6.0] - 2024-03-12
 
 ### Ajouté
-- Intégration Codiga pour l'analyse statique automatisée du code
-- Intégration SonarQube pour l'analyse approfondie de la qualité et de la sécurité
-- Configuration Dependabot pour la surveillance automatique des dépendances
-- Scripts d'analyse locale (`analyse_locale.sh` et `analyse_locale.ps1`) pour les développeurs
-- Workflows GitHub Actions pour l'intégration continue et l'analyse automatique
+- Finalisation du module de Sniping (100% complété)
+  - Détecteur avancé de rug pulls (`rug_pull_detector.py`) pour l'analyse complète des contrats, liquidité et distribution
+  - Analyseur de tendances de tokens similaires (`token_trend_analyzer.py`) pour identifier les patterns de croissance
+  - Gestionnaire de seuils dynamiques (`dynamic_threshold_manager.py`) pour optimiser les entrées/sorties
+  - Simulation multi-facteurs pour estimer le potentiel des tokens
+  - Optimisation avancée des paramètres de gas pour prioriser les transactions
 
-### Sécurité
-- Mise en place d'une analyse de sécurité automatique pour détecter les vulnérabilités potentielles
-- Détection des secrets et des clés privées dans le code
-- Vérification des bonnes pratiques de sécurité pour les opérations blockchain
-- Analyse des dépendances pour détecter les vulnérabilités connues
+- Finalisation du module d'Arbitrage (100% complété)
+  - Stratégie optimisée d'arbitrage cross-DEX (`cross_dex_arbitrage.py`)
+  - Système asynchrone de détection et d'exécution des opportunités
+  - Validation en temps réel des opportunités d'arbitrage
+  - Exportation des performances et statistiques d'arbitrage
+  - Support multi-blockchain (AVAX et Solana)
 
-## [1.0.1] - 2025-04-08
-
-### Sécurité
-- Mise à jour de `cryptography` vers ≥43.0.1 pour corriger une vulnérabilité d'attaque timing oracle
-- Mise à jour de `aiohttp` vers ≥3.10.11 pour corriger une vulnérabilité de DoS dans le traitement multipart/form-data
-- Mise à jour de `gunicorn` vers ≥22.0.0 pour corriger une vulnérabilité de HTTP Request Smuggling
-- Mise à jour de `pyarrow` vers ≥14.0.1 pour corriger une vulnérabilité critique permettant l'exécution de code arbitraire
-- Mise à jour de `eth-abi` vers ≥5.0.1 pour corriger une vulnérabilité DoS récursive
-- Mise à jour de `scikit-learn` vers ≥1.5.0 pour corriger une fuite de données sensibles
-- Mise à jour de `pymongo` vers ≥4.6.3 pour corriger une vulnérabilité de lecture hors limites
-- Mise à jour de `pydantic` vers ≥2.4.0 pour corriger une vulnérabilité de déni de service par expression régulière
-- Ajout de fichiers de verrouillage des dépendances (requirements-core.lock) pour permettre à Dependabot de gérer automatiquement les mises à jour de sécurité
-
-## [1.0.0] - 2025-03-04
-
-### Ajouté
-- Système de monitoring live avec alertes pour détecter les anomalies et erreurs en temps réel
-- Implémentation des stop-loss / take-profit pour éviter des pertes massives
-- Protection contre les attaques MEV, sandwich, frontrunning
-- Validation complète des transactions simulées pour garantir leur fiabilité
-- Système de mise en cache intelligente des appels RPC
-
-### Modifié
-- Décomposition de `price_feed.py` en sous-modules pour une meilleure organisation
-- Optimisation du `RPCManager` avec suppression des redondances entre `call_rpc()` et `batch_call_rpc()`
-- Amélioration de la gestion des erreurs (RPC, WebSockets, API externes)
-- Optimisation des boucles pour réduire la consommation CPU
-- Gestion optimisée des WebSockets avec suppression des reconnexions inutiles
-- Optimisation du moteur d'arbitrage avec amélioration de la détection et normalisation des prix
+### Amélioré
+- Module MEV/Frontrunning pour AVAX (80% complété)
+  - Optimisation des transactions de frontrunning et backrunning
+  - Support amélioré des attaques sandwich
+  - Suppression des dépendances aux flash loans pour un usage privé
+  - Performance et fiabilité accrues
 
 ### Corrigé
-- Correction des exceptions silencieuses
-- Ajout de validations des entrées et transactions pour éviter les opérations risquées
-- Optimisation des frais de gas (EIP-1559) pour réduire les coûts transactionnels
-- Vérification et correction de la gestion des fonds
+- Gestion améliorée des erreurs dans les stratégies d'arbitrage
+- Optimisation des requêtes RPC pour réduire la charge sur les nœuds
 
-### Sécurité
-- Implémentation d'un retry intelligent avec backoff exponentiel pour éviter les appels RPC défectueux
-- Amélioration de la détection des prix anormaux pour éviter les faux signaux
-- Vérification de la gestion des fonds pour s'assurer que les profits sont bien envoyés au wallet sécurisé 
+## [0.5.0] - 2024-03-10
+
+### Ajouté
+- Module MEV/Frontrunning pour AVAX (80% complété)
+  - Implémentation d'un décodeur avancé de transactions (`tx_decoder.py`)
+  - Simulateur de transactions pour valider la rentabilité (`tx_simulator.py`)
+  - Support des transactions EIP-1559 avec optimisation dynamique du gas
+  - Stratégies de frontrunning, backrunning et attaques sandwich 
+  - Monitoring avancé des transactions dans le mempool
+  - Analyseur de performance MEV avec suggestions d'optimisation
+  - Intégration avec Flashbots pour les bundles de transactions
+
+- Modules de Monitoring
+  - `SystemMonitor` pour la surveillance des ressources système
+  - `PerformanceMonitor` pour le suivi des performances de trading
+  - Alertes configurables sur seuils de ressources
+
+- Module de gestion des wallets
+  - Support multi-blockchain (Solana, AVAX)
+  - Importation et création sécurisée de wallets
+  - Suivi des balances
+
+### Amélioré
+- Documentation technique mise à jour avec les nouveaux modules
+- Guide d'utilisation pour les fonctionnalités de monitoring
+- Optimisation du sniping de tokens (65% complété)
+  - Amélioration de la détection des nouveaux tokens
+  - Filtres de sécurité avancés pour éviter les rug pulls
+
+### Corrigé
+- Erreurs de linting dans `system_monitor.py`
+- Importations conditionnelles dans `wallet_manager.py`
+- Gestion des dépendances manquantes
+
+## [0.4.0] - 2024-03-01
+
+### Ajouté
+- Module de sniping de tokens
+- Intégration avec Telegram pour les notifications
+- Support initial pour Solana
+
+### Amélioré
+- Interface utilisateur en console
+- Documentation utilisateur
+
+### Corrigé
+- Bugs de connexion aux RPC
+- Problèmes de gestion des transactions
+
+## [0.3.0] - 2024-02-15
+
+### Ajouté
+- Module d'arbitrage entre DEX
+- Support pour TraderJoe et Pangolin
+- Calcul automatique des opportunités d'arbitrage
+
+### Amélioré
+- Optimisation des coûts de gas
+- Vitesse d'exécution des transactions
+
+## [0.2.0] - 2024-02-01
+
+### Ajouté
+- Support pour AVAX
+- Interface CLI basique
+- Configuration via fichiers JSON
+
+## [0.1.0] - 2024-01-15
+
+### Ajouté
+- Architecture initiale du GBPBot
+- Structure modulaire de base
+- Configuration des environnements de développement 

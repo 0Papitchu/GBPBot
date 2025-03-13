@@ -1,5 +1,24 @@
 # Documentation du Client Sonic pour GBPBot
 
+> **IMPORTANT** : Ce document est obsolète et a été remplacé par un guide unifié plus complet.
+> 
+> Veuillez consulter [SONIC_GUIDE.md](SONIC_GUIDE.md) pour la documentation à jour sur l'intégration Sonic.
+
+---
+
+## Redirection
+
+Cette documentation a été consolidée avec `sonic_client_guide.md` et `SONIC_INTEGRATION.md` en un seul guide complet.
+
+Le nouveau document unifié contient :
+- Une architecture détaillée des composants Sonic
+- Un guide complet de configuration et d'utilisation
+- Des exemples pratiques de sniping et d'arbitrage
+- Des conseils de dépannage et bonnes pratiques
+- Des modèles de code pour l'intégration avec d'autres modules
+
+**Merci de vous référer au nouveau guide : [SONIC_GUIDE.md](SONIC_GUIDE.md)**
+
 ## Introduction
 
 Le module Client Sonic est une composante essentielle de l'expansion du GBPBot vers la blockchain Sonic (basée sur Fantom). Il fournit une interface simplifiée et optimisée pour interagir avec la blockchain Sonic, ses DEX, et ses tokens.

@@ -1,5 +1,24 @@
 # Guide d'Intégration de l'IA dans GBPBot
 
+> **IMPORTANT** : Ce document est obsolète et a été remplacé par un guide unifié plus complet.
+> 
+> Veuillez consulter [AI_README.md](AI_README.md) pour la documentation à jour sur l'intégration de l'IA.
+
+---
+
+## Redirection
+
+Cette documentation a été consolidée avec `AI_INTEGRATION.md`, `AI_TRADING_INTEGRATION.md` et `README_IA.md` en un guide complet.
+
+Le nouveau document unifié contient :
+- Une vue d'ensemble des capacités d'IA dans GBPBot
+- Un guide complet de configuration des modèles d'IA
+- Des exemples pratiques d'utilisation de l'IA pour le trading
+- Des conseils de dépannage et bonnes pratiques
+- Des modèles de code pour l'intégration avec d'autres modules
+
+**Merci de vous référer au nouveau guide : [AI_README.md](AI_README.md)**
+
 ## Introduction
 
 Ce guide explique comment l'intelligence artificielle (IA) est intégrée dans GBPBot pour améliorer les décisions de trading, notamment pour le sniping de tokens et l'arbitrage. L'IA permet d'analyser plus efficacement les opportunités de marché, de détecter les scams potentiels et d'optimiser les stratégies de trading.

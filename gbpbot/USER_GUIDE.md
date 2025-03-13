@@ -1,6 +1,6 @@
 # Guide d'Utilisation GBPBot
 
-> **Note de mise à jour**: Ce guide d'utilisation a été vérifié le 04/03/2024 et est à jour avec la version actuelle du bot. Toutes les commandes, configurations et fonctionnalités décrites correspondent à l'implémentation actuelle.
+> **Note de mise à jour**: Ce guide d'utilisation a été vérifié le 10/03/2024 et est à jour avec la version actuelle du bot. Toutes les commandes, configurations et fonctionnalités décrites correspondent à l'implémentation actuelle, incluant les nouveaux modules de monitoring et de gestion des wallets.
 
 ## Table des matières
 
@@ -21,9 +21,14 @@
    - [5.3 Configuration](#53-configuration)
    - [5.4 Alertes](#54-alertes)
 6. [API REST](#6-api-rest)
-7. [Maintenance](#7-maintenance)
-8. [Dépannage](#8-dépannage)
-9. [FAQ](#9-faq)
+7. [Monitoring et Gestion des Wallets](#7-monitoring-et-gestion-des-wallets)
+   - [7.1 Monitoring Système](#71-monitoring-système)
+   - [7.2 Monitoring de Performance](#72-monitoring-de-performance)
+   - [7.3 Gestion Centralisée des Wallets](#73-gestion-centralisée-des-wallets)
+   - [7.4 Intégration Telegram](#74-intégration-telegram)
+8. [Maintenance](#8-maintenance)
+9. [Dépannage](#9-dépannage)
+10. [FAQ](#10-faq)
 
 ---
 
@@ -585,7 +590,246 @@ Pour une liste complète des endpoints, consultez la [documentation technique](T
 
 ---
 
-## 7. Maintenance
+## 7. Monitoring et Gestion des Wallets
+
+GBPBot intègre désormais des modules avancés de monitoring et de gestion des wallets pour assurer un fonctionnement optimal et sécurisé de vos opérations de trading.
+
+### 7.1 Monitoring Système
+
+Le module `SystemMonitor` surveille en temps réel les ressources système utilisées par GBPBot.
+
+#### Démarrage du monitoring
+
+```python
+from gbpbot.monitoring import get_system_monitor
+
+# Obtenir l'instance du moniteur système
+system_monitor = get_system_monitor()
+
+# Démarrer le monitoring avec un intervalle personnalisé (en secondes)
+system_monitor.start_monitoring(interval=10.0)  # Par défaut: 5.0
+```
+
+#### Configuration des seuils d'alerte
+
+```python
+# Configurer les seuils d'alerte
+system_monitor.set_thresholds(
+    cpu_threshold=90,        # Alerte si CPU > 90%
+    memory_threshold=85,     # Alerte si Mémoire > 85%
+    disk_threshold=95,       # Alerte si Disque > 95%
+    temperature_threshold=80 # Alerte si Température > 80°C
+)
+```
+
+#### Consultation des métriques système
+
+```python
+# Obtenir les métriques système actuelles
+metrics = system_monitor.get_metrics()
+print(f"CPU: {metrics['cpu_percent']}%")
+print(f"Mémoire: {metrics['memory_percent']}%")
+print(f"Disque: {metrics['disk_percent']}%")
+print(f"Réseau: {metrics['network_io']}")
+```
+
+#### Gestion des alertes
+
+```python
+# Ajouter un callback pour les alertes
+def alert_callback(alert_type, message, value, threshold):
+    print(f"ALERTE {alert_type}: {message} (Valeur: {value}, Seuil: {threshold})")
+
+system_monitor.add_alert_callback(alert_callback)
+```
+
+#### Arrêt du monitoring
+
+```python
+# Arrêter le monitoring
+system_monitor.stop_monitoring()
+```
+
+### 7.2 Monitoring de Performance
+
+Le module `PerformanceMonitor` suit les performances de trading et calcule des métriques essentielles.
+
+#### Enregistrement des transactions
+
+```python
+from gbpbot.monitoring import get_performance_monitor
+from gbpbot.monitoring.performance_monitor import TradeRecord
+
+# Obtenir l'instance du moniteur de performance
+perf_monitor = get_performance_monitor()
+
+# Créer un enregistrement de transaction
+trade = TradeRecord(
+    trade_id="trade_123",
+    token_symbol="SOL",
+    token_address="So11111111111111111111111111111111111111112",
+    blockchain="solana",
+    strategy="arbitrage",
+    buy_price=50.0,
+    buy_amount=1.0,
+    buy_timestamp=1646732800,
+    buy_tx_hash="tx_hash_buy",
+    sell_price=55.0,
+    sell_amount=0.98,  # Après frais
+    sell_timestamp=1646736400,
+    sell_tx_hash="tx_hash_sell",
+    fees_usd=2.5,
+    profit_loss_usd=2.0,
+    status="completed"
+)
+
+# Ajouter la transaction
+perf_monitor.add_trade(trade)
+
+# Mettre à jour une transaction existante
+perf_monitor.update_trade("trade_123", status="completed", sell_price=55.0)
+```
+
+#### Consultation des statistiques
+
+```python
+# Obtenir les statistiques globales
+stats = perf_monitor.get_statistics()
+print(f"ROI total: {stats['total_roi']}%")
+print(f"Profit total: ${stats['total_profit_usd']}")
+print(f"Nombre de trades: {stats['total_trades']}")
+print(f"Ratio de réussite: {stats['win_rate']}%")
+
+# Obtenir les statistiques par blockchain
+solana_stats = perf_monitor.get_statistics(blockchain="solana")
+
+# Obtenir les statistiques par stratégie
+arbitrage_stats = perf_monitor.get_statistics(strategy="arbitrage")
+```
+
+#### Génération de rapports
+
+```python
+# Générer un rapport détaillé
+report = perf_monitor.generate_report(
+    start_date="2023-03-01",
+    end_date="2023-03-31",
+    blockchain="solana",
+    strategy="arbitrage"
+)
+
+# Exporter le rapport au format CSV
+perf_monitor.export_trades("trades_report.csv", start_date="2023-03-01")
+```
+
+### 7.3 Gestion Centralisée des Wallets
+
+Le module `WalletManager` offre une gestion centralisée et sécurisée des wallets sur différentes blockchains.
+
+#### Création et import de wallets
+
+```python
+from gbpbot.modules.wallet_manager import WalletManager
+
+# Initialiser le gestionnaire de wallets
+wallet_manager = WalletManager()
+
+# Créer un nouveau wallet
+new_wallet = wallet_manager.create_wallet(
+    blockchain="solana",
+    name="trading_wallet"
+)
+print(f"Nouvelle adresse: {new_wallet.address}")
+print(f"Clé privée: {new_wallet.private_key}")
+
+# Importer un wallet existant
+imported_wallet = wallet_manager.import_wallet(
+    blockchain="avalanche",
+    private_key="votre_clé_privée",
+    name="wallet_principal"
+)
+```
+
+#### Gestion des wallets
+
+```python
+# Lister tous les wallets disponibles
+wallets = wallet_manager.list_wallets()
+for wallet in wallets:
+    print(f"{wallet.name} ({wallet.blockchain}): {wallet.address}")
+
+# Obtenir un wallet spécifique
+wallet = wallet_manager.get_wallet("trading_wallet")
+
+# Vérifier les blockchains supportées
+supported_chains = wallet_manager.get_supported_blockchains()
+print(f"Blockchains supportées: {supported_chains}")
+```
+
+#### Gestion des balances
+
+```python
+# Obtenir la balance d'un wallet spécifique
+balance = wallet_manager.get_balance("trading_wallet")
+print(f"Balance: {balance.amount} {balance.symbol}")
+
+# Obtenir toutes les balances (tous wallets)
+all_balances = wallet_manager.get_all_balances()
+for wallet_name, balances in all_balances.items():
+    print(f"Wallet: {wallet_name}")
+    for balance in balances:
+        print(f"  {balance.symbol}: {balance.amount} (${balance.usd_value})")
+```
+
+#### Sécurité des wallets
+
+```python
+# Activer le chiffrement des clés privées
+wallet_manager.enable_encryption("mot_de_passe_fort")
+
+# Sauvegarder les wallets (clés chiffrées)
+wallet_manager.backup_wallets("wallets_backup.json")
+
+# Restaurer des wallets depuis une sauvegarde
+wallet_manager.restore_wallets("wallets_backup.json", "mot_de_passe_fort")
+```
+
+### 7.4 Intégration Telegram
+
+GBPBot permet d'accéder aux fonctionnalités de monitoring et de gestion des wallets directement via Telegram.
+
+#### Commandes de monitoring système
+
+```
+/system_status - Affiche le statut actuel des ressources système
+/set_threshold cpu 90 - Configure le seuil d'alerte CPU à 90%
+/start_monitoring - Démarre le monitoring système
+/stop_monitoring - Arrête le monitoring système
+```
+
+#### Commandes de performance
+
+```
+/performance - Affiche les statistiques de performance globales
+/trades - Affiche les dernières transactions
+/report daily - Génère un rapport quotidien
+/report weekly - Génère un rapport hebdomadaire
+```
+
+#### Commandes de gestion des wallets
+
+```
+/wallets - Liste tous les wallets disponibles
+/balance <wallet_name> - Affiche la balance d'un wallet spécifique
+/all_balances - Affiche toutes les balances de tous les wallets
+/create_wallet solana trading_wallet - Crée un nouveau wallet
+```
+
+Pour plus d'informations détaillées sur l'utilisation de ces modules, veuillez consulter le [Guide de Monitoring](../docs/MONITORING_GUIDE.md).
+
+---
+
+## 8. Maintenance
 
 ### Mises à jour
 
@@ -638,7 +882,7 @@ Les logs sont stockés dans le répertoire `logs/`:
 
 ---
 
-## 8. Dépannage
+## 9. Dépannage
 
 ### Problèmes courants
 
@@ -713,7 +957,7 @@ Si vous ne parvenez pas à résoudre un problème, contactez le support:
 
 ---
 
-## 9. FAQ
+## 10. FAQ
 
 ### Questions générales
 

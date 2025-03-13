@@ -10,10 +10,11 @@ Ce document fournit des solutions aux problèmes les plus courants rencontrés l
 4. [Erreurs de Transaction](#erreurs-de-transaction)
 5. [Problèmes de Performance](#problèmes-de-performance)
 6. [Erreurs d'API](#erreurs-dapi)
-7. [Logs et Diagnostics](#logs-et-diagnostics)
-8. [Résolution Avancée](#résolution-avancée)
-9. [Mise à Jour de Sécurité - Mars 2025](#mise-à-jour-de-sécurité---mars-2025)
-10. [Mise à Jour de Sécurité - Avril 2025](#mise-à-jour-de-sécurité---avril-2025)
+7. [Problèmes d'IA et de ML](#problèmes-dia-et-de-ml)
+8. [Logs et Diagnostics](#logs-et-diagnostics)
+9. [Résolution Avancée](#résolution-avancée)
+10. [Mise à Jour de Sécurité - Mars 2025](#mise-à-jour-de-sécurité---mars-2025)
+11. [Mise à Jour de Sécurité - Avril 2025](#mise-à-jour-de-sécurité---avril-2025)
 
 ## Problèmes d'Installation
 
@@ -59,42 +60,240 @@ pip install --only-binary :all: zstandard
 
 ## Erreurs de Lancement
 
-### Erreur "no running event loop"
+Cette section couvre les problèmes spécifiques au lancement de GBPBot et les solutions implémentées pour les résoudre.
 
-**Symptôme** : `RuntimeError: no running event loop` sur Windows
+### Problèmes d'Importation de Modules
 
-**Solution** :
-```bash
-# Solution 1: Utiliser le script bridge
-python gbpbot_cli_bridge.py
-# Puis sélectionner "3. Lancer le bot standard (CLI complet)"
-
-# Solution 2: Utiliser le script de lancement spécifique à Windows
-.\lancer_gbpbot_depannage.bat
+```
+Erreur: Module 'gbpbot.cli_interface' non trouvé.
 ```
 
-### Erreur "cannot import name 'ResourceMonitorCompat'"
+Ce problème survient lorsque Python ne peut pas localiser le package `gbpbot` ou ses sous-modules.
 
-**Symptôme** : `ImportError: cannot import name 'ResourceMonitorCompat' from 'gbpbot.core.monitoring.compatibility'`
+#### Causes possibles:
+- Le répertoire du projet n'est pas dans le PYTHONPATH
+- Le package n'est pas installé en mode développement
+- Structure de fichiers incorrecte
 
-**Solution** :
-```bash
-# Solution 1: Utiliser le script bridge qui corrige les importations circulaires
-python gbpbot_cli_bridge.py
+#### Solutions:
 
-# Solution 2: Mise à jour de GBPBot
-git pull
-pip install -e .
+1. **Vérifier l'installation**:
+   ```bash
+   pip list | grep gbpbot
+   ```
+   Si le package n'apparaît pas, réinstallez-le en mode développement:
+   ```bash
+   pip install -e .
+   ```
+
+2. **Ajouter le répertoire au PYTHONPATH**:
+   ```bash
+   # Linux/macOS
+   export PYTHONPATH=$PYTHONPATH:/chemin/vers/GBPBot
+   
+   # Windows (PowerShell)
+   $env:PYTHONPATH += ";C:\chemin\vers\GBPBot"
+   ```
+
+3. **Vérifier la structure du projet**:
+   Assurez-vous que l'arborescence est correcte:
+   ```
+   GBPBot/
+   ├── gbpbot/
+   │   ├── __init__.py
+   │   ├── cli_interface.py
+   │   └── ...
+   ├── setup.py
+   └── ...
+   ```
+
+### Dépendances Manquantes
+
+```
+Impossible d'importer le package anchorpy: No module named 'anchorpy'
 ```
 
-### Fichier .env Manquant ou Mal Configuré
+Ce problème survient lorsque certaines dépendances requises ne sont pas installées.
 
-**Symptôme** : Messages d'erreur concernant des variables d'environnement ou des clés API manquantes
+#### Causes possibles:
+- Installation incomplète des dépendances
+- Conflits de versions entre packages
+- Environnement virtuel incorrect
 
-**Solution** :
-1. Copiez le fichier d'exemple : `cp .env.example .env`
-2. Éditez le fichier `.env` et ajoutez vos clés API et URLs RPC
-3. Utilisez l'outil de validation : `python validate_env.py`
+#### Solutions:
+
+1. **Installer les dépendances manquantes**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Résoudre les conflits de versions**:
+   Pour les conflits entre `anchorpy` et `anchorpy-core`:
+   ```bash
+   pip uninstall -y anchorpy anchorpy-core
+   pip install "anchorpy>=0.17.0,<0.18.0" "anchorpy-core>=0.1.2,<0.2.0"
+   ```
+
+3. **Vérifier l'environnement virtuel**:
+   Assurez-vous d'utiliser le bon environnement virtuel:
+   ```bash
+   # Linux/macOS
+   which python
+   
+   # Windows
+   where python
+   ```
+
+### Erreurs de Configuration
+
+```
+Erreur: Impossible de charger la configuration depuis config.yaml
+```
+
+#### Causes possibles:
+- Fichier de configuration manquant ou mal formaté
+- Chemins incorrects
+- Autorisations insuffisantes
+
+#### Solutions:
+
+1. **Vérifier le fichier de configuration**:
+   Assurez-vous que le fichier existe et est correctement formaté:
+   ```bash
+   # Vérifier l'existence du fichier
+   ls -la config/config.yaml
+   
+   # Valider le format YAML
+   python -c "import yaml; yaml.safe_load(open('config/config.yaml'))"
+   ```
+
+2. **Utiliser le fichier de configuration par défaut**:
+   Copiez le fichier d'exemple fourni:
+   ```bash
+   cp config/config.example.yaml config/config.yaml
+   ```
+
+3. **Vérifier les autorisations**:
+   Assurez-vous que le fichier est accessible:
+   ```bash
+   # Linux/macOS
+   chmod 644 config/config.yaml
+   ```
+
+### Erreurs de Variables d'Environnement
+
+```
+Erreur: Variable d'environnement SOLANA_RPC_URL non définie
+```
+
+#### Causes possibles:
+- Fichier .env manquant ou incomplet
+- Variables d'environnement non chargées
+
+#### Solutions:
+
+1. **Créer ou compléter le fichier .env**:
+   ```bash
+   # Créer un fichier .env basé sur l'exemple
+   cp .env.example .env
+   
+   # Éditer le fichier pour ajouter les variables manquantes
+   nano .env  # ou tout autre éditeur
+   ```
+
+2. **Charger manuellement les variables d'environnement**:
+   ```bash
+   # Linux/macOS
+   export SOLANA_RPC_URL="https://api.mainnet-beta.solana.com"
+   
+   # Windows (PowerShell)
+   $env:SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com"
+   ```
+
+3. **Utiliser les scripts de lancement fournis**:
+   ```bash
+   # Linux/macOS
+   ./launch_gbpbot.sh
+   
+   # Windows
+   launch_gbpbot.bat
+   ```
+
+### Problèmes avec les Scripts de Lancement
+
+```
+Erreur: Script de lancement non trouvé ou permission refusée
+```
+
+#### Causes possibles:
+- Script manquant ou mal nommé
+- Permissions insuffisantes
+- Incompatibilité de ligne de commande
+
+#### Solutions:
+
+1. **Vérifier l'existence et les permissions du script**:
+   ```bash
+   # Linux/macOS
+   ls -la launch_gbpbot.sh
+   chmod +x launch_gbpbot.sh
+   
+   # Windows
+   dir launch_gbpbot.bat
+   ```
+
+2. **Exécuter le script avec l'interpréteur correct**:
+   ```bash
+   # Linux/macOS
+   bash launch_gbpbot.sh
+   
+   # Windows (via CMD)
+   launch_gbpbot.bat
+   
+   # Windows (via PowerShell)
+   cmd /c launch_gbpbot.bat
+   ```
+
+3. **Utiliser directement Python**:
+   ```bash
+   python -m gbpbot.cli_interface
+   ```
+
+### Problèmes de Compatibilité Python
+
+```
+Erreur: SyntaxError: invalid syntax (f-strings)
+```
+
+#### Causes possibles:
+- Version de Python incompatible (< 3.6)
+- Mélange de versions Python
+
+#### Solutions:
+
+1. **Vérifier la version de Python**:
+   ```bash
+   python --version
+   ```
+   GBPBot nécessite Python 3.9 ou supérieur.
+
+2. **Installer et utiliser la bonne version**:
+   ```bash
+   # Linux/macOS avec pyenv
+   pyenv install 3.11.0
+   pyenv local 3.11.0
+   
+   # Windows avec Python Launcher
+   py -3.11 -m gbpbot.cli_interface
+   ```
+
+3. **Créer un environnement virtuel avec la bonne version**:
+   ```bash
+   # Avec venv
+   python3.11 -m venv venv
+   source venv/bin/activate  # Linux/macOS
+   venv\Scripts\activate     # Windows
+   ```
 
 ## Problèmes de Connexion RPC
 
@@ -201,6 +400,8 @@ pip install -e .
 1. Réduisez la fréquence des requêtes
 2. Passez à un plan API supérieur
 3. Implémentez un système de mise en cache pour réduire les appels API
+
+## Problèmes d'IA et de ML
 
 ## Logs et Diagnostics
 

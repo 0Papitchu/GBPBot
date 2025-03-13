@@ -11,6 +11,62 @@ dans le GBPBot.
 
 import abc
 from typing import Dict, Any, List, Optional, Union, Tuple
+import os
+import json
+import logging
+import asyncio
+from dataclasses import dataclass
+from enum import Enum
+
+# Importation conditionnelle du cache LLM
+try:
+    from gbpbot.ai.llm_cache import cached_llm_request, get_llm_cache
+    LLM_CACHE_AVAILABLE = True
+except ImportError:
+    LLM_CACHE_AVAILABLE = False
+
+from gbpbot.utils.logger import setup_logger
+
+# Configuration du logger
+logger = setup_logger("llm_provider", logging.INFO)
+
+# Essayer d'importer les bibliothèques des différents fournisseurs
+ANTHROPIC_AVAILABLE = False
+try:
+    import anthropic
+    ANTHROPIC_AVAILABLE = True
+except ImportError:
+    logger.warning("Anthropic API non disponible. Claude ne pourra pas être utilisé.")
+
+OPENAI_AVAILABLE = False
+try:
+    import openai
+    OPENAI_AVAILABLE = True
+except ImportError:
+    logger.warning("OpenAI API non disponible. GPT ne pourra pas être utilisé.")
+
+LLAMA_AVAILABLE = False
+try:
+    from llama_cpp import Llama
+    LLAMA_AVAILABLE = True
+except ImportError:
+    logger.warning("llama-cpp-python non disponible. LLaMA local ne pourra pas être utilisé.")
+
+class AiProvider(str, Enum):
+    """Énumération des fournisseurs d'IA disponibles."""
+    AUTO = "auto"
+    CLAUDE = "claude"
+    OPENAI = "openai"
+    LLAMA = "llama"
+
+@dataclass
+class AiClientResponse:
+    """Réponse standardisée des clients IA."""
+    content: str
+    model: str
+    usage: Dict[str, int] = None
+    error: Optional[str] = None
+    status: str = "success"
 
 class LLMProvider(abc.ABC):
     """

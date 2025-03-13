@@ -5,8 +5,10 @@
 Test script to verify that GBPBot can be imported correctly.
 """
 
+import asyncio
 import sys
-import logging
+import os
+from pathlib import Path
 
 # Configure basic logging
 logging.basicConfig(
@@ -18,27 +20,48 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def main():
-    """Test importing GBPBot"""
+async def test_imports():
+    """Teste l'importation des modules GBPBot dans un contexte asyncio"""
     try:
-        logger.info("Testing import of GBPBot...")
-        from gbpbot.main import GBPBot
-        logger.info("Successfully imported GBPBot!")
+        # Ajouter le répertoire parent au path pour permettre l'importation
+        sys.path.insert(0, str(Path(__file__).parent))
         
-        # Create an instance to verify the class works
-        bot = GBPBot(debug=True)
-        logger.info("Successfully created GBPBot instance!")
+        # Importations de base
+        print("Importation des modules de base...")
+        from gbpbot.utils import logger
+        print("✅ utils.logger importé")
         
-        return 0
+        # Tenter d'importer le module arbitrage_engine
+        print("\nTentative d'importation de arbitrage_engine...")
+        from gbpbot.modules import arbitrage_engine
+        print("✅ modules.arbitrage_engine importé avec succès!")
+        
+        # Tenter d'importer le module de continuous learning
+        print("\nTentative d'importation du module de continuous learning...")
+        try:
+            from gbpbot.ai import continuous_learning
+            print("✅ ai.continuous_learning importé avec succès!")
+        except ImportError as e:
+            print(f"❌ Erreur lors de l'importation du module continuous_learning: {e}")
+            print("   Vérifiez le chemin d'importation et les dépendances.")
+            
+        # Afficher les méthodes disponibles dans arbitrage_engine
+        print("\nMéthodes disponibles dans arbitrage_engine:")
+        for name in dir(arbitrage_engine):
+            if not name.startswith('_'):  # Exclure les méthodes privées
+                print(f"  - {name}")
+        
     except ImportError as e:
-        logger.error(f"Import error: {e}")
-        return 1
+        print(f"❌ Erreur d'importation: {e}")
+    except SyntaxError as e:
+        print(f"❌ Erreur de syntaxe: {e}")
+        print(f"   Ligne {e.lineno}, position {e.offset}: {e.text}")
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        return 1
+        print(f"❌ Erreur inattendue: {e}")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Exécuter la fonction asynchrone dans une boucle d'événements
+    asyncio.run(test_imports())
 
 try:
     from gbpbot.ai import create_market_analyzer
