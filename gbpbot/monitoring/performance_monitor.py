@@ -10,6 +10,7 @@ Il s'intègre avec l'interface Telegram et les autres composants
 du système pour fournir des statistiques en temps réel.
 """
 
+import inspect
 import os
 import json
 import logging
@@ -19,6 +20,39 @@ from typing import Dict, List, Any, Optional, Tuple, Set, Union
 from datetime import datetime, timedelta
 from collections import defaultdict
 import statistics
+
+# Importer le module de compatibilité AI pour gérer les dépendances manquantes
+try:
+    from gbpbot.utils.ai_compat import import_tensorflow, import_torch, import_onnx, import_llama
+    HAS_AI_COMPAT = True
+except ImportError:
+    HAS_AI_COMPAT = False
+    logging.warning("Module de compatibilité AI non disponible, certaines fonctionnalités pourront être limitées")
+
+# Correctif pour getargspec qui est obsolète dans Python 3.11+
+if not hasattr(inspect, 'getargspec'):
+    def getargspec(func):
+        """
+        Émule l'ancienne fonction inspect.getargspec en utilisant getfullargspec.
+        """
+        argspec = inspect.getfullargspec(func)
+        
+        class ArgSpec:
+            def __init__(self, args, varargs, keywords, defaults):
+                self.args = args
+                self.varargs = varargs
+                self.keywords = keywords
+                self.defaults = defaults
+        
+        return ArgSpec(
+            args=argspec.args,
+            varargs=argspec.varargs,
+            keywords=argspec.varkw,
+            defaults=argspec.defaults
+        )
+    
+    # Monkeypatch pour compatibilité
+    inspect.getargspec = getargspec
 
 # Configuration du logger
 logger = logging.getLogger("gbpbot.monitoring.performance")

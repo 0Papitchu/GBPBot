@@ -67,4 +67,10 @@ try:
     from gbpbot.ai import create_market_analyzer
     print('Import successful')
 except Exception as e:
-    print(f'Import failed: {e}') 
+    print(f'Import failed: {e}')
+
+try:
+    import xprocess
+    print('xprocess importé avec succès')
+except ImportError as e:
+    print(f'Erreur: {e}') 

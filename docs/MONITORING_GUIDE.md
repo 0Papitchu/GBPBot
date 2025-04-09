@@ -329,6 +329,12 @@ else:
     print("Aucun wallet Solana n'est disponible")
 ```
 
+### 3.3 Recréez le wallet si nécessaire:
+```bash
+python gbpbot_launcher.py --mode cli
+# Puis utiliser l'option de configuration du wallet
+```
+
 ## 4. Intégration avec Telegram
 
 Les modules de monitoring et de gestion de wallets sont intégrés à l'interface Telegram du GBPBot, permettant l'accès à distance à ces fonctionnalités.

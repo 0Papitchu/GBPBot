@@ -19,65 +19,35 @@ Menu Principal
 ├── Configurer les paramètres
 ├── Afficher la configuration actuelle
 ├── Statistiques et Logs
+├── Afficher les Modules Disponibles
 └── Quitter
 ```
 
 ## Démarrage du CLI
 
-Pour lancer l'interface CLI, exécutez la commande suivante depuis le répertoire principal de GBPBot:
+Pour lancer l'interface CLI, utilisez l'une des méthodes suivantes:
+
+### Méthode recommandée - Scripts de lancement unifiés
 
 ```bash
 # Sur Windows
-python run_gbpbot.py --mode cli
+launch_gbpbot.bat
+# Puis sélectionnez l'option 2 (Mode CLI direct)
 
 # Sur Linux/Mac
-python3 run_gbpbot.py --mode cli
+./launch_gbpbot.sh
+# Puis sélectionnez l'option 2 (Mode CLI direct)
 ```
 
-Ou utilisez les scripts de lancement:
+### Lancement direct en Python
 
 ```bash
 # Sur Windows
-start_gbpbot.bat
+python gbpbot_launcher.py --mode cli
 
 # Sur Linux/Mac
-./start_gbpbot.sh
+python3 gbpbot_launcher.py --mode cli
 ```
-
-## Méthode Alternative de Lancement (Dépannage)
-
-Si vous rencontrez des problèmes avec les méthodes de lancement standard, utilisez le script pont dédié au dépannage :
-
-```bash
-# Sur Windows
-lancer_gbpbot_depannage.bat
-# ou
-python gbpbot_cli_bridge.py
-
-# Sur Linux/Mac
-python3 gbpbot_cli_bridge.py
-```
-
-### Avantages du Script Pont
-
-Le script pont offre plusieurs avantages pour résoudre les problèmes de lancement :
-
-- Résout automatiquement les problèmes d'importation de modules
-- Installe les dépendances manquantes avec différents niveaux d'installation
-- Contourne les erreurs de boucle asyncio courantes sur Windows
-- Fournit un menu simplifié pour configurer le fichier .env
-- Offre des diagnostics en cas d'échec du lancement
-
-### Problèmes courants résolus
-
-Le script pont résout automatiquement plusieurs problèmes courants :
-
-- `RuntimeError: no running event loop` - En configurant correctement asyncio
-- `Module not found` - En ajustant le PYTHONPATH et en créant des stubs
-- Dépendances manquantes - En installant les packages essentiels
-- Erreurs d'environnement - En configurant correctement les variables d'environnement
-
-Pour plus d'informations sur la résolution des problèmes, consultez [TROUBLESHOOTING_LAUNCH.md](TROUBLESHOOTING_LAUNCH.md).
 
 ## Navigation dans les Menus
 
@@ -138,7 +108,7 @@ Options disponibles:
 
 ### Lancer un Arbitrage Inter-DEX
 
-1. Lancez le CLI (`python run_gbpbot.py --mode cli`)
+1. Lancez le CLI (`python gbpbot_launcher.py --mode cli`)
 2. Sélectionnez "1" pour "Démarrer le Bot"
 3. Sélectionnez "1" pour "Arbitrage entre les DEX"
 4. Sélectionnez "1" pour "Démarrer l'arbitrage inter-DEX"
@@ -146,7 +116,7 @@ Options disponibles:
 
 ### Configurer les Paramètres de Sniping
 
-1. Lancez le CLI (`python run_gbpbot.py --mode cli`)
+1. Lancez le CLI (`python gbpbot_launcher.py --mode cli`)
 2. Sélectionnez "1" pour "Démarrer le Bot"
 3. Sélectionnez "2" pour "Sniping de Token"
 4. Sélectionnez "3" pour "Configurer les paramètres de sniping"
@@ -163,10 +133,11 @@ Options disponibles:
 
 Si vous rencontrez des problèmes avec l'interface CLI:
 
-1. Vérifiez que Python est correctement installé
+1. Vérifiez que Python est correctement installé (Python 3.8+ est requis)
 2. Assurez-vous d'avoir installé toutes les dépendances (`pip install -r requirements.txt`)
 3. Vérifiez les logs pour identifier d'éventuelles erreurs
-4. Redémarrez le bot en cas de comportement inattendu
+4. Consultez le guide de dépannage complet dans `docs/TROUBLESHOOTING.md`
+5. Redémarrez le bot en cas de comportement inattendu
 
 ## Notes sur la Compatibilité
 

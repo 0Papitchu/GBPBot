@@ -1,0 +1,22 @@
+================================================================================
+Rapport de Test GBPBot - 2025-03-17 00:21:11
+================================================================================
+
+Statut: ÉCHEC
+
+Modules testés:
+1. test_ai_module
+2. test_arbitrage_module
+3. test_backtesting_module
+4. test_config_module
+5. test_mev_frontrunning_module
+6. test_monitoring_module
+7. test_security_module
+8. test_sniping_module
+9. test_unified_interface_module
+10. test_wallet_encryption
+11. test_sniping_arbitrage_integration
+
+Des tests ont échoué (code de sortie: 1)
+
+================================================================================

@@ -1,0 +1,12 @@
+[
+    {
+        "address": "0x1234567890abcdef1234567890abcdef12345678",
+        "private_key": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+        "chain": "avax"
+    },
+    {
+        "address": "DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5YPVFT",
+        "private_key": "4q1tL7ybcDFMcMahfYEZf3X7Ko6XJP5vzCzNPEJELR1wQYhQmNa8aj5eVPTPk5vNz3N4s5uW6aQVk9BErN5dKJ1k",
+        "chain": "sol"
+    }
+]

@@ -11,36 +11,26 @@ en arrière-plan, permettant ainsi d'éviter de casser le code existant.
 """
 
 import logging
-from typing import Dict, Any, Optional, List, Union
-
-# Classe temporaire pour éviter l'importation cyclique
-class HardwareOptimizerCompat:
-    @staticmethod
-    def get_instance():
-        return None
-
-def get_hardware_optimizer_compat():
-    return None
-
-# Classe temporaire pour éviter l'importation cyclique
-class HardwareOptimizerCompat:
-    @staticmethod
-    def get_instance():
-        return None
-
-def get_hardware_optimizer_compat():
-    return None
-
-from gbpbot.core.monitoring import SystemMonitor, get_system_monitor
-# Temporairement commenté pour éviter l'importation cyclique
-# # Temporairement commenté pour éviter l'importation cyclique
-# from gbpbot.core.optimization import (
-    get_hardware_optimizer, # # HardwareOptimizer,
-    OptimizationResult, OptimizationConfig
-)
+import importlib
+from typing import Dict, Any, Optional, List, Union, Callable
 
 # Configuration du logging
 logger = logging.getLogger("gbpbot.compatibility")
+
+# Import depuis le module monitoring sans créer de dépendance circulaire
+from gbpbot.core.monitoring import SystemMonitor, get_system_monitor
+
+# Import lazy pour éviter la dépendance circulaire
+def _get_optimization_module():
+    """
+    Fonction d'import tardif (lazy import) pour éviter les imports circulaires.
+    Retourne le module d'optimisation lorsqu'il est nécessaire.
+    """
+    try:
+        return importlib.import_module("gbpbot.core.optimization")
+    except ImportError as e:
+        logger.warning(f"Impossible d'importer le module d'optimisation: {str(e)}")
+        return None
 
 # Classes de compatibilité pour le monitoring
 
@@ -51,159 +41,200 @@ class ResourceMonitorCompat:
     """
     
     def __init__(self):
-        """Initialise l'instance de compatibilité."""
-        self._monitor = get_system_monitor()
+        """
+        Initialise le moniteur de ressources compatible.
+        Utilise le nouveau SystemMonitor en arrière-plan.
+        """
+        self._system_monitor = get_system_monitor()
+        self._callbacks = {}
+        self._active = False
         
-        # Mapping des anciennes métriques vers les nouvelles
-        self._metric_mapping = {
-            "cpu_usage": "cpu_percent",
-            "memory_usage": "memory_percent",
-            "disk_usage": "disk_percent",
-            "is_cpu_high": "cpu_high",
-            "is_memory_high": "memory_high",
-            "is_disk_high": "disk_high"
+        # Configuration par défaut
+        self.config = {
+            "cpu_threshold": 80,        # en pourcentage
+            "memory_threshold": 85,     # en pourcentage
+            "disk_threshold": 90,       # en pourcentage
+            "check_interval": 5,        # en secondes
+            "auto_optimize": True,      # activer l'optimisation automatique
+            "ml_memory_limit": 2048,    # limite de mémoire pour ML en MB
+            "tx_history_limit": 10000,  # limite d'historique de transactions
+            "connection_pool_size": 20, # taille du pool de connexions
         }
         
-        # Mapping des anciens événements vers les nouveaux
-        self._event_mapping = {
-            "cpu_high": "cpu_percent",
-            "memory_high": "memory_percent",
-            "disk_high": "disk_percent",
-            "resources_normal": "system_normal",
-            "optimization_applied": "optimization_applied"
-        }
-    
+        logger.info("ResourceMonitorCompat initialisé")
+        
     def start(self):
-        """Démarre la surveillance des ressources."""
-        return self._monitor.start()
-    
+        """Lance la surveillance des ressources."""
+        self._active = True
+        return self._system_monitor.start()
+        
     def stop(self):
         """Arrête la surveillance des ressources."""
-        return self._monitor.stop()
-    
+        self._active = False
+        return self._system_monitor.stop()
+        
     def _check_resources(self):
-        """
-        Méthode de compatibilité pour vérifier les ressources.
-        Utilise directement collect_metrics() du nouveau moniteur.
-        """
-        self._monitor.collect_metrics()
-    
+        """Vérification des ressources (méthode de compatibilité)."""
+        if not self._active:
+            return
+        # Cette méthode existe pour des raisons de compatibilité mais n'est plus nécessaire
+        pass
+        
     def _apply_system_optimizations(self):
         """
-        Méthode de compatibilité pour appliquer les optimisations système.
-        Utilise optimize_system() du nouveau moniteur.
+        Applique les optimisations système (méthode de compatibilité).
+        Utilise le nouveau HardwareOptimizer en arrière-plan.
         """
-        return self._monitor.optimize_system()
+        optimizer = get_hardware_optimizer_compat()
+        if optimizer:
+            return optimizer.apply_optimizations()
+        return False
     
-    def subscribe(self, event_type: str, callback: callable) -> bool:
+    def subscribe(self, event_type: str, callback: Callable) -> bool:
         """
-        S'abonne à un événement.
+        S'abonne à un événement de ressources système.
         
         Args:
-            event_type: Type d'événement (ancien format)
+            event_type: Type d'événement ('cpu', 'memory', 'disk', 'all')
             callback: Fonction à appeler lors de l'événement
             
         Returns:
-            bool: True si l'abonnement a réussi, False sinon
+            True si l'abonnement a réussi, False sinon
         """
-        # Convertir l'ancien type d'événement vers le nouveau
-        new_event_type = self._event_mapping.get(event_type, event_type)
-        
-        # Créer un wrapper pour adapter le format des paramètres
+        if event_type not in ('cpu', 'memory', 'disk', 'all'):
+            logger.warning(f"Type d'événement non supporté: {event_type}")
+            return False
+            
+        # Adapter le callback au nouveau format
         def callback_wrapper(metric_name, value, threshold):
             # Convertir en format attendu par l'ancien callback
-            state = {m: self._monitor.get_metric(m) for m in self._monitor.get_all_metrics()}
-            return callback(state)
-        
-        # Enregistrer le callback
-        return self._monitor.register_callback(new_event_type, callback_wrapper)
+            metric_data = {
+                "name": metric_name,
+                "value": value,
+                "threshold": threshold,
+                "timestamp": self._system_monitor.get_current_timestamp()
+            }
+            callback(metric_data)
+            
+        # Enregistrer dans le système de monitoring
+        self._callbacks[callback] = callback_wrapper
+        return self._system_monitor.subscribe(event_type, callback_wrapper)
     
-    def unsubscribe(self, event_type: str, callback: callable) -> bool:
+    def unsubscribe(self, event_type: str, callback: Callable) -> bool:
         """
-        Se désabonne d'un événement.
+        Se désabonne d'un événement de ressources système.
         
         Args:
-            event_type: Type d'événement (ancien format)
-            callback: Fonction à supprimer
+            event_type: Type d'événement ('cpu', 'memory', 'disk', 'all')
+            callback: Fonction à désabonner
             
         Returns:
-            bool: True si la désinscription a réussi, False sinon
+            True si le désabonnement a réussi, False sinon
         """
-        # Trop compliqué de désabonner des wrappers, on laisse tel quel pour l'instant
-        logger.warning("La désinscription des callbacks n'est pas totalement prise en charge en mode compatibilité")
-        return True
+        if callback in self._callbacks:
+            wrapper = self._callbacks[callback]
+            result = self._system_monitor.unsubscribe(event_type, wrapper)
+            if result:
+                del self._callbacks[callback]
+            return result
+        return False
     
     def get_current_state(self) -> Dict[str, Any]:
         """
-        Récupère l'état actuel des ressources.
+        Récupère l'état actuel des ressources système.
         
         Returns:
-            Dict[str, Any]: État actuel des ressources (ancien format)
+            Dictionnaire contenant les mesures actuelles des ressources
         """
-        # Obtenir l'état du nouveau moniteur
-        metrics = self._monitor.get_all_metrics()
+        metrics = self._system_monitor.get_current_metrics()
         
-        # Convertir vers l'ancien format
-        state = {}
-        for old_name, new_name in self._metric_mapping.items():
-            state[old_name] = metrics.get(new_name, 0)
-        
-        # Ajouter les champs manquants
-        state["timestamp"] = self._monitor.last_check_time.timestamp() if self._monitor.last_check_time else 0
-        state["applied_optimizations"] = []
-        
-        return state
+        # Adapter au format attendu par l'ancien API
+        return {
+            "cpu": {
+                "usage": metrics.get("cpu_percent", 0),
+                "threshold": self.config["cpu_threshold"],
+                "cores": metrics.get("cpu_count", 0),
+                "temperature": metrics.get("cpu_temperature", 0),
+            },
+            "memory": {
+                "usage": metrics.get("memory_percent", 0),
+                "available": metrics.get("memory_available", 0),
+                "total": metrics.get("memory_total", 0),
+                "threshold": self.config["memory_threshold"],
+            },
+            "disk": {
+                "usage": metrics.get("disk_percent", 0),
+                "available": metrics.get("disk_available", 0),
+                "total": metrics.get("disk_total", 0),
+                "threshold": self.config["disk_threshold"],
+            },
+            "timestamp": metrics.get("timestamp", 0),
+        }
     
     def update_thresholds(self, cpu=None, memory=None, disk=None, interval=None):
         """
-        Met à jour les seuils d'alerte.
+        Met à jour les seuils de déclenchement des alertes.
         
         Args:
-            cpu: Seuil CPU (%)
-            memory: Seuil mémoire (%)
-            disk: Seuil disque (%)
-            interval: Intervalle de vérification
+            cpu: Seuil CPU en pourcentage
+            memory: Seuil mémoire en pourcentage
+            disk: Seuil disque en pourcentage
+            interval: Intervalle de vérification en secondes
         """
+        if cpu is not None:
+            self.config["cpu_threshold"] = cpu
+        if memory is not None:
+            self.config["memory_threshold"] = memory
+        if disk is not None:
+            self.config["disk_threshold"] = disk
         if interval is not None:
-            self._monitor.check_interval = interval
-        
-        self._monitor.set_all_thresholds(cpu, memory, disk)
+            self.config["check_interval"] = interval
+            
+        # Mettre à jour la configuration du moniteur système
+        return self._system_monitor.update_config(self.config)
     
     def get_optimization_values(self) -> Dict[str, Any]:
         """
-        Récupère les valeurs d'optimisation.
+        Récupère les valeurs de configuration des optimisations.
         
         Returns:
-            Dict[str, Any]: Valeurs d'optimisation
+            Dictionnaire contenant les valeurs de configuration des optimisations
         """
-        # Simuler l'ancien format
         return {
-            "auto_optimize": True,
-            "ml_memory_limit": 4096,
-            "tx_history_limit": 10000,
-            "connection_pool_size": 20
+            "auto_optimize": self.config["auto_optimize"],
+            "ml_memory_limit": self.config["ml_memory_limit"],
+            "tx_history_limit": self.config["tx_history_limit"],
+            "connection_pool_size": self.config["connection_pool_size"],
         }
     
     def set_optimization_values(self, auto_optimize=None, ml_memory_limit=None,
-                          tx_history_limit=None, connection_pool_size=None) -> bool:
+                      tx_history_limit=None, connection_pool_size=None) -> bool:
         """
-        Définit les valeurs d'optimisation.
+        Configure les valeurs d'optimisation.
         
         Args:
             auto_optimize: Activer l'optimisation automatique
-            ml_memory_limit: Limite mémoire pour le ML (MB)
+            ml_memory_limit: Limite de mémoire pour ML en MB
             tx_history_limit: Limite d'historique de transactions
             connection_pool_size: Taille du pool de connexions
             
         Returns:
-            bool: True si les valeurs ont été définies, False sinon
+            True si la configuration a réussi, False sinon
         """
-        # Ces valeurs seront ignorées, car elles sont gérées différemment dans le nouveau système
-        logger.info("Paramètres d'optimisation définis en mode compatibilité (certains peuvent être ignorés)")
+        if auto_optimize is not None:
+            self.config["auto_optimize"] = auto_optimize
+        if ml_memory_limit is not None:
+            self.config["ml_memory_limit"] = ml_memory_limit
+        if tx_history_limit is not None:
+            self.config["tx_history_limit"] = tx_history_limit
+        if connection_pool_size is not None:
+            self.config["connection_pool_size"] = connection_pool_size
+            
+        # Obtenir l'optimiseur matériel (si disponible) et mettre à jour sa configuration
+        optimizer = get_hardware_optimizer_compat()
+        if optimizer:
+            return optimizer.update_config(self.config)
         return True
-
-
-# Classes de compatibilité pour l'optimisation
 
 class PerformanceMonitorCompat:
     """
@@ -212,325 +243,449 @@ class PerformanceMonitorCompat:
     """
     
     def __init__(self):
-        """Initialise l'instance de compatibilité."""
-        self._monitor = get_system_monitor()
+        self._system_monitor = get_system_monitor()
+        self._callbacks = []
     
     def start_monitoring(self) -> bool:
-        """Démarre le monitoring des performances."""
-        return self._monitor.start()
+        """Lance la surveillance des performances."""
+        return self._system_monitor.start()
     
     def stop_monitoring(self) -> bool:
-        """Arrête le monitoring des performances."""
-        return self._monitor.stop()
+        """Arrête la surveillance des performances."""
+        return self._system_monitor.stop()
     
-    def register_alert_callback(self, callback: callable) -> None:
+    def register_alert_callback(self, callback: Callable) -> None:
         """
-        Enregistre un callback pour les alertes.
+        Enregistre une fonction de rappel pour les alertes de performance.
         
         Args:
             callback: Fonction à appeler lors d'une alerte
         """
-        # Enregistrer pour toutes les métriques importantes
-        for metric in ["cpu_percent", "memory_percent", "disk_percent", "swap_percent"]:
-            self._monitor.register_callback(metric, callback)
+        if callback not in self._callbacks:
+            self._callbacks.append(callback)
+            
+            # Adapter le callback au nouveau format
+            def wrapper(metric_name, value, threshold):
+                callback({
+                    "name": metric_name,
+                    "value": value,
+                    "threshold": threshold,
+                    "timestamp": self._system_monitor.get_current_timestamp()
+                })
+            
+            self._system_monitor.subscribe("performance", wrapper)
     
     def track_metric(self, name: str, value: float) -> None:
         """
-        Ajoute une métrique personnalisée.
+        Enregistre une métrique personnalisée.
         
         Args:
             name: Nom de la métrique
             value: Valeur de la métrique
         """
-        self._monitor.update_metric(name, value)
+        self._system_monitor.track_metric(name, value)
+        
+        # Vérifier si la métrique dépasse un seuil
+        for callback in self._callbacks:
+            callback({
+                "name": name,
+                "value": value,
+                "threshold": None,
+                "timestamp": self._system_monitor.get_current_timestamp()
+            })
     
     def get_metrics_report(self) -> Dict[str, Any]:
         """
-        Génère un rapport de métriques.
+        Récupère un rapport des métriques de performance.
         
         Returns:
-            Dict[str, Any]: Rapport de métriques
+            Dictionnaire contenant les métriques de performance
         """
-        metrics = self._monitor.get_all_metrics()
+        metrics = self._system_monitor.get_performance_metrics()
         
-        # Formater en ancien style
-        report = {
+        # Adapter au format attendu par l'ancien API
+        result = {
             "system": {
                 "cpu": metrics.get("cpu_percent", 0),
                 "memory": metrics.get("memory_percent", 0),
                 "disk": metrics.get("disk_percent", 0),
-                "swap": metrics.get("swap_percent", 0)
+                "network": {
+                    "sent": metrics.get("network_sent", 0),
+                    "received": metrics.get("network_received", 0),
+                },
             },
-            "process": {
-                "cpu": metrics.get("process_cpu_percent", 0),
-                "memory_mb": metrics.get("process_memory_mb", 0)
+            "application": {
+                "response_time": metrics.get("app_response_time", 0),
+                "tx_count": metrics.get("tx_count", 0),
+                "error_rate": metrics.get("error_rate", 0),
             },
-            "network": {
-                "sent_rate": metrics.get("net_sent_rate", 0),
-                "recv_rate": metrics.get("net_recv_rate", 0)
+            "blockchain": {
+                "block_time": metrics.get("block_time", 0),
+                "gas_price": metrics.get("gas_price", 0),
+                "confirmation_time": metrics.get("confirmation_time", 0),
             },
-            "custom": {}
+            "custom": {},
+            "timestamp": metrics.get("timestamp", 0),
         }
         
         # Ajouter les métriques personnalisées
-        for name, value in metrics.items():
-            if name.startswith("custom_"):
-                report["custom"][name.replace("custom_", "")] = value
-        
-        return report
-
+        custom_metrics = self._system_monitor.get_custom_metrics()
+        for name, data in custom_metrics.items():
+            result["custom"][name] = data.get("value", 0)
+            
+        return result
 
 class HardwareOptimizerCompat:
     """
     Classe de compatibilité pour l'ancienne classe HardwareOptimizer.
-    Utilise le nouveau HardwareOptimizer en arrière-plan.
+    Utilise le nouveau HardwareOptimizer en arrière-plan via lazy import.
     """
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
-        Initialise l'instance de compatibilité.
+        Initialise l'optimiseur matériel compatible.
         
         Args:
-            config: Configuration optionnelle
+            config: Configuration optionnelle pour l'optimiseur
         """
-        self._optimizer = get_hardware_optimizer(config)
-        
-        # Simuler les anciens attributs
-        self.active_optimizations = {
-            "cpu": False,
-            "gpu": False,
-            "memory": False,
-            "disk": False,
-            "network": False
+        self.config = config or {}
+        self._hardware_info = None
+        self._optimization_status = {
+            "status": "not_initialized",
+            "applied": [],
+            "last_update": 0,
         }
         
-        # Simuler les informations matérielles
-        self._hw_info = self._generate_hw_info()
-    
+        # Stocker en cache les informations matérielles pour éviter les dépendances circulaires
+        self._hardware_info = self._generate_hw_info()
+        
+        logger.info("HardwareOptimizerCompat initialisé")
+        
     def _generate_hw_info(self) -> Dict[str, Any]:
         """
-        Génère une simulation de l'ancien format d'informations matérielles.
+        Génère des informations matérielles de base pour éviter les dépendances circulaires.
+        Sera remplacé par les vraies infos lorsque le vrai optimiseur sera chargé.
         
         Returns:
-            Dict[str, Any]: Informations matérielles au format legacy
+            Dictionnaire d'informations matérielles
         """
-        real_info = self._optimizer._hardware_info
+        import platform
+        import os
         
-        # Simuler l'ancien format
-        hw_info = {
-            "platform": real_info.get("platform", "") + " " + real_info.get("platform_version", ""),
-            "cpu": {
-                "model": real_info.get("processor", ""),
-                "cores_physical": real_info.get("cpu_count_physical", 1),
-                "cores_logical": real_info.get("cpu_count_logical", 2),
-                "frequency": 0,
-                "is_i5_12400f": "i5-12400F" in real_info.get("processor", "")
-            },
-            "memory": {
-                "total": real_info.get("memory_info", {}).get("total", 0),
-                "available": real_info.get("memory_info", {}).get("available", 0),
-                "percent_used": real_info.get("memory_info", {}).get("percent", 0)
-            },
-            "disk": {
-                "total": real_info.get("disk_info", {}).get("total", 0),
-                "free": real_info.get("disk_info", {}).get("free", 0),
-                "is_nvme": False,
-                "io_speed": None
-            },
-            "gpu": {
-                "available": real_info.get("cuda_available", False),
-                "model": real_info.get("cuda_device_name", None),
-                "memory": 0,
-                "cuda_available": real_info.get("cuda_available", False),
-                "is_rtx_3060": "RTX 3060" in real_info.get("cuda_device_name", "")
-            },
-            "network": {
-                "interfaces": 1
-            },
-            "summary": f"Système: {real_info.get('platform', '')}, CPU: {real_info.get('processor', '')}"
-        }
+        try:
+            # Tenter d'obtenir des informations de base
+            import psutil
+            memory = psutil.virtual_memory()
+            disk = psutil.disk_usage('/')
+            
+            return {
+                "cpu": {
+                    "model": platform.processor() or "Unknown CPU",
+                    "cores": os.cpu_count() or 4,
+                    "architecture": platform.machine(),
+                    "frequency": getattr(psutil.cpu_freq(), "current", 0) if hasattr(psutil, "cpu_freq") else 0,
+                },
+                "memory": {
+                    "total": memory.total,
+                    "available": memory.available,
+                },
+                "disk": {
+                    "total": disk.total,
+                    "free": disk.free,
+                },
+                "gpu": self._detect_gpu(),
+                "os": {
+                    "name": platform.system(),
+                    "version": platform.version(),
+                },
+            }
+        except ImportError:
+            # Version minimale si psutil n'est pas disponible
+            return {
+                "cpu": {
+                    "model": platform.processor() or "Unknown CPU",
+                    "cores": os.cpu_count() or 4,
+                    "architecture": platform.machine(),
+                },
+                "memory": {
+                    "total": 0,
+                    "available": 0,
+                },
+                "disk": {
+                    "total": 0,
+                    "free": 0,
+                },
+                "gpu": self._detect_gpu(),
+                "os": {
+                    "name": platform.system(),
+                    "version": platform.version(),
+                },
+            }
+            
+    def _detect_gpu(self) -> Dict[str, Any]:
+        """
+        Détecte les informations GPU de base.
         
-        return hw_info
+        Returns:
+            Dictionnaire d'informations GPU
+        """
+        gpu_info = {"model": "Unknown", "vram": 0}
+        
+        try:
+            # Essayer de détecter les GPU NVIDIA avec pynvml
+            import pynvml
+            pynvml.nvmlInit()
+            device_count = pynvml.nvmlDeviceGetCount()
+            
+            if device_count > 0:
+                handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+                gpu_info["model"] = pynvml.nvmlDeviceGetName(handle)
+                gpu_info["vram"] = pynvml.nvmlDeviceGetMemoryInfo(handle).total
+                pynvml.nvmlShutdown()
+                return gpu_info
+        except (ImportError, Exception):
+            pass
+            
+        return gpu_info
     
     @property
     def hardware_info(self) -> Dict[str, Any]:
         """
-        Récupère les informations matérielles au format legacy.
+        Récupère les informations matérielles.
         
         Returns:
-            Dict[str, Any]: Informations matérielles
+            Dictionnaire contenant les informations matérielles
         """
-        return self._hw_info
+        # Essayer d'obtenir les vraies infos si l'optimiseur est disponible
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module:
+                hw_optimizer = opt_module.get_hardware_optimizer_instance(self.config)
+                if hw_optimizer:
+                    return hw_optimizer.hardware_info
+        except Exception as e:
+            logger.warning(f"Impossible d'obtenir les infos hardware: {str(e)}")
+            
+        # Utiliser les infos en cache si l'optimiseur n'est pas disponible
+        return self._hardware_info
     
     def apply_optimizations(self, target: str = "all") -> bool:
         """
-        Applique les optimisations pour le matériel cible.
+        Applique les optimisations matérielles.
         
         Args:
-            target: Composant à optimiser ("cpu", "gpu", "memory", "disk", "network" ou "all")
+            target: Cible de l'optimisation ('cpu', 'memory', 'disk', 'network', 'gpu', 'all')
             
         Returns:
-            bool: True si les optimisations ont été appliquées avec succès, False sinon
+            True si les optimisations ont été appliquées avec succès, False sinon
         """
-        # Configurer le niveau d'optimisation selon la cible
-        config = {}
-        
-        if target == "all" or target == "cpu":
-            config["cpu_optimization_level"] = 2
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module:
+                # Tenter d'appliquer les optimisations via le nouveau système
+                hw_optimizer = opt_module.get_hardware_optimizer_instance(self.config)
+                if hw_optimizer:
+                    result = hw_optimizer.apply_optimizations(target)
+                    
+                    # Mettre à jour le statut des optimisations
+                    self._optimization_status = {
+                        "status": "optimized" if result else "failed",
+                        "applied": hw_optimizer.get_applied_optimizations() if hasattr(hw_optimizer, "get_applied_optimizations") else [],
+                        "last_update": opt_module.get_current_timestamp() if hasattr(opt_module, "get_current_timestamp") else 0,
+                    }
+                    
+                    return result
+        except Exception as e:
+            logger.error(f"Erreur lors de l'application des optimisations: {str(e)}")
+            self._optimization_status["status"] = "error"
             
-        if target == "all" or target == "gpu":
-            config["gpu_optimization_level"] = 2
+        # Optimisations basiques si l'optimiseur n'est pas disponible
+        try:
+            if target in ("all", "memory"):
+                import gc
+                gc.collect()
+                
+            self._optimization_status = {
+                "status": "basic_optimized",
+                "applied": [f"basic_{target}_optimization"],
+                "last_update": 0,
+            }
             
-        if target == "all" or target == "memory":
-            config["memory_optimization_level"] = 2
-            
-        if target == "all" or target == "disk":
-            config["io_optimization_level"] = 2
-            
-        if target == "all" or target == "network":
-            config["io_optimization_level"] = 1
-        
-        # Appliquer les optimisations
-        self._optimizer.set_config(config)
-        result = self._optimizer.run()
-        
-        # Mettre à jour les flags de compatibilité
-        success = result.get("status") == "success"
-        if success:
-            if target == "all":
-                for k in self.active_optimizations:
-                    self.active_optimizations[k] = True
-            else:
-                self.active_optimizations[target] = True
-        
-        return success
+            return True
+        except Exception:
+            return False
     
     def start_monitoring(self) -> bool:
         """
-        Méthode de compatibilité pour démarrer le monitoring.
-        Ne fait rien car le monitoring est géré séparément.
+        Démarre la surveillance des performances matérielles.
         
         Returns:
-            bool: Toujours True
+            True si la surveillance a démarré avec succès, False sinon
         """
-        logger.info("La méthode start_monitoring() est obsolète et n'a plus d'effet")
-        return True
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module:
+                hw_optimizer = opt_module.get_hardware_optimizer_instance(self.config)
+                if hw_optimizer and hasattr(hw_optimizer, "start_monitoring"):
+                    return hw_optimizer.start_monitoring()
+        except Exception as e:
+            logger.error(f"Erreur lors du démarrage de la surveillance: {str(e)}")
+            
+        return False
     
     def stop_monitoring(self) -> bool:
         """
-        Méthode de compatibilité pour arrêter le monitoring.
-        Ne fait rien car le monitoring est géré séparément.
+        Arrête la surveillance des performances matérielles.
         
         Returns:
-            bool: Toujours True
+            True si la surveillance a été arrêtée avec succès, False sinon
         """
-        logger.info("La méthode stop_monitoring() est obsolète et n'a plus d'effet")
-        return True
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module:
+                hw_optimizer = opt_module.get_hardware_optimizer_instance(self.config)
+                if hw_optimizer and hasattr(hw_optimizer, "stop_monitoring"):
+                    return hw_optimizer.stop_monitoring()
+        except Exception as e:
+            logger.error(f"Erreur lors de l'arrêt de la surveillance: {str(e)}")
+            
+        return False
     
     def get_optimization_status(self) -> Dict[str, Any]:
         """
-        Retourne l'état actuel des optimisations au format legacy.
+        Récupère l'état actuel des optimisations.
         
         Returns:
-            Dict[str, Any]: État des optimisations
+            Dictionnaire contenant l'état des optimisations
         """
-        # Récupérer le statut du nouvel optimiseur
-        status = self._optimizer.get_status()
-        
-        # Convertir vers l'ancien format
-        return {
-            "optimizations": self.active_optimizations,
-            "hardware_info": self.hardware_info,
-            "current_metrics": {
-                "cpu": get_system_monitor().get_metric("cpu_percent") or 0,
-                "memory": get_system_monitor().get_metric("memory_percent") or 0,
-                "gpu": 0,
-                "disk_free_percent": 100 - (get_system_monitor().get_metric("disk_percent") or 0)
-            },
-            "average_metrics": {},
-            "optimization_params": {}
-        }
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module:
+                hw_optimizer = opt_module.get_hardware_optimizer_instance(self.config)
+                if hw_optimizer and hasattr(hw_optimizer, "get_optimization_status"):
+                    return hw_optimizer.get_optimization_status()
+        except Exception:
+            pass
+            
+        # Utiliser le statut en cache si l'optimiseur n'est pas disponible
+        return self._optimization_status
     
     def save_optimization_profile(self, profile_name: str = "default") -> bool:
         """
-        Méthode de compatibilité pour sauvegarder un profil d'optimisation.
-        Ne fait rien car les profils sont gérés différemment.
+        Sauvegarde le profil d'optimisation actuel.
         
         Args:
             profile_name: Nom du profil
             
         Returns:
-            bool: Toujours True
+            True si le profil a été sauvegardé avec succès, False sinon
         """
-        logger.info(f"Sauvegarde de profil d'optimisation '{profile_name}' simulée en mode compatibilité")
-        return True
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module and hasattr(opt_module, "save_current_optimization_profile"):
+                return opt_module.save_current_optimization_profile(profile_name)
+        except Exception as e:
+            logger.error(f"Erreur lors de la sauvegarde du profil: {str(e)}")
+            
+        return False
     
     def load_optimization_profile(self, profile_name: str = "default") -> bool:
         """
-        Méthode de compatibilité pour charger un profil d'optimisation.
-        Ne fait rien car les profils sont gérés différemment.
+        Charge un profil d'optimisation.
         
         Args:
             profile_name: Nom du profil
             
         Returns:
-            bool: Toujours True
+            True si le profil a été chargé avec succès, False sinon
         """
-        logger.info(f"Chargement de profil d'optimisation '{profile_name}' simulé en mode compatibilité")
-        return True
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module and hasattr(opt_module, "apply_optimization_profile"):
+                return opt_module.apply_optimization_profile(profile_name)
+        except Exception as e:
+            logger.error(f"Erreur lors du chargement du profil: {str(e)}")
+            
+        return False
     
     def get_recommendations(self) -> List[str]:
         """
-        Méthode de compatibilité pour générer des recommandations.
+        Récupère les recommandations d'optimisation matérielle.
         
         Returns:
-            List[str]: Liste de recommandations
+            Liste des recommandations
         """
-        # Générer quelques recommandations statiques
-        recs = [
-            "Utiliser le nouveau système d'optimisation pour des performances améliorées",
-            "Consulter la documentation pour profiter des nouvelles fonctionnalités"
+        try:
+            # Import tardif pour éviter les dépendances circulaires
+            opt_module = _get_optimization_module()
+            if opt_module:
+                hw_optimizer = opt_module.get_hardware_optimizer_instance(self.config)
+                if hw_optimizer and hasattr(hw_optimizer, "get_recommendations"):
+                    return hw_optimizer.get_recommendations()
+                
+                # Alternative: utiliser la fonction du module si disponible
+                if hasattr(opt_module, "get_hardware_recommendations"):
+                    recommendations = opt_module.get_hardware_recommendations()
+                    return recommendations.get("recommendations", [])
+        except Exception as e:
+            logger.warning(f"Impossible d'obtenir les recommandations: {str(e)}")
+            
+        # Recommandations par défaut
+        return [
+            "Vérifiez que votre système dispose d'au moins 16 Go de RAM pour des performances optimales",
+            "Une carte graphique NVIDIA avec CUDA améliorerait les performances d'analyse",
+            "Assurez-vous que votre connexion Internet est stable pour les opérations de trading",
+            "Utilisez un SSD pour de meilleures performances d'accès au disque"
         ]
-        
-        # Ajouter des recommandations spécifiques au matériel
-        hw = self.hardware_info
-        
-        if hw["cpu"]["cores_logical"] < 8:
-            recs.append("Réduire le nombre de stratégies simultanées pour éviter la surcharge CPU")
-        
-        if not hw["gpu"]["available"]:
-            recs.append("Exécuter les modèles d'IA en mode CPU (performances réduites)")
-        
-        return recs
 
-# Fonctions de compatibilité pour maintenir l'interface publique
+# Fonctions de compatibilité pour récupérer les instances
 
 def get_resource_monitor():
     """
-    Fonction de compatibilité pour obtenir une instance de ResourceMonitor.
+    Récupère l'instance du moniteur de ressources compatible.
     
     Returns:
-        ResourceMonitorCompat: Instance de compatibilité
+        Instance de ResourceMonitorCompat
     """
     return ResourceMonitorCompat()
 
 def get_performance_monitor():
     """
-    Fonction de compatibilité pour obtenir une instance de PerformanceMonitor.
+    Récupère l'instance du moniteur de performances compatible.
     
     Returns:
-        PerformanceMonitorCompat: Instance de compatibilité
+        Instance de PerformanceMonitorCompat
     """
     return PerformanceMonitorCompat()
 
 def get_hardware_optimizer_compat(config=None):
     """
-    Fonction de compatibilité pour obtenir une instance de HardwareOptimizer.
+    Récupère l'instance de l'optimiseur matériel compatible.
     
     Args:
-        config: Configuration optionnelle
+        config: Configuration optionnelle pour l'optimiseur
         
     Returns:
-        HardwareOptimizerCompat: Instance de compatibilité
+        Instance de HardwareOptimizerCompat
     """
+    # D'abord essayer d'obtenir l'instance via le module d'optimisation
+    try:
+        opt_module = _get_optimization_module()
+        if opt_module and hasattr(opt_module, "get_hardware_optimizer_instance"):
+            hw_optimizer = opt_module.get_hardware_optimizer_instance(config)
+            if hw_optimizer:
+                # Retourner une instance compatible qui délègue au vrai optimiseur
+                compat = HardwareOptimizerCompat(config)
+                return compat
+    except Exception as e:
+        logger.debug(f"Utilisation de l'optimiseur de compatibilité: {str(e)}")
+    
+    # Utiliser l'implémentation de compatibilité
     return HardwareOptimizerCompat(config) 

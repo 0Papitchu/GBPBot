@@ -1,125 +1,126 @@
-# Guide de Lancement du GBPBot  
+# GBPBot - Système de Lancement Unifié
 
-Ce document explique les différentes méthodes pour lancer le GBPBot et ses composants.
+Ce document explique l'architecture et le fonctionnement du système de lancement unifié de GBPBot.
 
-## 🚀 Options de Lancement
+## 📋 Architecture du Système de Lancement
 
-Le GBPBot dispose de plusieurs scripts de lancement adaptés à différents systèmes d'exploitation et cas d'utilisation:
+Le système de lancement de GBPBot suit une architecture en trois couches conçue pour être robuste, facile à maintenir et compatible avec différentes plateformes.
 
-### 1. Scripts Principaux Recommandés
+### 1. Scripts de Lancement Spécifiques à la Plateforme
+- **Windows:** `launch_gbpbot.bat`
+- **Linux/macOS:** `launch_gbpbot.sh`
 
-#### Pour Windows:
-```batch
-start_gbpbot.bat
-```
+Ces scripts sont le point d'entrée pour les utilisateurs. Ils vérifient l'environnement de base (Python installé, etc.) et lancent le lanceur Python principal.
 
-#### Pour Linux/macOS:
+### 2. Lanceur Python Principal
+- **Fichier:** `gbpbot_launcher.py`
+
+Ce lanceur central unifie toutes les fonctionnalités de lancement en un seul fichier. Il gère :
+- La vérification complète de l'environnement
+- L'installation des dépendances manquantes
+- La configuration automatique
+- Le démarrage des différents modes du bot
+- La gestion des erreurs
+
+### 3. Librairie d'Initialisation
+Les fonctions d'initialisation sont séparées du code de lancement pour permettre leur réutilisation dans différents contextes.
+
+## 🚀 Comment Utiliser les Scripts de Lancement
+
+### Windows
 ```bash
-./start_gbpbot.sh
+# Double-cliquez simplement sur le fichier
+launch_gbpbot.bat
+
+# Ou lancez depuis une invite de commande
+launch_gbpbot.bat
 ```
 
-Ces scripts vérifient l'environnement, installent les dépendances nécessaires et offrent un menu interactif avec les options suivantes:
-- Mode normal (CLI)
-- Mode simulation (sans transactions réelles)
-- Mode debug (logs supplémentaires)
-- Dashboard web
-- Quitter
-
-### 2. Scripts Python Spécifiques
-
-#### Script principal du bot:
+### Linux/macOS
 ```bash
-python run_gbpbot.py [options]
+# Rendre le script exécutable (première fois uniquement)
+chmod +x launch_gbpbot.sh
+
+# Lancer GBPBot
+./launch_gbpbot.sh
 ```
 
-Options disponibles:
-- `--mode {cli,dashboard,auto,telegram}`: Mode de fonctionnement
-- `--debug`: Active les logs détaillés
-- `--simulation`: Lance le bot en mode simulation (sans transactions réelles)
-- `--optimize`: Active les optimisations matérielles
-- `--blockchains BLOCKCHAINS`: Liste des blockchains à utiliser (séparées par des virgules)
-
-#### Dashboard uniquement:
-```bash
-python gbpbot/dashboard/run_dashboard.py [options]
-```
-
-Options disponibles:
-- `--host HOST`: Adresse d'hôte (défaut: 0.0.0.0)
-- `--port PORT`: Port d'écoute (défaut: 8000)
-- `--simulate`: Active la génération de métriques simulées pour les tests
-- `--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}`: Niveau de log
-
-### 3. Script Unifié Alternatif
+### Options de Ligne de Commande (Python Direct)
+Pour les utilisateurs avancés, vous pouvez invoquer directement le lanceur Python avec des options spécifiques :
 
 ```bash
-python run_bot.py
+python gbpbot_launcher.py [OPTIONS]
+
+Options:
+  --mode MODE     Mode de lancement: cli, dashboard, auto, simulation
+  --debug         Active les logs détaillés 
+  --no-checks     Ignore les vérifications d'environnement
+  --config PATH   Utilise un fichier de configuration spécifique
 ```
 
-Ce script offre une interface unifiée qui:
-- Vérifie et installe automatiquement les dépendances manquantes
-- Propose de lancer le dashboard en parallèle
-- Affiche un menu interactif pour gérer le bot
+## 🛠️ Caractéristiques Techniques
 
-## 🔧 Choix de la Méthode de Lancement
+### Vérifications Automatiques
+Le lanceur effectue automatiquement plusieurs vérifications pour garantir un environnement de fonctionnement optimal :
 
-### Méthode recommandée
-- **Utilisateurs Windows**: Utilisez `start_gbpbot.bat`
-- **Utilisateurs Linux/macOS**: Utilisez `start_gbpbot.sh`
+- **Python :** Version et modules installés
+- **Configuration :** Fichiers `.env` valides et complets
+- **Dépendances :** Packages Python requis
+- **Accès RPC :** Connexion aux nœuds blockchain
+- **Wallets :** Existence et validité des wallets configurés
 
-Ces scripts sont optimisés pour chaque système d'exploitation et offrent la meilleure expérience utilisateur avec une interface colorée, une gestion des erreurs robuste et une configuration guidée.
+### Gestion des Erreurs
+Le système implémente une gestion robuste des erreurs :
 
-### Cas d'utilisation spécifiques
-- **Lancement du dashboard uniquement**: Utilisez `python gbpbot/dashboard/run_dashboard.py`
-- **Intégration dans des scripts personnalisés**: Utilisez `run_gbpbot.py` avec les options appropriées
-- **Développement et tests**: Utilisez `run_bot.py` qui offre une expérience simplifiée
+- **Détection précoce :** Les problèmes sont identifiés avant le lancement
+- **Messages d'erreur clairs :** Instructions précises pour résoudre les problèmes
+- **Correction automatique :** Résolution automatique des problèmes courants lorsque possible
 
-## 📋 Exemple de Configuration
+### Cross-Platform
+Le système de lancement est conçu pour fonctionner de manière identique sur :
+- Windows (7/8/10/11)
+- Linux (Ubuntu, Debian, etc.)
+- macOS (10.15+)
 
-Avant de lancer le GBPBot, assurez-vous d'avoir un fichier `.env` correctement configuré avec vos clés API, préférences de trading, etc.
+## 🔧 Maintenance et Personnalisation
 
-Vous pouvez générer ce fichier en exécutant:
-```bash
-python scripts/setup_run_environment.py
+### Ajouter un Nouveau Mode de Lancement
+
+Pour ajouter un nouveau mode au lanceur, modifiez `gbpbot_launcher.py` :
+
+1. Créez une nouvelle fonction de lancement pour votre mode :
+```python
+def launch_new_mode() -> int:
+    """Lancer le nouveau mode."""
+    # Votre code ici
+    return 0  # Retournez 0 pour succès, autre pour erreur
 ```
 
-## 🔍 Vérification du Système
-
-Pour vérifier que votre système est correctement configuré pour exécuter le GBPBot:
-```bash
-python scripts/system_check.py
+2. Mettez à jour la fonction `main()` pour ajouter votre mode :
+```python
+if mode == "newmode":
+    return launch_new_mode()
 ```
 
-Ce script vérifiera:
-- La version de Python
-- Les dépendances requises
-- Les connexions aux blockchains
-- Les capacités GPU pour l'IA
-- Les permissions de stockage
+3. Mettez à jour les scripts batch/shell pour inclure votre nouveau mode dans le menu.
 
-## 🛠️ Dépannage
+### Architecture de Gestion des Erreurs
 
-1. **Problèmes de dépendances**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Le système utilise un modèle de gestion d'erreurs en couches :
 
-2. **Erreurs d'affichage des emojis dans les logs**:
-   Sur Windows, utilisez un terminal qui supporte UTF-8 comme Windows Terminal.
+1. **Scripts shell/batch :** Détectent les erreurs d'environnement de base
+2. **Lanceur Python :** Valide l'environnement complet et les dépendances
+3. **Système de logs :** Capture et stocke les erreurs pour analyse
 
-3. **Le dashboard ne se lance pas**:
-   Vérifiez que les modules `fastapi` et `uvicorn` sont installés:
-   ```bash
-   pip install fastapi uvicorn websockets
-   ```
+## 📝 Dépannage
 
-4. **Problèmes de connexion aux API blockchain**:
-   Vérifiez vos clés API et connexion internet.
+Si vous rencontrez des problèmes avec le système de lancement, consultez :
 
-## 🔄 Options Avancées
+- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Guide de dépannage complet
+- [LANCEMENT_GBPBOT.md](docs/LANCEMENT_GBPBOT.md) - Documentation détaillée du lancement
 
-Pour les utilisateurs avancés, vous pouvez personnaliser le comportement du GBPBot en:
+## 🔄 Évolutions Futures
 
-1. Créant des scripts batch/shell personnalisés basés sur les existants
-2. Modifiant directement les scripts Python
-3. Utilisant les modules Python du GBPBot dans vos propres applications 
+- Intégration d'un système d'auto-mise à jour pour les dépendances et le code
+- Support pour les containers Docker
+- Interface graphique de lancement (GUI) pour Windows 

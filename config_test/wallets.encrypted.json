@@ -1,0 +1,19 @@
+{
+    "wallets": [
+        {
+            "address": "0x1234567890abcdef1234567890abcdef12345678",
+            "private_key": "gAAAAABn1i-N9oODeVsjNLqGCb86-IWsepUpGKNjmf6dHWzuYaHpUfazykRu-iS9PFeKCtCb8JIgo_J72WRrVVC4hq5AME6IKQDoiI7s0lg0BnfoonKuyURSfwWfdBKshCC6Hu2-zV1swN2-0_AezQy86y8P727qFS1Tc9Vm0yeKnAXZ_bZ6zAc=",
+            "chain": "avax",
+            "encrypted": true
+        },
+        {
+            "address": "DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5YPVFT",
+            "private_key": "gAAAAABn1i-N_1UyYwm5u27e2lfAcIL7v_ZaEyzlsG3djwwy0t_jdw4zepf75G2bQzBUHpBcLIB7K3gn04NGBhSJIbzBLp8fD2u5UDKGRy4xftyE9ECw8INIyFPOckZdH7KArjftMX1KMvdQB6z8O9dsQEMcwvN5PPzy4TjzSk9W76rINQ1PnMv83oIQrnRSLmxd88Gh2VlJ",
+            "chain": "sol",
+            "encrypted": true
+        }
+    ],
+    "encrypted": true,
+    "encryption_version": "1.0",
+    "encryption_method": "fernet"
+}

@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TypeVar, Callable, Any
 import asyncio
 from loguru import logger
 from web3 import Web3
@@ -12,87 +12,9 @@ from gbpbot.core.price_feed import PriceManager
 from gbpbot.core.performance_tracker import PerformanceTracker
 from gbpbot.config.trading_config import TradingConfig
 
-from typing import FixtureFunction
+# Définir un type personnalisé pour remplacer FixtureFunction
+FixtureFunction = TypeVar('FixtureFunction', bound=Callable[..., Any])
 
-from typing import FixtureFunction
-# Variables utilisées dans les fixtures
-status = None
-base_token = None
-token_address = None
-dex_name = None
-take_profit_price = None
-stop_loss_price = None
-router_address = None
-exit_time = None
-exit_tx_hash = None
-exit_reason = None
-
-from typing import FixtureFunction
-
-from typing import FixtureFunction
-# Variables utilisées dans les fixtures
-status = None
-base_token = None
-token_address = None
-dex_name = None
-take_profit_price = None
-stop_loss_price = None
-router_address = None
-exit_time = None
-exit_tx_hash = None
-exit_reason = None
-# Variables utilisées dans les fixtures
-status = None
-base_token = None
-token_address = None
-dex_name = None
-take_profit_price = None
-stop_loss_price = None
-router_address = None
-exit_time = None
-exit_tx_hash = None
-exit_reason = None
-
-from typing import FixtureFunction
-
-from typing import FixtureFunction
-# Variables utilisées dans les fixtures
-status = None
-base_token = None
-token_address = None
-dex_name = None
-take_profit_price = None
-stop_loss_price = None
-router_address = None
-exit_time = None
-exit_tx_hash = None
-exit_reason = None
-
-from typing import FixtureFunction
-
-from typing import FixtureFunction
-# Variables utilisées dans les fixtures
-status = None
-base_token = None
-token_address = None
-dex_name = None
-take_profit_price = None
-stop_loss_price = None
-router_address = None
-exit_time = None
-exit_tx_hash = None
-exit_reason = None
-# Variables utilisées dans les fixtures
-status = None
-base_token = None
-token_address = None
-dex_name = None
-take_profit_price = None
-stop_loss_price = None
-router_address = None
-exit_time = None
-exit_tx_hash = None
-exit_reason = None
 # Variables utilisées dans les fixtures
 status = None
 base_token = None

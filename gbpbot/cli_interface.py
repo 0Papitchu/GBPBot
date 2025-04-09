@@ -13,6 +13,17 @@ import time
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
+# Utilisation du module de compatibilité TensorFlow
+try:
+    from gbpbot.utils.tensorflow_compat import tf, HAS_TENSORFLOW
+    
+    # Log uniquement si TensorFlow est disponible pour ne pas polluer les logs
+    if HAS_TENSORFLOW:
+        print(f"TensorFlow importé avec succès (version: {tf.__version__})")
+except ImportError:
+    print("Module de compatibilité TensorFlow non disponible. Certaines fonctionnalités seront limitées.")
+    HAS_TENSORFLOW = False
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt, Confirm
@@ -24,8 +35,22 @@ from rich import box
 from loguru import logger
 from rich.progress import Progress
 
-from gbpbot.main import GBPBot
-from gbpbot.config.trading_config import TradingConfig
+# Importation conditionnelle de la classe GBPBot
+try:
+    from gbpbot.main import GBPBot
+    from gbpbot.config.trading_config import TradingConfig
+    HAS_GBPBOT = True
+except ImportError as e:
+    logger.warning(f"Impossible d'importer les modules GBPBot: {e}")
+    logger.warning("Le bot fonctionnera en mode limité")
+    HAS_GBPBOT = False
+    # Classes factices pour éviter les erreurs
+    class GBPBot:
+        def __init__(self, *args, **kwargs):
+            pass
+    class TradingConfig:
+        def __init__(self, *args, **kwargs):
+            pass
 
 # Chemin du fichier de configuration utilisateur
 CONFIG_DIR = Path.home() / ".gbpbot"
@@ -47,6 +72,7 @@ class CLIInterface:
         self.bot_instance = None
         self.running = False
         self.mode = None
+        self.current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     def _load_user_config(self) -> Dict[str, Any]:
         """Charge la configuration utilisateur depuis le fichier JSON"""
@@ -1067,52 +1093,141 @@ class CLIInterface:
             self.console.print(traceback.format_exc())
     
     async def run(self) -> None:
-        """Exécute l'interface CLI"""
+        """Exécute l'interface CLI de manière interactive"""
         self.display_welcome()
         
         while True:
             choice = self.display_main_menu()
             
-            if choice == "1":  # Lancer le bot
+            if choice == "start":
                 await self.start_bot()
-            elif choice == "2":  # Configurer les paramètres
+            elif choice == "config":
                 self.configure_parameters()
-            elif choice == "3":  # Afficher la configuration actuelle
+            elif choice == "display":
                 self.display_current_config()
-            elif choice == "4":  # Afficher les statistiques
+            elif choice == "stats":
                 self.display_statistics()
-            elif choice == "5":  # Quitter
-                self.console.print("[bold green]Merci d'avoir utilisé GBPBot. À bientôt![/bold green]")
+            elif choice == "exit":
                 break
+            else:
+                self.console.print("[bold red]Option invalide![/]")
+    
+    # Nouvelles méthodes pour la gestion des wallets
+    
+    def edit_wallets(self):
+        """
+        Éditeur interactif des wallets.
+        Permet d'ajouter, modifier, supprimer et vérifier les wallets pour différentes blockchains.
+        """
+        # Importations des modules nécessaires au lanceur unifié
+        import sys
+        import os
+        import json
+        import platform
+        import time
+        import logging
+        
+        # Importer les fonctions nécessaires du launcher ou les implémenter ici
+        try:
+            # Essayer d'importer depuis le launcher (si disponible)
+            sys.path.insert(0, self.current_dir)
+            from gbpbot_unified_launcher import edit_wallets as launcher_edit_wallets
+            launcher_edit_wallets()
+        except ImportError:
+            self.console.print("[bold yellow]Impossible d'importer la fonction edit_wallets du lanceur. " 
+                             "Utilisez le lanceur unifié pour cette fonctionnalité.[/]")
+    
+    def manage_wallet_security(self):
+        """
+        Gestion de la sécurité des wallets.
+        Permet de chiffrer/déchiffrer les wallets.
+        """
+        # Importations des modules nécessaires au lanceur unifié
+        import sys
+        import os
+        import json
+        import platform
+        import time
+        import logging
+        
+        # Importer les fonctions nécessaires du launcher ou les implémenter ici
+        try:
+            # Essayer d'importer depuis le launcher (si disponible)
+            sys.path.insert(0, self.current_dir)
+            from gbpbot_unified_launcher import manage_wallet_security as launcher_manage_wallet_security
+            launcher_manage_wallet_security()
+        except ImportError:
+            self.console.print("[bold yellow]Impossible d'importer la fonction manage_wallet_security du lanceur. " 
+                             "Utilisez le lanceur unifié pour cette fonctionnalité.[/]")
+    
+    def encrypt_wallets(self, wallets):
+        """
+        Chiffre les wallets avec un mot de passe.
+        
+        Args:
+            wallets: Liste des wallets à chiffrer
+            
+        Returns:
+            List[Dict[str, Any]]: Liste des wallets (chiffrés ou non selon le résultat)
+        """
+        # Importations des modules nécessaires au lanceur unifié
+        import sys
+        import os
+        import json
+        import platform
+        import time
+        import logging
+        
+        # Importer les fonctions nécessaires du launcher ou les implémenter ici
+        try:
+            # Essayer d'importer depuis le launcher (si disponible)
+            sys.path.insert(0, self.current_dir)
+            from gbpbot_unified_launcher import encrypt_wallets as launcher_encrypt_wallets
+            return launcher_encrypt_wallets(wallets)
+        except ImportError:
+            self.console.print("[bold yellow]Impossible d'importer la fonction encrypt_wallets du lanceur. " 
+                             "Utilisez le lanceur unifié pour cette fonctionnalité.[/]")
+            return wallets
+    
+    def decrypt_wallets(self, wallets):
+        """
+        Déchiffre les wallets avec un mot de passe.
+        
+        Args:
+            wallets: Liste des wallets à déchiffrer
+            
+        Returns:
+            List[Dict[str, Any]]: Liste des wallets (déchiffrés ou non selon le résultat)
+        """
+        # Importations des modules nécessaires au lanceur unifié
+        import sys
+        import os
+        import json
+        import platform
+        import time
+        import logging
+        
+        # Importer les fonctions nécessaires du launcher ou les implémenter ici
+        try:
+            # Essayer d'importer depuis le launcher (si disponible)
+            sys.path.insert(0, self.current_dir)
+            from gbpbot_unified_launcher import decrypt_wallets as launcher_decrypt_wallets
+            return launcher_decrypt_wallets(wallets)
+        except ImportError:
+            self.console.print("[bold yellow]Impossible d'importer la fonction decrypt_wallets du lanceur. " 
+                             "Utilisez le lanceur unifié pour cette fonctionnalité.[/]")
+            return wallets
 
 def main():
-    """Point d'entrée principal pour l'interface CLI"""
+    """Point d'entrée du CLI"""
     try:
-        # Configurer le logging
-        logger.remove()
-        logger.add(
-            sys.stderr,
-            level="INFO",
-            format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
-        )
-        logger.add(
-            "cli.log",
-            level="DEBUG",
-            rotation="10 MB",
-            retention="7 days"
-        )
-        
-        # Créer et exécuter l'interface CLI
         cli = CLIInterface()
         asyncio.run(cli.run())
-        
     except KeyboardInterrupt:
-        console.print("[bold yellow]Arrêt de l'interface demandé par l'utilisateur...[/bold yellow]")
-        sys.exit(0)
+        console.print("\n[bold yellow]Interruption détectée. Au revoir![/]")
     except Exception as e:
-        console.print(f"[bold red]Erreur lors de l'exécution de l'interface: {str(e)}[/bold red]")
-        logger.exception("Erreur non gérée dans l'interface CLI")
-        sys.exit(1)
+        logger.exception("Erreur non gérée dans le CLI")
+        console.print(f"[bold red]Erreur non gérée: {str(e)}[/]")
 
 if __name__ == "__main__":
     main() 
